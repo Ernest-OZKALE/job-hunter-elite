@@ -8,6 +8,7 @@ import { ApplicationDetailModal } from '../ApplicationDetailModal';
 import type { JobApplication, Attachment } from '../../types';
 import { getRelanceInfo } from '../../lib/relance';
 import { calculateAiScore, getScoreColor } from '../../lib/aiScoring';
+import { useStorage } from '../../hooks/useStorage';
 
 interface ApplicationListProps {
     applications: JobApplication[];
@@ -35,6 +36,34 @@ export const ApplicationList = ({
 
     const [openPicker] = useDrivePicker();
     const [selectedApp, setSelectedApp] = useState<JobApplication | null>(null);
+    const [uploadingId, setUploadingId] = useState<string | null>(null);
+    const { uploadFile } = useStorage();
+
+    const handleManualUpload = async (appId: string, e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+
+        setUploadingId(appId);
+        try {
+            const path = `applications/${appId}/${file.name}`;
+            const publicUrl = await uploadFile(file, path);
+
+            if (publicUrl) {
+                const newAtt: Attachment = {
+                    name: file.name,
+                    url: publicUrl,
+                    type: file.type.includes('pdf') ? 'cv' : 'autre'
+                };
+                onAddAttachment(appId, newAtt);
+            }
+        } catch (error) {
+            console.error(error);
+        } finally {
+            setUploadingId(null);
+            // Reset input
+            e.target.value = '';
+        }
+    };
 
     const handleDrivePick = (appId: string) => {
         openPicker({
@@ -196,6 +225,25 @@ export const ApplicationList = ({
                                     >
                                         <Paperclip size={18} />
                                     </button>
+
+                                    {/* Manual Upload Button */}
+                                    <label
+                                        onClick={(e) => e.stopPropagation()}
+                                        className={`w-9 h-9 flex items-center justify-center rounded-xl bg-indigo-50 dark:bg-indigo-900/20 text-indigo-500 hover:bg-indigo-100 hover:text-indigo-600 transition-colors cursor-pointer ${uploadingId === app.id ? 'animate-pulse' : ''}`}
+                                        title="Importer un fichier"
+                                    >
+                                        <input
+                                            type="file"
+                                            className="hidden"
+                                            onChange={(e) => handleManualUpload(app.id, e)}
+                                            disabled={uploadingId === app.id}
+                                        />
+                                        {uploadingId === app.id ? (
+                                            <div className="w-4 h-4 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin" />
+                                        ) : (
+                                            <FileText size={18} />
+                                        )}
+                                    </label>
                                 </div>
 
                                 {/* Actions */}

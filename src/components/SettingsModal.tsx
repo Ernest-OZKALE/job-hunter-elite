@@ -1,3 +1,4 @@
+import React from 'react';
 import { X, User, Moon, Shield, LogOut, Sun } from 'lucide-react';
 import type { User as SupabaseUser } from '@supabase/supabase-js';
 import { useTheme } from '../context/ThemeContext';
@@ -10,6 +11,7 @@ interface SettingsModalProps {
 
 export default function SettingsModal({ user, onClose, onLogout }: SettingsModalProps) {
     const { theme, toggleTheme } = useTheme();
+    const [isSecurityOpen, setIsSecurityOpen] = React.useState(false);
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
@@ -55,14 +57,43 @@ export default function SettingsModal({ user, onClose, onLogout }: SettingsModal
                             </span>
                         </div>
 
-                        <div className="flex items-center justify-between p-3 rounded-xl hover:bg-slate-50 transition-colors border border-transparent hover:border-slate-100 cursor-pointer group">
-                            <div className="flex items-center gap-3">
-                                <div className="p-2 bg-slate-100 text-slate-600 rounded-lg group-hover:bg-emerald-100 group-hover:text-emerald-600 transition-colors">
-                                    <Shield size={18} />
+                        <div
+                            className="bg-slate-50 dark:bg-slate-800 rounded-xl overflow-hidden transition-all duration-300 border border-transparent hover:border-slate-100 dark:hover:border-slate-700"
+                        >
+                            <div
+                                onClick={() => setIsSecurityOpen(!isSecurityOpen)}
+                                className="flex items-center justify-between p-3 cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-700/50 transition-colors"
+                            >
+                                <div className="flex items-center gap-3">
+                                    <div className="p-2 bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 rounded-lg">
+                                        <Shield size={18} />
+                                    </div>
+                                    <span className="font-medium text-slate-700 dark:text-slate-200">Sécurité & Données</span>
                                 </div>
-                                <span className="font-medium text-slate-700">Sécurité & Données</span>
+                                <span className="text-xs font-medium text-slate-400 bg-slate-100 dark:bg-slate-700 px-2 py-1 rounded">
+                                    {isSecurityOpen ? 'Masquer' : 'Gérer'}
+                                </span>
                             </div>
-                            <span className="text-xs font-medium text-slate-400 bg-slate-100 px-2 py-1 rounded">Actif</span>
+
+                            {isSecurityOpen && (
+                                <div className="p-4 pt-0 space-y-3 animate-in slide-in-from-top-2">
+                                    <hr className="border-slate-100 dark:border-slate-700 my-2" />
+                                    <div className="text-sm">
+                                        <p className="text-slate-500 dark:text-slate-400 mb-1">Email du compte</p>
+                                        <p className="font-mono bg-slate-100 dark:bg-slate-900 px-2 py-1 rounded text-slate-600 dark:text-slate-300">{user.email}</p>
+                                    </div>
+                                    <button
+                                        onClick={async () => {
+                                            const { supabase } = await import('../lib/supabase');
+                                            await supabase.auth.resetPasswordForEmail(user.email!);
+                                            alert('Email de réinitialisation envoyé !');
+                                        }}
+                                        className="w-full py-2 px-3 bg-slate-800 dark:bg-slate-700 text-white text-sm font-bold rounded-lg hover:bg-slate-700 dark:hover:bg-slate-600 transition-colors"
+                                    >
+                                        Réinitialiser le mot de passe
+                                    </button>
+                                </div>
+                            )}
                         </div>
                     </div>
 
