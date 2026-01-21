@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import useDrivePicker from 'react-google-drive-picker';
 import {
     X,
@@ -251,7 +252,7 @@ Mon Nom`;
         }
     };
 
-    return (
+    const modalContent = (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 bg-slate-900/50 backdrop-blur-sm animate-in fade-in duration-300">
             <form onSubmit={handleSubmit} className="bg-white rounded-3xl shadow-2xl w-full max-w-5xl max-h-[88vh] overflow-hidden flex flex-col animate-in slide-in-from-bottom-4 duration-300 border border-white/50">
 
@@ -771,4 +772,6 @@ Mon Nom`;
             </form>
         </div>
     );
+
+    return createPortal(modalContent, document.body);
 };
