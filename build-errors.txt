@@ -1,0 +1,22 @@
+
+> job-hunter-elite@0.0.0 build
+> tsc -b && vite build
+
+src/components/ApplicationDetailModal.tsx(2,20): error TS6133: 'Calendar' is declared but its value is never read.
+src/components/ApplicationDetailModal.tsx(2,57): error TS6133: 'BellOff' is declared but its value is never read.
+src/components/ApplicationDetailModal.tsx(3,31): error TS6196: 'TimelineEvent' is declared but never used.
+src/components/ApplicationDetailModal.tsx(3,62): error TS2307: Cannot find module '../../types' or its corresponding type declarations.
+src/components/ApplicationDetailModal.tsx(41,39): error TS7006: Parameter 'r' implicitly has an 'any' type.
+src/components/ApplicationDetailModal.tsx(48,42): error TS7006: Parameter 'r' implicitly has an 'any' type.
+src/components/ApplicationDetailModal.tsx(160,52): error TS7006: Parameter 'event' implicitly has an 'any' type.
+src/components/ApplicationDetailModal.tsx(160,59): error TS6133: 'idx' is declared but its value is never read.
+src/components/ApplicationDetailModal.tsx(160,59): error TS7006: Parameter 'idx' implicitly has an 'any' type.
+src/components/ApplicationDetailModal.tsx(218,48): error TS7006: Parameter 'reminder' implicitly has an 'any' type.
+src/components/ApplicationDetailModal.tsx(296,64): error TS7006: Parameter 'pro' implicitly has an 'any' type.
+src/components/ApplicationDetailModal.tsx(296,69): error TS7006: Parameter 'idx' implicitly has an 'any' type.
+src/components/ApplicationDetailModal.tsx(307,64): error TS7006: Parameter 'con' implicitly has an 'any' type.
+src/components/ApplicationDetailModal.tsx(307,69): error TS7006: Parameter 'idx' implicitly has an 'any' type.
+src/components/features/ApplicationForm.tsx(26,43): error TS6196: 'ApplicationStatus' is declared but never used.
+src/components/features/ApplicationList.tsx(92,112): error TS2367: This comparison appears to be unintentional because the types 'ApplicationStatus' and '"Offre"' have no overlap.
+src/components/features/ApplicationList.tsx(93,29): error TS2367: This comparison appears to be unintentional because the types 'ApplicationStatus' and '"Refus"' have no overlap.
+src/components/features/ApplicationList.tsx(94,33): error TS2367: This comparison appears to be unintentional because the types 'ApplicationStatus' and '"Entretien"' have no overlap.

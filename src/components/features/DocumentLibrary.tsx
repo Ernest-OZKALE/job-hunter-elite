@@ -1,0 +1,133 @@
+import React, { useState } from 'react';
+import {
+    FileText, Search, Plus, Filter, Download, Trash2,
+    Share2, ExternalLink, Clock, CheckCircle2, AlertCircle
+} from 'lucide-react';
+
+export const DocumentLibrary = () => {
+    const [searchTerm, setSearchTerm] = useState('');
+
+    const documents = [
+        { id: '1', name: 'CV_Developpeur_React_2026.pdf', type: 'CV', date: '2026-01-15', size: '1.2 MB', status: 'Actif' },
+        { id: '2', name: 'LM_Standard_Tech.pdf', type: 'LM', date: '2026-01-10', size: '850 KB', status: 'Brouillon' },
+        { id: '3', name: 'Diplome_Master_Informatique.pdf', type: 'Certificat', date: '2025-09-20', size: '2.4 MB', status: 'Actif' }
+    ];
+
+    return (
+        <div className="p-8 max-w-7xl mx-auto animate-in fade-in duration-500">
+            {/* Header */}
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-12">
+                <div>
+                    <h1 className="text-4xl font-black text-slate-900 dark:text-white tracking-tight mb-2">
+                        Bibliothèque <span className="text-indigo-600">Documents</span>
+                    </h1>
+                    <p className="text-slate-500 dark:text-slate-400 font-medium">
+                        Centralise et gère tes CV, lettres et certificats.
+                    </p>
+                </div>
+                <button
+                    className="flex items-center gap-3 bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3.5 rounded-2xl font-bold shadow-xl shadow-indigo-500/20 transition-all hover:-translate-y-1"
+                >
+                    <Plus size={20} strokeWidth={3} />
+                    Importer un Document
+                </button>
+            </div>
+
+            {/* Quick Filters */}
+            <div className="flex flex-wrap gap-3 mb-10">
+                {['Tous', 'CV', 'Lettres de Motivation', 'Certificats', 'Autres'].map((filter) => (
+                    <button
+                        key={filter}
+                        className={`px-5 py-2.5 rounded-xl text-sm font-bold border-2 transition-all ${filter === 'Tous' ? 'bg-indigo-600 text-white border-indigo-600' : 'bg-white dark:bg-slate-800 border-slate-100 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:border-indigo-200'}`}
+                    >
+                        {filter}
+                    </button>
+                ))}
+            </div>
+
+            {/* Documents List */}
+            <div className="glass-panel rounded-[2.5rem] border border-slate-200/50 dark:border-slate-800/50 shadow-sm overflow-hidden">
+                <div className="p-6 border-b border-slate-100 dark:border-slate-800 bg-white/50 dark:bg-slate-800/30 flex flex-col md:flex-row justify-between items-center gap-4">
+                    <div className="relative w-full md:w-96 group">
+                        <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-indigo-500 transition-colors" size={18} />
+                        <input
+                            type="text"
+                            placeholder="Rechercher un document..."
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                            className="w-full pl-12 pr-4 py-2.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl outline-none focus:ring-2 focus:ring-indigo-500/20 transition-all"
+                        />
+                    </div>
+                </div>
+
+                <div className="overflow-x-auto">
+                    <table className="w-full text-left">
+                        <thead>
+                            <tr className="bg-slate-50/50 dark:bg-slate-900/50">
+                                <th className="px-8 py-4 text-xs font-black text-slate-400 uppercase tracking-widest">Document</th>
+                                <th className="px-8 py-4 text-xs font-black text-slate-400 uppercase tracking-widest">Type</th>
+                                <th className="px-8 py-4 text-xs font-black text-slate-400 uppercase tracking-widest">Dernière Modif</th>
+                                <th className="px-8 py-4 text-xs font-black text-slate-400 uppercase tracking-widest">Taille</th>
+                                <th className="px-8 py-4 text-xs font-black text-slate-400 uppercase tracking-widest">Statut</th>
+                                <th className="px-8 py-4 text-xs font-black text-slate-400 uppercase tracking-widest">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
+                            {documents.map((doc) => (
+                                <tr key={doc.id} className="hover:bg-slate-50/50 dark:hover:bg-slate-800/30 transition-colors group">
+                                    <td className="px-8 py-5">
+                                        <div className="flex items-center gap-4">
+                                            <div className="p-3 bg-indigo-50 dark:bg-indigo-900/20 rounded-xl text-indigo-600">
+                                                <FileText size={20} />
+                                            </div>
+                                            <div className="font-bold text-slate-700 dark:text-slate-200">{doc.name}</div>
+                                        </div>
+                                    </td>
+                                    <td className="px-8 py-5">
+                                        <span className="px-3 py-1 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 rounded-lg text-xs font-bold uppercase tracking-widest">
+                                            {doc.type}
+                                        </span>
+                                    </td>
+                                    <td className="px-8 py-5 text-sm text-slate-500 flex items-center gap-2">
+                                        <Clock size={14} />
+                                        {new Date(doc.date).toLocaleDateString('fr-FR')}
+                                    </td>
+                                    <td className="px-8 py-5 text-sm text-slate-500">{doc.size}</td>
+                                    <td className="px-8 py-5">
+                                        <div className="flex items-center gap-2 text-emerald-600 dark:text-emerald-400 font-bold text-xs uppercase tracking-tighter">
+                                            <CheckCircle2 size={14} />
+                                            {doc.status}
+                                        </div>
+                                    </td>
+                                    <td className="px-8 py-5">
+                                        <div className="flex gap-1">
+                                            <button className="p-2 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-all" title="Télécharger"><Download size={18} /></button>
+                                            <button className="p-2 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-all" title="Partager"><Share2 size={18} /></button>
+                                            <button className="p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all" title="Supprimer"><Trash2 size={18} /></button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            {/* Storage Info */}
+            <div className="mt-8 flex items-center justify-between p-6 glass-panel rounded-3xl border border-slate-200/50 dark:border-slate-800/50">
+                <div className="flex items-center gap-4">
+                    <div className="p-2 bg-indigo-50 dark:bg-indigo-900/20 rounded-lg">
+                        <AlertCircle className="text-indigo-600" size={18} />
+                    </div>
+                    <div className="text-sm">
+                        <span className="font-bold text-slate-700 dark:text-slate-200">Espace utilisé : 14.5 MB</span>
+                        <span className="text-slate-400 ml-2">sur 100 MB (Offre Gratuite)</span>
+                    </div>
+                </div>
+                <div className="w-64 h-2 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
+                    <div className="h-full bg-indigo-500 w-[15%]" />
+                </div>
+            </div>
+        </div>
+    );
+};

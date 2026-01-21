@@ -1,0 +1,29 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Scoped rules for user documents
+    match /users/{userId}/applications/{appId} {
+      allow read: if request.auth != null && request.auth.uid == userId;
+
+      allow create, update: if request.auth != null && request.auth.uid == userId
+        && request.resource.data.keys().hasAll(['company','position','date','status'])
+        && request.resource.data.company is string
+        && request.resource.data.position is string
+        && request.resource.data.date is string
+        && request.resource.data.status in ['A faire','Envoyé','Entretien','Offre','Refus'];
+
+      allow delete: if request.auth != null && request.auth.uid == userId;
+    }
+
+    // Rules for file uploads (Base64 storage)
+    match /users/{userId}/files/{fileId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+
+    // Fallback: block other reads/writes to other user subcollections by default
+    match /users/{userId}/{document=**} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+  }
+}
