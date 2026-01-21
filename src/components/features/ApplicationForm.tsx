@@ -252,8 +252,8 @@ Mon Nom`;
     };
 
     return (
-        <div className="fixed inset-0 z-[100] flex items-start justify-center pt-8 pb-4 px-4 bg-slate-900/50 backdrop-blur-sm animate-in fade-in duration-300 overflow-y-auto">
-            <form onSubmit={handleSubmit} className="bg-white rounded-3xl shadow-2xl w-full max-w-5xl max-h-[90vh] overflow-hidden flex flex-col animate-in slide-in-from-bottom-4 duration-300 border border-white/50 my-auto">
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 bg-slate-900/50 backdrop-blur-sm animate-in fade-in duration-300">
+            <form onSubmit={handleSubmit} className="bg-white rounded-3xl shadow-2xl w-full max-w-5xl max-h-[88vh] overflow-hidden flex flex-col animate-in slide-in-from-bottom-4 duration-300 border border-white/50">
 
                 {/* Header Premium */}
                 <div className="bg-slate-50/50 p-6 flex justify-between items-center shrink-0 border-b border-slate-100 backdrop-blur-md">
