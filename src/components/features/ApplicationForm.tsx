@@ -64,6 +64,14 @@ export const ApplicationForm = ({
         setFormData(prev => ({ ...prev, ...rest }));
     }, [initialData]);
 
+    // Lock body scroll when modal is open
+    useEffect(() => {
+        document.body.style.overflow = 'hidden';
+        return () => {
+            document.body.style.overflow = '';
+        };
+    }, []);
+
     const [activeTab, setActiveTab] = useState<'details' | 'description' | 'attachments'>('details');
     const { documents: libraryDocuments, loading: loadingDocs } = useDocuments();
     const [isScoring, setIsScoring] = useState(false);
@@ -244,8 +252,8 @@ Mon Nom`;
     };
 
     return (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm animate-in fade-in duration-300">
-            <form onSubmit={handleSubmit} className="bg-white rounded-3xl shadow-2xl w-full max-w-5xl max-h-[95vh] overflow-hidden flex flex-col animate-in slide-in-from-bottom-4 duration-300 border border-white/50">
+        <div className="fixed inset-0 z-[100] flex items-start justify-center pt-8 pb-4 px-4 bg-slate-900/50 backdrop-blur-sm animate-in fade-in duration-300 overflow-y-auto">
+            <form onSubmit={handleSubmit} className="bg-white rounded-3xl shadow-2xl w-full max-w-5xl max-h-[90vh] overflow-hidden flex flex-col animate-in slide-in-from-bottom-4 duration-300 border border-white/50 my-auto">
 
                 {/* Header Premium */}
                 <div className="bg-slate-50/50 p-6 flex justify-between items-center shrink-0 border-b border-slate-100 backdrop-blur-md">
