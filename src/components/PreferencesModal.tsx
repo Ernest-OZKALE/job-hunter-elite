@@ -1,7 +1,7 @@
 import { X, Layout, Sparkles, Bell, User } from 'lucide-react';
 import { useNotifications } from '../hooks/useNotifications';
 import { usePreferences } from '../context/PreferencesContext';
-import type { ViewMode } from '../lib/themes';
+import { THEMES, type ViewMode, type Theme } from '../lib/themes';
 
 interface PreferencesModalProps {
     isOpen: boolean;
@@ -89,32 +89,27 @@ export const PreferencesModal = ({ isOpen, onClose }: PreferencesModalProps) => 
                         <Sparkles size={20} className="text-slate-600 dark:text-slate-300" />
                         <h3 className="text-lg font-bold text-slate-900 dark:text-white">Thèmes de Couleurs</h3>
                     </div>
-                    <div className="grid grid-cols-5 gap-3">
-                        {(['ocean', 'forest', 'sunset', 'midnight', 'monochrome'] as const).map((themeName) => {
-                            const config = {
-                                ocean: { icon: '🌊', color: 'bg-blue-500' },
-                                forest: { icon: '🌲', color: 'bg-emerald-500' },
-                                sunset: { icon: '🌅', color: 'bg-orange-500' },
-                                midnight: { icon: '🌙', color: 'bg-purple-500' },
-                                monochrome: { icon: '⚫', color: 'bg-slate-700' },
-                            }[themeName];
-
-                            return (
-                                <button
-                                    key={themeName}
-                                    onClick={() => setColorTheme(themeName)}
-                                    className={`p-3 rounded-2xl border-2 transition-all flex flex-col items-center gap-1 ${colorTheme === themeName
-                                        ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20'
-                                        : 'border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600'
-                                        }`}
+                    <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-3">
+                        {Object.values(THEMES).map((theme) => (
+                            <button
+                                key={theme.name}
+                                onClick={() => setColorTheme(theme.name)}
+                                className={`p-3 rounded-2xl border-2 transition-all flex flex-col items-center gap-1 ${colorTheme === theme.name
+                                    ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20 shadow-md'
+                                    : 'border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600'
+                                    }`}
+                            >
+                                <div
+                                    className="w-10 h-10 rounded-full flex items-center justify-center text-lg mb-1 shadow-md border-2 border-white/30"
+                                    style={{ background: theme.gradient }}
                                 >
-                                    <div className={`w-8 h-8 rounded-full ${config.color} flex items-center justify-center text-sm mb-1 shadow-sm`}>
-                                        {config.icon}
-                                    </div>
-                                    <div className="font-bold text-[10px] text-slate-700 dark:text-slate-300 uppercase tracking-tighter">{themeName}</div>
-                                </button>
-                            );
-                        })}
+                                    {theme.label.split(' ')[0]}
+                                </div>
+                                <div className="font-bold text-[10px] text-slate-700 dark:text-slate-300 uppercase tracking-tighter">
+                                    {theme.label.split(' ').slice(1).join(' ') || theme.name}
+                                </div>
+                            </button>
+                        ))}
                     </div>
                 </div>
 
