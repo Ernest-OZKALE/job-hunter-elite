@@ -479,7 +479,7 @@ Mon Nom`;
 
                             {/* Right Col: Metadata */}
                             <div className="lg:col-span-4 space-y-6">
-                                <div className="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm sticky top-0">
+                                <div className="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm">
                                     <h3 className="text-lg font-bold text-slate-700 mb-5 flex items-center gap-2">
                                         <Target className="text-red-500" size={20} /> Suivi
                                     </h3>
