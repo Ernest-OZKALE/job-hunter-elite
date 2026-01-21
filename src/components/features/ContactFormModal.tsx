@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { X, User, Building, Mail, Phone, Linkedin, Briefcase, FileText, Save, Loader2 } from 'lucide-react';
 import type { Contact } from '../../hooks/useContacts';
 
@@ -37,6 +38,16 @@ export const ContactFormModal = ({ isOpen, onClose, onSubmit, initialData }: Con
         }
     }, [initialData, isOpen]);
 
+    // Lock body scroll when modal is open
+    useEffect(() => {
+        if (isOpen) {
+            document.body.style.overflow = 'hidden';
+            return () => {
+                document.body.style.overflow = '';
+            };
+        }
+    }, [isOpen]);
+
     if (!isOpen) return null;
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -52,7 +63,7 @@ export const ContactFormModal = ({ isOpen, onClose, onSubmit, initialData }: Con
         }
     };
 
-    return (
+    const modalContent = (
         <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-slate-900/80 backdrop-blur-md animate-in fade-in duration-200">
             <div className="bg-white dark:bg-slate-900 rounded-3xl shadow-2xl w-full max-w-2xl overflow-hidden animate-in zoom-in-95 duration-200 border border-slate-200 dark:border-slate-800">
 
@@ -199,4 +210,6 @@ export const ContactFormModal = ({ isOpen, onClose, onSubmit, initialData }: Con
             </div>
         </div>
     );
+
+    return createPortal(modalContent, document.body);
 };
