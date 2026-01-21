@@ -1,72 +1,180 @@
-# React + TypeScript + Vite
+# 🎯 Job Hunter Elite
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+**Plateforme intelligente de gestion de candidatures** – Pilotez votre recherche d'emploi avec puissance et élégance.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## ✨ Présentation
 
-## React Compiler
+**Job Hunter Elite** est une application web moderne développée avec React, TypeScript et Supabase, conçue pour transformer la recherche d'emploi en une expérience organisée, motivante et efficace. 
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+Fini les tableurs désordonnés et les candidatures perdues : centralisez, analysez et suivez vos opportunités professionnelles dans une interface premium avec des fonctionnalités avancées d'IA.
 
-## Expanding the ESLint configuration
+---
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## 🚀 Fonctionnalités principales
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    # Job Hunter Elite
+### 📊 Gestion complète des candidatures
+- **Dashboard interactif** avec statistiques en temps réel
+- **Kanban intelligent** pour visualiser le pipeline de candidatures
+- **Filtres avancés** (statut, date, tags personnalisés, source)
+- **Modes d'affichage** : Compact, Confort, Grille
+- **Système de scoring IA** basé sur Gemini 1.5 Flash
 
-    Application de suivi de candidatures développée avec React + TypeScript + Vite.
+### 🤖 Intelligence Artificielle
+- **Analyse automatique** des offres d'emploi
+- **Génération de lettres de motivation** personnalisées
+- **Scoring de compatibilité** basé sur votre profil
+- **Détection de duplicatas** pour éviter les doublons
 
-    Résumé rapide
-    - Stack : React (TS) + Vite, Tailwind CSS, Firebase (Auth + Firestore + Hosting). Les fichiers utilisateurs sont envoyés sur Google Drive (option « Drive-only ») pour éviter d'utiliser le quota Storage du projet.
+### 🎨 Personnalisation
+- **9 thèmes visuels** (Ocean, Forest, Luxury Gold, Cyberpunk, etc.)
+- **Mode sombre** automatique pour certains thèmes
+- **Personnalisation du profil IA** pour des résultats sur mesure
 
-    Mode d'upload (comportement important)
-    - Lors de la connexion via Google, l'application demande l'autorisation `https://www.googleapis.com/auth/drive.file` afin de pouvoir créer des fichiers sur le Google Drive de l'utilisateur.
-    - Les fichiers ajoutés depuis l'interface sont téléversés directement sur le Drive de l'utilisateur et partagés en lecture (`anyoneWithLink`) pour permettre un téléchargement simple.
-    - Les liens vers ces fichiers sont stockés dans Firestore dans le champ `attachments` de chaque document `users/{uid}/applications/{appId}`.
-    - Si vous ne souhaitez pas cette approche, il est possible d'activer Firebase Storage dans la console et de revenir à un stockage géré par le projet (attention au quota/billing).
+### 📚 Bibliothèque de documents
+- **Gestion centralisée** de vos CV, lettres de motivation, certificats
+- **Upload via Google Drive** ou fichier local
+- **Filtres par type** de document
+- **Sélection rapide** depuis le formulaire de candidature
 
-    Considérations de confidentialité et sécurité
-    - Les fichiers téléversés sont créés dans le Drive personnel de l'utilisateur et peuvent être contrôlés/supprimés par cet utilisateur. L'application tente aussi de supprimer le fichier Drive lors d'une suppression depuis l'interface lorsque possible.
-    - Les permissions données à l'application sont limitées au scope `drive.file` (création et gestion des fichiers créés par l'application). L'application élève la permission de lecture au public (`anyoneWithLink`) uniquement pour simplifier les téléchargements — vous pouvez modifier ce comportement dans `src/App.tsx` si vous préférez des liens restreints.
+### 📞 Gestion des contacts
+- **Annuaire de recruteurs** avec informations détaillées
+- **Lien direct** avec les candidatures
+- **Profils LinkedIn** intégrés
 
-    Développement local
-    - Installer les dépendances :
+### 📈 Analytics & Suivi
+- **Graphiques de performance** (taux de réponse, conversions)
+- **Système de relance automatique** avec notifications
+- **Tableau de bord bien-être** (humeur, objectifs, réussites)
+- **Export PDF** de vos rapports
 
-    ```powershell
-    npm install
-    ```
+### 🔗 Automatisation (HomeLab Ready)
+- **Intégration n8n** pour scraping automatique d'offres
+- **Détection de source** (Manuel vs Auto)
+- **Injection directe** via Supabase API
+- Compatible avec une infrastructure DevOps locale
 
-    - Lancer le serveur de développement :
+---
 
-    ```powershell
-    npm run dev
-    ```
+## 🛠️ Stack technique
 
-    - Compiler la version de production :
+### Frontend
+- **React 18** avec TypeScript
+- **Vite** (bundler ultra-rapide)
+- **Tailwind CSS v4** (design system moderne)
+- **Lucide React** pour les icônes
 
-    ```powershell
-    npm run build
-    ```
+### Backend & Services
+- **Supabase** (PostgreSQL + Realtime + Auth + Storage)
+- **Google Generative AI** (Gemini 1.5 Flash)
+- **React Google Drive Picker** (upload de documents)
 
-    Déploiement
-    - Hébergement Firebase (hosting) :
+### Déploiement
+- **Vercel** (production)
+- **Supabase Cloud** (base de données)
 
-    ```powershell
-    firebase deploy --only hosting
-    ```
+---
 
-    Notes pour les mainteneurs
-    - Le code relatif au Drive est principalement dans `src/App.tsx` (fonctions d'upload et de suppression). Les métadonnées sont stockées en Firestore.
-    - Tests unitaires : Vitest est utilisé pour les utilitaires (ex : `src/lib/relance.ts`, `src/lib/exportCsv.ts`). Lancez `npm test` pour exécuter les tests.
+## 📦 Installation
 
-    Si vous avez besoin d'une autre stratégie de stockage (ex: stockage chiffré côté serveur, bucket privé, etc.), dites-moi et je vous proposerai une architecture adaptée.
+### Prérequis
+- Node.js 18+ et npm
+- Compte Supabase (gratuit)
+- Clé API Google Gemini (optionnel pour l'IA)
 
-    ---
-    _Ajouté le 17 décembre 2025 — instructions en français et note sur l'upload Drive._
+### Configuration
+
+1. **Cloner le dépôt**
+   ```bash
+   git clone https://github.com/Ernest-OZKALE/job-hunter-elite.git
+   cd job-hunter-elite
+   ```
+
+2. **Installer les dépendances**
+   ```bash
+   npm install
+   ```
+
+3. **Configurer les variables d'environnement**
+   
+   Créez un fichier `.env` à la racine :
+   ```env
+   VITE_SUPABASE_URL=https://votre-projet.supabase.co
+   VITE_SUPABASE_ANON_KEY=votre_cle_anon
+   VITE_GEMINI_API_KEY=votre_cle_gemini (optionnel)
+   ```
+
+4. **Lancer en développement**
+   ```bash
+   npm run dev
+   ```
+
+5. **Build de production**
+   ```bash
+   npm run build
+   npm run preview
+   ```
+
+---
+
+## 🗄️ Architecture Supabase
+
+### Tables principales
+
+#### `applications`
+- Stocke toutes les candidatures avec métadonnées complètes
+- Supporte les champs d'automatisation (`origin`, `raw_salary`, `external_url`)
+- Row-Level Security (RLS) activée
+
+#### `documents`
+- Bibliothèque personnelle de documents (CV, LM, etc.)
+- Lien avec Supabase Storage
+
+#### `contacts`
+- Carnet d'adresses de recruteurs
+- Lié aux candidatures via `contact_id`
+
+---
+
+## 🤖 Automatisation (HomeLab)
+
+L'application supporte une architecture DevOps hybride avec n8n pour l'automatisation du scraping :
+
+1. **Node A (Serveur Linux)** : n8n scrape les offres sur le web
+2. **Node B (Proxy)** : Sécurise l'accès (Nginx + VPN)
+3. **Injection Supabase** : Via API REST avec `SERVICE_ROLE_KEY`
+
+Consultez `automation_guide.md` (dans les artefacts) pour la configuration complète.
+
+---
+
+## 🎨 Thèmes disponibles
+
+- 🌊 **Ocean** – Bleu apaisant
+- 🌲 **Forest** – Vert nature
+- 🌅 **Sunset** – Orange chaleureux
+- 👑 **Luxury Gold** – Doré premium (mode sombre)
+- 👾 **Cyberpunk** – Néon futuriste (mode sombre)
+- ❄️ **Nord** – Bleu glacé
+- ☕ **Coffee** – Beige chaleureux
+- 🌙 **Midnight** – Violet mystique
+- ⚫ **Monochrome** – Minimaliste gris
+
+---
+
+## 📄 Licence
+
+Ce projet est développé par **Ernest OZKALE** dans le cadre d'un projet personnel de recherche d'emploi.
+
+Tous droits réservés © 2025-2026
+
+---
+
+## 🙏 Remerciements
+
+Développé avec passion et l'aide de **Google Gemini (Antigravity Agent)** pour l'assistance au développement.
+
+---
+
+**🚀 Prêt à décrocher le job de vos rêves ?**
