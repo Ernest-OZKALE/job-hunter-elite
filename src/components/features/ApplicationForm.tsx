@@ -560,7 +560,7 @@ Mon Nom`;
                                                                     const newAtt: Attachment = {
                                                                         name: doc.name,
                                                                         url: doc.url || '',
-                                                                        type: doc.type,
+                                                                        type: doc.type as any,
                                                                         size: parseFloat(doc.size) * 1024 * 1024 // approx conversion back to bytes if needed, or just store string
                                                                     };
                                                                     setFormData(prev => ({
@@ -632,111 +632,108 @@ Mon Nom`;
                                     </div>
                                 </div>
                             </div>
-                    )}
-
-                            {activeTab === 'description' && (
-                                <div className="space-y-6 h-full">
-                                    <section className="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm h-full flex flex-col">
-                                        <h3 className="text-lg font-bold text-slate-700 mb-4 flex items-center gap-2">
-                                            <FileText className="text-slate-400" size={20} /> Description & Notes
-                                        </h3>
-
-                                        <div className="space-y-4 flex-1 flex flex-col">
-                                            <div className="space-y-2 flex-1">
-                                                <label className="text-xs font-bold text-slate-400 uppercase tracking-wider ml-1">Description du poste</label>
-                                                <textarea
-                                                    value={formData.jobDescription}
-                                                    onChange={e => setFormData({ ...formData, jobDescription: e.target.value })}
-                                                    className="w-full h-48 p-4 bg-slate-50 border-0 rounded-xl focus:ring-2 focus:ring-blue-100 focus:bg-white transition-all text-slate-700 placeholder:text-slate-300 resize-none font-medium leading-relaxed"
-                                                    placeholder="Copiez-collez ici la description de l'offre pour l'avoir toujours sous la main..."
-                                                />
-
-                                                {/* AI Features Zone (Stub) */}
-                                                <div className="mt-4 p-4 bg-gradient-to-r from-indigo-50 to-purple-50 rounded-xl border border-purple-100">
-                                                    <div className="flex items-center justify-between mb-2">
-                                                        <div>
-                                                            <h4 className="font-bold text-purple-700 flex items-center gap-2">✨ Job Score (IA)</h4>
-                                                            <p className="text-xs text-purple-500">Analysez la compatibilité de votre profil avec cette offre.</p>
-                                                        </div>
-                                                        <button
-                                                            type="button"
-                                                            onClick={handleAnalyzeJob}
-                                                            disabled={isAnalyzing}
-                                                            className="px-3 py-1.5 bg-white text-purple-600 font-bold text-sm rounded-lg shadow-sm border border-purple-100 hover:bg-purple-50 disabled:opacity-50"
-                                                        >
-                                                            {isAnalyzing ? '...' : 'Analyser'}
-                                                        </button>
-                                                    </div>
-                                                    {aiAnalysis && (
-                                                        <div className="mt-3 p-3 bg-white/60 rounded-lg text-sm text-slate-700 whitespace-pre-line border border-purple-100 animate-in fade-in">
-                                                            {aiAnalysis}
-                                                        </div>
-                                                    )}
-                                                </div>
-                                            </div>
-                                            <div className="space-y-2 flex-1">
-                                                <label className="text-xs font-bold text-slate-400 uppercase tracking-wider ml-1">Mes Notes Personnelles</label>
-                                                <textarea
-                                                    value={formData.notes}
-                                                    onChange={e => setFormData({ ...formData, notes: e.target.value })}
-                                                    className="w-full h-32 p-4 bg-yellow-50/50 border-0 rounded-xl focus:ring-2 focus:ring-yellow-100 focus:bg-white transition-all text-slate-700 placeholder:text-slate-300 resize-none font-medium leading-relaxed"
-                                                    placeholder="Questions à poser, impressions, stack technique..."
-                                                />
-
-                                                {/* AI Features Zone (Stub) */}
-                                                <div className="mt-4 p-4 bg-gradient-to-r from-blue-50 to-cyan-50 rounded-xl border border-blue-100">
-                                                    <div className="flex items-center justify-between mb-2">
-                                                        <div>
-                                                            <h4 className="font-bold text-blue-700 flex items-center gap-2">📧 Magic Email (IA)</h4>
-                                                            <p className="text-xs text-blue-500">Générez une lettre de motivation ou un mail de relance.</p>
-                                                        </div>
-                                                        <button
-                                                            type="button"
-                                                            onClick={handleGenerateEmail}
-                                                            disabled={isAnalyzing}
-                                                            className="px-3 py-1.5 bg-white text-blue-600 font-bold text-sm rounded-lg shadow-sm border border-blue-100 hover:bg-blue-50 disabled:opacity-50"
-                                                        >
-                                                            {isAnalyzing ? '...' : 'Générer'}
-                                                        </button>
-                                                    </div>
-                                                    {generatedEmail && (
-                                                        <div className="mt-3">
-                                                            <textarea
-                                                                readOnly
-                                                                value={generatedEmail}
-                                                                className="w-full h-40 p-3 bg-white/80 rounded-lg text-sm text-slate-700 border border-blue-100 resize-none focus:outline-none"
-                                                            />
-                                                            <button
-                                                                onClick={() => { navigator.clipboard.writeText(generatedEmail); alert('Copié !') }}
-                                                                className="mt-2 text-xs text-blue-600 font-bold hover:underline"
-                                                            >
-                                                                Copier le texte
-                                                            </button>
-                                                        </div>
-                                                    )}
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </section>
-                                </div>
-                            )}
-
-                            {activeTab === 'attachments' && (
-                                <div className="space-y-6">
-
-                                </div>
-
                         </div>
                     )}
+
+                    {activeTab === 'description' && (
+                        <div className="space-y-6 h-full">
+                            <section className="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm h-full flex flex-col">
+                                <h3 className="text-lg font-bold text-slate-700 mb-4 flex items-center gap-2">
+                                    <FileText className="text-slate-400" size={20} /> Description & Notes
+                                </h3>
+
+                                <div className="space-y-4 flex-1 flex flex-col">
+                                    <div className="space-y-2 flex-1">
+                                        <label className="text-xs font-bold text-slate-400 uppercase tracking-wider ml-1">Description du poste</label>
+                                        <textarea
+                                            value={formData.jobDescription}
+                                            onChange={e => setFormData({ ...formData, jobDescription: e.target.value })}
+                                            className="w-full h-48 p-4 bg-slate-50 border-0 rounded-xl focus:ring-2 focus:ring-blue-100 focus:bg-white transition-all text-slate-700 placeholder:text-slate-300 resize-none font-medium leading-relaxed"
+                                            placeholder="Copiez-collez ici la description de l'offre pour l'avoir toujours sous la main..."
+                                        />
+
+                                        {/* AI Features Zone (Stub) */}
+                                        <div className="mt-4 p-4 bg-gradient-to-r from-indigo-50 to-purple-50 rounded-xl border border-purple-100">
+                                            <div className="flex items-center justify-between mb-2">
+                                                <div>
+                                                    <h4 className="font-bold text-purple-700 flex items-center gap-2">✨ Job Score (IA)</h4>
+                                                    <p className="text-xs text-purple-500">Analysez la compatibilité de votre profil avec cette offre.</p>
+                                                </div>
+                                                <button
+                                                    type="button"
+                                                    onClick={handleAnalyzeJob}
+                                                    disabled={isAnalyzing}
+                                                    className="px-3 py-1.5 bg-white text-purple-600 font-bold text-sm rounded-lg shadow-sm border border-purple-100 hover:bg-purple-50 disabled:opacity-50"
+                                                >
+                                                    {isAnalyzing ? '...' : 'Analyser'}
+                                                </button>
+                                            </div>
+                                            {aiAnalysis && (
+                                                <div className="mt-3 p-3 bg-white/60 rounded-lg text-sm text-slate-700 whitespace-pre-line border border-purple-100 animate-in fade-in">
+                                                    {aiAnalysis}
+                                                </div>
+                                            )}
+                                        </div>
+                                    </div>
+                                    <div className="space-y-2 flex-1">
+                                        <label className="text-xs font-bold text-slate-400 uppercase tracking-wider ml-1">Mes Notes Personnelles</label>
+                                        <textarea
+                                            value={formData.notes}
+                                            onChange={e => setFormData({ ...formData, notes: e.target.value })}
+                                            className="w-full h-32 p-4 bg-yellow-50/50 border-0 rounded-xl focus:ring-2 focus:ring-yellow-100 focus:bg-white transition-all text-slate-700 placeholder:text-slate-300 resize-none font-medium leading-relaxed"
+                                            placeholder="Questions à poser, impressions, stack technique..."
+                                        />
+
+                                        {/* AI Features Zone (Stub) */}
+                                        <div className="mt-4 p-4 bg-gradient-to-r from-blue-50 to-cyan-50 rounded-xl border border-blue-100">
+                                            <div className="flex items-center justify-between mb-2">
+                                                <div>
+                                                    <h4 className="font-bold text-blue-700 flex items-center gap-2">📧 Magic Email (IA)</h4>
+                                                    <p className="text-xs text-blue-500">Générez une lettre de motivation ou un mail de relance.</p>
+                                                </div>
+                                                <button
+                                                    type="button"
+                                                    onClick={handleGenerateEmail}
+                                                    disabled={isAnalyzing}
+                                                    className="px-3 py-1.5 bg-white text-blue-600 font-bold text-sm rounded-lg shadow-sm border border-blue-100 hover:bg-blue-50 disabled:opacity-50"
+                                                >
+                                                    {isAnalyzing ? '...' : 'Générer'}
+                                                </button>
+                                            </div>
+                                            {generatedEmail && (
+                                                <div className="mt-3">
+                                                    <textarea
+                                                        readOnly
+                                                        value={generatedEmail}
+                                                        className="w-full h-40 p-3 bg-white/80 rounded-lg text-sm text-slate-700 border border-blue-100 resize-none focus:outline-none"
+                                                    />
+                                                    <button
+                                                        onClick={() => { navigator.clipboard.writeText(generatedEmail); alert('Copié !') }}
+                                                        className="mt-2 text-xs text-blue-600 font-bold hover:underline"
+                                                    >
+                                                        Copier le texte
+                                                    </button>
+                                                </div>
+                                            )}
+                                        </div>
+                                    </div>
+                                </div>
+                            </section>
+                        </div>
+                    )}
+
+                    {activeTab === 'attachments' && (
+                        <div className="space-y-6">
+                            <div className="bg-slate-50 p-6 rounded-2xl border border-dashed border-slate-300 text-center">
+                                <p className="text-slate-500">Pour ajouter des fichiers, utilisez la section "Sélectionner des documents" dans l'onglet Détails.</p>
+                            </div>
+                        </div>
+                    )}
+
                 </div>
-        </div >
-    )
-}
 
-                </div >
-
-    {/* Footer Actions */ }
-    < div className = "p-6 bg-white border-t border-slate-100 shrink-0 flex justify-end gap-3 rounded-b-3xl" >
+                {/* Footer Actions */}
+                <div className="p-6 bg-white border-t border-slate-100 shrink-0 flex justify-end gap-3 rounded-b-3xl">
                     <button
                         type="button"
                         onClick={onCancel}
@@ -761,9 +758,9 @@ Mon Nom`;
                             </>
                         )}
                     </button>
-                </div >
+                </div>
 
-            </form >
-        </div >
+            </form>
+        </div>
     );
 };

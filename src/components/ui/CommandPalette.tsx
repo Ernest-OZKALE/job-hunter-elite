@@ -113,8 +113,8 @@ export const CommandPalette = ({ isOpen, onClose, commands }: CommandPaletteProp
                                         key={cmd.id}
                                         onClick={() => { cmd.action(); onClose(); }}
                                         className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg transition-colors ${globalIdx === selectedIndex
-                                                ? 'bg-indigo-500 text-white'
-                                                : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700'
+                                            ? 'bg-indigo-500 text-white'
+                                            : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700'
                                             }`}
                                     >
                                         <span className={globalIdx === selectedIndex ? 'text-white' : 'text-slate-500'}>
@@ -123,8 +123,8 @@ export const CommandPalette = ({ isOpen, onClose, commands }: CommandPaletteProp
                                         <span className="flex-1 text-left font-medium">{cmd.label}</span>
                                         {cmd.shortcut && (
                                             <kbd className={`text-xs px-1.5 py-0.5 rounded ${globalIdx === selectedIndex
-                                                    ? 'bg-indigo-400 text-white'
-                                                    : 'bg-slate-100 dark:bg-slate-600 text-slate-500 dark:text-slate-400'
+                                                ? 'bg-indigo-400 text-white'
+                                                : 'bg-slate-100 dark:bg-slate-600 text-slate-500 dark:text-slate-400'
                                                 }`}>
                                                 {cmd.shortcut}
                                             </kbd>
@@ -170,7 +170,7 @@ export const createCommands = (actions: {
     openFilters: () => void;
     openPreferences: () => void;
     openEmailTemplates: () => void;
-    openSalaryComparator: () => void;
+
     toggleDarkMode: () => void;
     isDarkMode: boolean;
 }): CommandItem[] => [
@@ -180,7 +180,6 @@ export const createCommands = (actions: {
         { id: 'pdf', icon: <FileText size={18} />, label: 'Exporter en PDF', shortcut: '⌘P', action: actions.exportPdf, category: 'Export' },
         { id: 'filters', icon: <Filter size={18} />, label: 'Ouvrir les filtres', action: actions.openFilters, category: 'Navigation' },
         { id: 'templates', icon: <Mail size={18} />, label: 'Templates email', action: actions.openEmailTemplates, category: 'Outils' },
-        { id: 'salary', icon: <Zap size={18} />, label: 'Comparateur salaires', action: actions.openSalaryComparator, category: 'Outils' },
         { id: 'prefs', icon: <Settings size={18} />, label: 'Préférences', action: actions.openPreferences, category: 'Paramètres' },
         { id: 'theme', icon: actions.isDarkMode ? <Sun size={18} /> : <Moon size={18} />, label: actions.isDarkMode ? 'Mode clair' : 'Mode sombre', action: actions.toggleDarkMode, category: 'Paramètres' },
     ];
