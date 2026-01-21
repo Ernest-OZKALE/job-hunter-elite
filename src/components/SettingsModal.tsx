@@ -1,9 +1,9 @@
 import { X, User, Moon, Shield, LogOut, Sun } from 'lucide-react';
-import type { User as FirebaseUser } from 'firebase/auth';
+import type { User as SupabaseUser } from '@supabase/supabase-js';
 import { useTheme } from '../context/ThemeContext';
 
 interface SettingsModalProps {
-    user: FirebaseUser;
+    user: SupabaseUser;
     onClose: () => void;
     onLogout: () => void;
 }
@@ -34,7 +34,7 @@ export default function SettingsModal({ user, onClose, onLogout }: SettingsModal
                             {user.email?.charAt(0).toUpperCase()}
                         </div>
                         <div>
-                            <div className="font-bold text-slate-900 dark:text-white">{user.displayName || 'Chasseur de Jobs'}</div>
+                            <div className="font-bold text-slate-900 dark:text-white">{user.user_metadata?.full_name || 'Chasseur de Jobs'}</div>
                             <div className="text-sm text-slate-500 dark:text-slate-400">{user.email}</div>
                         </div>
                     </div>

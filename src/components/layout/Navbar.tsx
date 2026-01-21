@@ -1,5 +1,5 @@
 import { Briefcase, Settings, LogOut, HelpCircle } from 'lucide-react';
-import type { User } from 'firebase/auth';
+import type { User } from '@supabase/supabase-js';
 
 interface NavbarProps {
     user: User | null;
@@ -29,7 +29,7 @@ export const Navbar = ({ user, onLogout, onOpenHelp, onOpenPrefs }: NavbarProps)
                             {user.email ? user.email.charAt(0).toUpperCase() : 'U'}
                         </div>
                         <div className="hidden md:block text-sm font-medium text-slate-600">
-                            <div className="font-bold">{user.displayName || user.email}</div>
+                            <div className="font-bold">{user.user_metadata?.full_name || user.email}</div>
                             <div className="text-xs text-slate-400">Connecté</div>
                         </div>
                     </div>
