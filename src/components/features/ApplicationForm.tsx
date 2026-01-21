@@ -27,7 +27,8 @@ import type { JobApplication, Attachment, ApplicationStatus } from '../../types'
 import { StatusSelector } from '../ui/StatusSelector';
 import { calculateAiScore, calculateRealAiScore } from '../../lib/aiScoring';
 import { parseJobOffer } from '../../lib/parseJobOffer';
-import { Wand2 } from 'lucide-react';
+import { Wand2, Loader2, CheckCircle2 } from 'lucide-react';
+import { useDocuments } from '../../hooks/useDocuments';
 
 interface ApplicationFormProps {
     initialData: Omit<JobApplication, 'id'> | JobApplication;
@@ -63,7 +64,8 @@ export const ApplicationForm = ({
         setFormData(prev => ({ ...prev, ...rest }));
     }, [initialData]);
 
-    const [activeTab, setActiveTab] = useState<'details' | 'description' | 'attachments' | 'import'>('details');
+    const [activeTab, setActiveTab] = useState<'details' | 'description' | 'attachments'>('details');
+    const { documents: libraryDocuments, loading: loadingDocs } = useDocuments();
     const [isScoring, setIsScoring] = useState(false);
     const [openPicker] = useDrivePicker();
     const [newFileName, setNewFileName] = useState('');
@@ -261,9 +263,6 @@ Mon Nom`;
                             <button type="button" onClick={() => setActiveTab('details')} className={`px-4 py-1.5 rounded-md text-sm font-bold transition-all ${activeTab === 'details' ? 'bg-white shadow text-slate-800' : 'text-slate-500 hover:text-slate-700'}`}>Détails</button>
                             <button type="button" onClick={() => setActiveTab('description')} className={`px-4 py-1.5 rounded-md text-sm font-bold transition-all ${activeTab === 'description' ? 'bg-white shadow text-slate-800' : 'text-slate-500 hover:text-slate-700'}`}>Description & IA</button>
                             <button type="button" onClick={() => setActiveTab('attachments')} className={`px-4 py-1.5 rounded-md text-sm font-bold transition-all ${activeTab === 'attachments' ? 'bg-white shadow text-slate-800' : 'text-slate-500 hover:text-slate-700'}`}>Fichiers</button>
-                            <button type="button" onClick={() => setActiveTab('import')} className={`px-4 py-1.5 rounded-md text-sm font-bold transition-all flex items-center gap-2 ${activeTab === 'import' ? 'bg-gradient-to-r from-indigo-500 to-purple-600 shadow text-white' : 'text-indigo-500 hover:text-indigo-700'}`}>
-                                <Wand2 size={14} /> Import
-                            </button>
                         </div>
                         <button type="button" onClick={onCancel} className="p-2 rounded-full hover:bg-slate-200/50 text-slate-400 hover:text-slate-600 transition-colors">
                             <X size={24} />
@@ -527,130 +526,80 @@ Mon Nom`;
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                        </div>
-                    )}
+                                <div className="space-y-6">
+                                    <div className="bg-blue-50/50 p-6 rounded-2xl border border-blue-100">
+                                        <h3 className="text-lg font-bold text-slate-700 mb-4 flex items-center gap-2">
+                                            <FileText className="text-blue-500" size={20} /> Sélectionner des documents
+                                        </h3>
+                                        <p className="text-slate-500 text-sm mb-6">
+                                            Choisissez les documents à joindre à cette candidature depuis votre bibliothèque.
+                                        </p>
 
-                    {activeTab === 'description' && (
-                        <div className="space-y-6 h-full">
-                            <section className="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm h-full flex flex-col">
-                                <h3 className="text-lg font-bold text-slate-700 mb-4 flex items-center gap-2">
-                                    <FileText className="text-slate-400" size={20} /> Description & Notes
-                                </h3>
-
-                                <div className="space-y-4 flex-1 flex flex-col">
-                                    <div className="space-y-2 flex-1">
-                                        <label className="text-xs font-bold text-slate-400 uppercase tracking-wider ml-1">Description du poste</label>
-                                        <textarea
-                                            value={formData.jobDescription}
-                                            onChange={e => setFormData({ ...formData, jobDescription: e.target.value })}
-                                            className="w-full h-48 p-4 bg-slate-50 border-0 rounded-xl focus:ring-2 focus:ring-blue-100 focus:bg-white transition-all text-slate-700 placeholder:text-slate-300 resize-none font-medium leading-relaxed"
-                                            placeholder="Copiez-collez ici la description de l'offre pour l'avoir toujours sous la main..."
-                                        />
-
-                                        {/* AI Features Zone (Stub) */}
-                                        <div className="mt-4 p-4 bg-gradient-to-r from-indigo-50 to-purple-50 rounded-xl border border-purple-100">
-                                            <div className="flex items-center justify-between mb-2">
-                                                <div>
-                                                    <h4 className="font-bold text-purple-700 flex items-center gap-2">✨ Job Score (IA)</h4>
-                                                    <p className="text-xs text-purple-500">Analysez la compatibilité de votre profil avec cette offre.</p>
-                                                </div>
-                                                <button
-                                                    type="button"
-                                                    onClick={handleAnalyzeJob}
-                                                    disabled={isAnalyzing}
-                                                    className="px-3 py-1.5 bg-white text-purple-600 font-bold text-sm rounded-lg shadow-sm border border-purple-100 hover:bg-purple-50 disabled:opacity-50"
-                                                >
-                                                    {isAnalyzing ? '...' : 'Analyser'}
-                                                </button>
+                                        {loadingDocs ? (
+                                            <div className="flex justify-center p-8">
+                                                <Loader2 className="animate-spin text-blue-500" size={32} />
                                             </div>
-                                            {aiAnalysis && (
-                                                <div className="mt-3 p-3 bg-white/60 rounded-lg text-sm text-slate-700 whitespace-pre-line border border-purple-100 animate-in fade-in">
-                                                    {aiAnalysis}
-                                                </div>
-                                            )}
-                                        </div>
-                                    </div>
-                                    <div className="space-y-2 flex-1">
-                                        <label className="text-xs font-bold text-slate-400 uppercase tracking-wider ml-1">Mes Notes Personnelles</label>
-                                        <textarea
-                                            value={formData.notes}
-                                            onChange={e => setFormData({ ...formData, notes: e.target.value })}
-                                            className="w-full h-32 p-4 bg-yellow-50/50 border-0 rounded-xl focus:ring-2 focus:ring-yellow-100 focus:bg-white transition-all text-slate-700 placeholder:text-slate-300 resize-none font-medium leading-relaxed"
-                                            placeholder="Questions à poser, impressions, stack technique..."
-                                        />
-
-                                        {/* AI Features Zone (Stub) */}
-                                        <div className="mt-4 p-4 bg-gradient-to-r from-blue-50 to-cyan-50 rounded-xl border border-blue-100">
-                                            <div className="flex items-center justify-between mb-2">
-                                                <div>
-                                                    <h4 className="font-bold text-blue-700 flex items-center gap-2">📧 Magic Email (IA)</h4>
-                                                    <p className="text-xs text-blue-500">Générez une lettre de motivation ou un mail de relance.</p>
-                                                </div>
-                                                <button
-                                                    type="button"
-                                                    onClick={handleGenerateEmail}
-                                                    disabled={isAnalyzing}
-                                                    className="px-3 py-1.5 bg-white text-blue-600 font-bold text-sm rounded-lg shadow-sm border border-blue-100 hover:bg-blue-50 disabled:opacity-50"
-                                                >
-                                                    {isAnalyzing ? '...' : 'Générer'}
-                                                </button>
+                                        ) : libraryDocuments.length === 0 ? (
+                                            <div className="text-center p-8 bg-white rounded-xl border border-dashed border-slate-300">
+                                                <p className="text-slate-400 font-medium">Aucun document dans la bibliothèque.</p>
                                             </div>
-                                            {generatedEmail && (
-                                                <div className="mt-3">
-                                                    <textarea
-                                                        readOnly
-                                                        value={generatedEmail}
-                                                        className="w-full h-40 p-3 bg-white/80 rounded-lg text-sm text-slate-700 border border-blue-100 resize-none focus:outline-none"
-                                                    />
-                                                    <button
-                                                        onClick={() => { navigator.clipboard.writeText(generatedEmail); alert('Copié !') }}
-                                                        className="mt-2 text-xs text-blue-600 font-bold hover:underline"
-                                                    >
-                                                        Copier le texte
-                                                    </button>
-                                                </div>
-                                            )}
-                                        </div>
+                                        ) : (
+                                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                                {libraryDocuments.map((doc) => {
+                                                    const isSelected = formData.attachments.some(att => att.url === doc.url);
+                                                    return (
+                                                        <div
+                                                            key={doc.id}
+                                                            onClick={() => {
+                                                                if (isSelected) {
+                                                                    setFormData(prev => ({
+                                                                        ...prev,
+                                                                        attachments: prev.attachments.filter(a => a.url !== doc.url)
+                                                                    }));
+                                                                } else {
+                                                                    const newAtt: Attachment = {
+                                                                        name: doc.name,
+                                                                        url: doc.url || '',
+                                                                        type: doc.type,
+                                                                        size: parseFloat(doc.size) * 1024 * 1024 // approx conversion back to bytes if needed, or just store string
+                                                                    };
+                                                                    setFormData(prev => ({
+                                                                        ...prev,
+                                                                        attachments: [...prev.attachments, newAtt]
+                                                                    }));
+                                                                }
+                                                            }}
+                                                            className={`p-4 rounded-xl border transition-all cursor-pointer flex items-center gap-4 group ${isSelected
+                                                                ? 'bg-blue-600 border-blue-600 text-white shadow-lg shadow-blue-500/20'
+                                                                : 'bg-white border-slate-200 hover:border-blue-400 hover:shadow-md'
+                                                                }`}
+                                                        >
+                                                            <div className={`p-3 rounded-lg ${isSelected ? 'bg-white/20 text-white' : 'bg-slate-100 text-slate-500'}`}>
+                                                                <FileText size={20} />
+                                                            </div>
+                                                            <div className="flex-1 min-w-0">
+                                                                <div className={`font-bold truncate ${isSelected ? 'text-white' : 'text-slate-700'}`}>
+                                                                    {doc.name}
+                                                                </div>
+                                                                <div className={`text-xs ${isSelected ? 'text-blue-100' : 'text-slate-400'}`}>
+                                                                    {doc.type} • {doc.size}
+                                                                </div>
+                                                            </div>
+                                                            <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all ${isSelected ? 'border-white bg-white text-blue-600' : 'border-slate-300'}`}>
+                                                                {isSelected && <CheckCircle2 size={14} strokeWidth={4} />}
+                                                            </div>
+                                                        </div>
+                                                    );
+                                                })}
+                                            </div>
+                                        )}
                                     </div>
-                                </div>
-                            </section>
-                        </div>
-                    )}
 
-                    {activeTab === 'attachments' && (
-                        <div className="space-y-6">
-
-                            {/* Drag & Drop Zone */}
-                            <div
-                                onDragOver={handleDragOver}
-                                onDragLeave={handleDragLeave}
-                                onDrop={handleDrop}
-                                className={`bg-slate-50 border-2 border-dashed rounded-2xl p-8 text-center transition-all group relative overflow-hidden ${isDragging ? 'border-blue-500 bg-blue-50' : 'border-slate-200 hover:bg-slate-100/50 hover:border-blue-300'}`}
-                            >
-                                <div className="absolute inset-0 pointer-events-none flex items-center justify-center opacity-0 group-hover:opacity-10 transition-opacity">
-                                    <File size={150} />
-                                </div>
-
-                                <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center mx-auto mb-4 shadow-sm group-hover:scale-110 transition-transform relative z-10">
-                                    {isUploading ? (
-                                        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-                                    ) : (
-                                        <Paperclip className="text-blue-500" size={24} />
-                                    )}
-                                </div>
-                                <h3 className="text-slate-800 font-bold mb-1 relative z-10">{isUploading ? 'Upload en cours...' : 'Ajouter des fichiers'}</h3>
-                                <p className="text-slate-500 text-sm mb-6 relative z-10">Glissez-déposez vos fichiers ici, ou choisissez une méthode.</p>
-
-                                <div className="flex flex-col sm:flex-row gap-4 items-center justify-center relative z-10 w-full">
                                     {/* Tags Section */}
-                                    <div className="relative flex py-4 items-center">
-                                        <div className="flex-grow border-t border-slate-100"></div>
-                                        <span className="flex-shrink-0 mx-2 text-xs text-slate-300 font-bold uppercase">Tags & Catégories</span>
-                                        <div className="flex-grow border-t border-slate-100"></div>
-                                    </div>
-
-                                    <div className="space-y-3">
+                                    <div className="space-y-3 pt-6 border-t border-slate-200">
+                                        <h4 className="font-bold text-slate-700 flex items-center gap-2">
+                                            <ListTodo size={18} className="text-slate-400" /> Tags
+                                        </h4>
                                         <div className="flex flex-wrap gap-2">
                                             {(formData.tags || []).map((tag, idx) => (
                                                 <span key={idx} className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-blue-50 text-blue-600 rounded-full text-xs font-bold border border-blue-100 shadow-sm animate-in zoom-in-50">
@@ -667,7 +616,7 @@ Mon Nom`;
                                             <input
                                                 type="text"
                                                 placeholder="Ajouter un tag (Entrée)..."
-                                                className="bg-transparent border-none focus:ring-0 text-xs font-bold text-slate-400 placeholder:text-slate-300 min-w-[150px]"
+                                                className="bg-transparent border-none focus:ring-0 text-xs font-bold text-slate-400 placeholder:text-slate-500 min-w-[150px]"
                                                 onKeyDown={(e) => {
                                                     if (e.key === 'Enter') {
                                                         e.preventDefault();
@@ -681,130 +630,113 @@ Mon Nom`;
                                             />
                                         </div>
                                     </div>
-
-                                    {/* Google Drive Button */}
-                                    <button
-                                        type="button"
-                                        onClick={() => handleDrivePick()}
-                                        className="inline-flex items-center gap-2 px-8 py-4 bg-white border border-slate-200 rounded-xl font-bold text-slate-700 hover:border-blue-400 hover:text-blue-600 hover:shadow-lg hover:-translate-y-0.5 transition-all shadow-sm"
-                                    >
-                                        <img src="https://upload.wikimedia.org/wikipedia/commons/d/da/Google_Drive_logo_%282020%29.svg" className="w-6 h-6" alt="Drive" />
-                                        <span className="text-lg">Sélectionner ou Importer (Drive)</span>
-                                    </button>
                                 </div>
                             </div>
+                    )}
 
-                            {/* Attachments List */}
-                            {formData.attachments.length > 0 && (
-                                <div className="space-y-3">
-                                    {formData.attachments.map((att, i) => (
-                                        <div key={i} className="flex items-center justify-between p-4 bg-white border border-slate-100 rounded-xl shadow-sm hover:shadow-md transition-all group animate-in slide-in-from-bottom-2">
-                                            <div className="flex items-center gap-3">
-                                                <div className="w-10 h-10 rounded-lg bg-slate-50 flex items-center justify-center text-slate-400 overflow-hidden">
-                                                    {att.url.includes('drive.google') ? (
-                                                        <img src="https://upload.wikimedia.org/wikipedia/commons/d/da/Google_Drive_logo_%282020%29.svg" className="w-5 h-5 opacity-70" alt="Drive" />
-                                                    ) : (
-                                                        <File size={20} />
+                            {activeTab === 'description' && (
+                                <div className="space-y-6 h-full">
+                                    <section className="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm h-full flex flex-col">
+                                        <h3 className="text-lg font-bold text-slate-700 mb-4 flex items-center gap-2">
+                                            <FileText className="text-slate-400" size={20} /> Description & Notes
+                                        </h3>
+
+                                        <div className="space-y-4 flex-1 flex flex-col">
+                                            <div className="space-y-2 flex-1">
+                                                <label className="text-xs font-bold text-slate-400 uppercase tracking-wider ml-1">Description du poste</label>
+                                                <textarea
+                                                    value={formData.jobDescription}
+                                                    onChange={e => setFormData({ ...formData, jobDescription: e.target.value })}
+                                                    className="w-full h-48 p-4 bg-slate-50 border-0 rounded-xl focus:ring-2 focus:ring-blue-100 focus:bg-white transition-all text-slate-700 placeholder:text-slate-300 resize-none font-medium leading-relaxed"
+                                                    placeholder="Copiez-collez ici la description de l'offre pour l'avoir toujours sous la main..."
+                                                />
+
+                                                {/* AI Features Zone (Stub) */}
+                                                <div className="mt-4 p-4 bg-gradient-to-r from-indigo-50 to-purple-50 rounded-xl border border-purple-100">
+                                                    <div className="flex items-center justify-between mb-2">
+                                                        <div>
+                                                            <h4 className="font-bold text-purple-700 flex items-center gap-2">✨ Job Score (IA)</h4>
+                                                            <p className="text-xs text-purple-500">Analysez la compatibilité de votre profil avec cette offre.</p>
+                                                        </div>
+                                                        <button
+                                                            type="button"
+                                                            onClick={handleAnalyzeJob}
+                                                            disabled={isAnalyzing}
+                                                            className="px-3 py-1.5 bg-white text-purple-600 font-bold text-sm rounded-lg shadow-sm border border-purple-100 hover:bg-purple-50 disabled:opacity-50"
+                                                        >
+                                                            {isAnalyzing ? '...' : 'Analyser'}
+                                                        </button>
+                                                    </div>
+                                                    {aiAnalysis && (
+                                                        <div className="mt-3 p-3 bg-white/60 rounded-lg text-sm text-slate-700 whitespace-pre-line border border-purple-100 animate-in fade-in">
+                                                            {aiAnalysis}
+                                                        </div>
                                                     )}
                                                 </div>
-                                                <div>
-                                                    <div className="font-bold text-slate-700 truncate max-w-[200px]">{att.name}</div>
-                                                    <div className="text-xs text-slate-400 flex items-center gap-1">
-                                                        {att.url.includes('drive.google') ? 'Google Drive' : 'Fichier importé'}
-                                                        {att.size && <span>• {(att.size / 1024 / 1024).toFixed(2)} MB</span>}
+                                            </div>
+                                            <div className="space-y-2 flex-1">
+                                                <label className="text-xs font-bold text-slate-400 uppercase tracking-wider ml-1">Mes Notes Personnelles</label>
+                                                <textarea
+                                                    value={formData.notes}
+                                                    onChange={e => setFormData({ ...formData, notes: e.target.value })}
+                                                    className="w-full h-32 p-4 bg-yellow-50/50 border-0 rounded-xl focus:ring-2 focus:ring-yellow-100 focus:bg-white transition-all text-slate-700 placeholder:text-slate-300 resize-none font-medium leading-relaxed"
+                                                    placeholder="Questions à poser, impressions, stack technique..."
+                                                />
+
+                                                {/* AI Features Zone (Stub) */}
+                                                <div className="mt-4 p-4 bg-gradient-to-r from-blue-50 to-cyan-50 rounded-xl border border-blue-100">
+                                                    <div className="flex items-center justify-between mb-2">
+                                                        <div>
+                                                            <h4 className="font-bold text-blue-700 flex items-center gap-2">📧 Magic Email (IA)</h4>
+                                                            <p className="text-xs text-blue-500">Générez une lettre de motivation ou un mail de relance.</p>
+                                                        </div>
+                                                        <button
+                                                            type="button"
+                                                            onClick={handleGenerateEmail}
+                                                            disabled={isAnalyzing}
+                                                            className="px-3 py-1.5 bg-white text-blue-600 font-bold text-sm rounded-lg shadow-sm border border-blue-100 hover:bg-blue-50 disabled:opacity-50"
+                                                        >
+                                                            {isAnalyzing ? '...' : 'Générer'}
+                                                        </button>
                                                     </div>
+                                                    {generatedEmail && (
+                                                        <div className="mt-3">
+                                                            <textarea
+                                                                readOnly
+                                                                value={generatedEmail}
+                                                                className="w-full h-40 p-3 bg-white/80 rounded-lg text-sm text-slate-700 border border-blue-100 resize-none focus:outline-none"
+                                                            />
+                                                            <button
+                                                                onClick={() => { navigator.clipboard.writeText(generatedEmail); alert('Copié !') }}
+                                                                className="mt-2 text-xs text-blue-600 font-bold hover:underline"
+                                                            >
+                                                                Copier le texte
+                                                            </button>
+                                                        </div>
+                                                    )}
                                                 </div>
                                             </div>
-                                            <div className="flex items-center gap-2">
-                                                <a href={att.url} target="_blank" rel="noreferrer" className="p-2 text-slate-400 hover:text-blue-500 bg-slate-50 rounded-lg transition-colors">
-                                                    <Globe size={18} />
-                                                </a>
-                                                <button
-                                                    type="button"
-                                                    onClick={() => removeAttachment(i)}
-                                                    className="p-2 text-slate-400 hover:text-red-500 bg-slate-50 hover:bg-red-50 rounded-lg transition-colors"
-                                                >
-                                                    <X size={18} />
-                                                </button>
-                                            </div>
                                         </div>
-                                    ))}
+                                    </section>
                                 </div>
                             )}
 
-                            {/* Manual Link Section */}
-                            <div className="relative flex py-4 items-center">
-                                <div className="flex-grow border-t border-slate-100"></div>
-                                <span className="flex-shrink-0 mx-2 text-xs text-slate-300 font-bold uppercase">Ou lien externe</span>
-                                <div className="flex-grow border-t border-slate-100"></div>
-                            </div>
+                            {activeTab === 'attachments' && (
+                                <div className="space-y-6">
 
-                            <div className="flex w-full items-center gap-2">
-                                <input
-                                    placeholder="https://..."
-                                    value={newFileLink}
-                                    onChange={e => setNewFileLink(e.target.value)}
-                                    className="flex-1 bg-white border border-slate-200 rounded-xl px-4 py-3 text-sm font-medium focus:ring-2 focus:ring-blue-100 outline-none"
-                                />
-                                <input
-                                    placeholder="Nom du fichier..."
-                                    value={newFileName}
-                                    onChange={e => setNewFileName(e.target.value)}
-                                    className="flex-1 bg-white border border-slate-200 rounded-xl px-4 py-3 text-sm font-medium focus:ring-2 focus:ring-blue-100 outline-none"
-                                />
-                                <button type="button" onClick={addLinkAttachment} className="p-3 bg-slate-100 rounded-xl hover:bg-slate-200 font-bold text-slate-600 transition-colors">
-                                    <Plus size={20} />
-                                </button>
-                            </div>
+                                </div>
 
                         </div>
                     )}
-
-                    {activeTab === 'import' && (
-                        <div className="flex flex-col items-center justify-center h-full space-y-6 text-center max-w-2xl mx-auto">
-                            <div className="p-4 bg-indigo-50 rounded-full">
-                                <Wand2 className="text-indigo-500 w-12 h-12" />
-                            </div>
-                            <h3 className="text-2xl font-bold text-slate-800">Smart Import (Magic Paste)</h3>
-                            <p className="text-slate-500">
-                                Collez ici le texte brut de l'offre (LinkedIn, Indeed...).<br />
-                                Nous détecterons automatiquement l'entreprise, le poste et le lieu.
-                            </p>
-
-                            <textarea
-                                className="w-full h-64 p-5 bg-white border border-slate-200 rounded-2xl shadow-sm focus:ring-2 focus:ring-indigo-500 focus:border-transparent resize-none text-slate-700 placeholder:text-slate-300 transition-all font-mono text-sm leading-relaxed"
-                                placeholder="Collez le texte de l'offre ici..."
-                                onChange={(e) => {
-                                    const text = e.target.value;
-                                    if (text.length > 10) {
-                                        const parsed = parseJobOffer(text);
-                                        setFormData(prev => ({
-                                            ...prev,
-                                            company: parsed.company || prev.company,
-                                            position: parsed.position || prev.position,
-                                            location: parsed.location || prev.location,
-                                            jobDescription: parsed.description
-                                        }));
-                                    }
-                                }}
-                            />
-
-                            <div className="flex flex-col gap-2 w-full">
-                                <button
-                                    onClick={() => setActiveTab('details')}
-                                    className="w-full py-4 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl shadow-lg shadow-indigo-200 transition-all transform hover:-translate-y-0.5"
-                                >
-                                    ✨ Appliquer & Vérifier
-                                </button>
-                                <p className="text-xs text-slate-400">Les données sont pré-remplies en temps réel. Cliquez pour vérifier.</p>
-                            </div>
-                        </div>
-                    )}
-
                 </div>
+        </div >
+    )
+}
 
-                {/* Footer Actions */}
-                <div className="p-6 bg-white border-t border-slate-100 shrink-0 flex justify-end gap-3 rounded-b-3xl">
+                </div >
+
+    {/* Footer Actions */ }
+    < div className = "p-6 bg-white border-t border-slate-100 shrink-0 flex justify-end gap-3 rounded-b-3xl" >
                     <button
                         type="button"
                         onClick={onCancel}
@@ -829,7 +761,7 @@ Mon Nom`;
                             </>
                         )}
                     </button>
-                </div>
+                </div >
 
             </form >
         </div >
