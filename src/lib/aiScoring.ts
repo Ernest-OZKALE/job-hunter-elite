@@ -38,8 +38,8 @@ export const calculateAiScore = (app: JobApplication): number => {
 /**
  * Uses Gemini AI to perform a deeper analysis of the job opportunity.
  */
-export const calculateRealAiScore = async (app: JobApplication): Promise<number> => {
-    const analysis = await analyzeJobOpportunity(app);
+export const calculateRealAiScore = async (app: JobApplication, userProfile?: string): Promise<number> => {
+    const analysis = await analyzeJobOpportunity(app, userProfile);
     if (analysis.score === -1) {
         // Fallback to heuristic if AI fails or key is missing
         return calculateAiScore(app);

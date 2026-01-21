@@ -62,6 +62,9 @@ export interface JobApplication {
     lmUsed?: string;
     source?: string;
     origin?: 'manual' | 'auto'; // 'manual' = user added, 'auto' = n8n/bot added
+    rawSalary?: string; // Scraped string e.g. "35k-40k"
+    externalUrl?: string; // Link to the original job post
+    detectedAt?: string; // ISO Date when the bot found it
     contactName?: string;
     contactEmail?: string;
     contactPhone?: string;

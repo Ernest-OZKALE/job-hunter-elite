@@ -8,6 +8,8 @@ interface PreferencesContextType {
     setViewMode: (mode: ViewMode) => void;
     showAnimations: boolean;
     setShowAnimations: (show: boolean) => void;
+    userProfile: string;
+    setUserProfile: (profile: string) => void;
 }
 
 const PreferencesContext = createContext<PreferencesContextType | undefined>(undefined);
@@ -28,6 +30,10 @@ export function PreferencesProvider({ children }: { children: React.ReactNode })
         return saved !== 'false';
     });
 
+    const [userProfile, setUserProfileState] = useState(() => {
+        return localStorage.getItem('userProfile') || '';
+    });
+
     const setColorTheme = (theme: ThemeName) => {
         setColorThemeState(theme);
         localStorage.setItem('colorTheme', theme);
@@ -43,6 +49,11 @@ export function PreferencesProvider({ children }: { children: React.ReactNode })
         localStorage.setItem('showAnimations', String(show));
     };
 
+    const setUserProfile = (profile: string) => {
+        setUserProfileState(profile);
+        localStorage.setItem('userProfile', profile);
+    };
+
     return (
         <PreferencesContext.Provider value={{
             colorTheme,
@@ -51,6 +62,8 @@ export function PreferencesProvider({ children }: { children: React.ReactNode })
             setViewMode,
             showAnimations,
             setShowAnimations,
+            userProfile,
+            setUserProfile
         }}>
             {children}
         </PreferencesContext.Provider>

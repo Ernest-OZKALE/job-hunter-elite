@@ -1,4 +1,4 @@
-import { X, Layout, Sparkles, Bell } from 'lucide-react';
+import { X, Layout, Sparkles, Bell, User } from 'lucide-react';
 import { useNotifications } from '../hooks/useNotifications';
 import { usePreferences } from '../context/PreferencesContext';
 import type { ViewMode } from '../lib/themes';
@@ -9,7 +9,7 @@ interface PreferencesModalProps {
 }
 
 export const PreferencesModal = ({ isOpen, onClose }: PreferencesModalProps) => {
-    const { viewMode, setViewMode, showAnimations, setShowAnimations, colorTheme, setColorTheme } = usePreferences();
+    const { viewMode, setViewMode, showAnimations, setShowAnimations, colorTheme, setColorTheme, userProfile, setUserProfile } = usePreferences();
     const { permission, requestPermission } = useNotifications();
 
     if (!isOpen) return null;
@@ -34,6 +34,25 @@ export const PreferencesModal = ({ isOpen, onClose }: PreferencesModalProps) => 
                     >
                         <X size={24} className="text-slate-500 dark:text-slate-400" />
                     </button>
+                </div>
+
+                {/* User Profile for AI */}
+                <div className="mb-8">
+                    <div className="flex items-center gap-2 mb-4">
+                        <User size={20} className="text-slate-600 dark:text-slate-300" />
+                        <h3 className="text-lg font-bold text-slate-900 dark:text-white">Profil Professionnel (pour l'IA)</h3>
+                    </div>
+                    <div className="bg-slate-50 dark:bg-slate-800/50 p-4 rounded-xl border border-slate-200 dark:border-slate-700">
+                        <p className="text-sm text-slate-500 dark:text-slate-400 mb-3">
+                            Décrivez vos compétences, votre expérience et ce que vous recherchez. L'IA utilisera ces infos pour personnaliser vos lettres de motivation.
+                        </p>
+                        <textarea
+                            value={userProfile}
+                            onChange={(e) => setUserProfile(e.target.value)}
+                            className="w-full h-32 p-3 rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-blue-500 outline-none text-sm text-slate-700 dark:text-slate-200 resize-none"
+                            placeholder="Ex: Développeur Fullstack React/Node.js avec 3 ans d'expérience. Expert en Tailwind..."
+                        />
+                    </div>
                 </div>
 
                 {/* View Mode */}

@@ -101,6 +101,15 @@ export const ApplicationList = ({
         });
     };
 
+    const [originFilter, setOriginFilter] = useState<'all' | 'manual' | 'auto'>('all');
+
+    const filteredApplications = applications.filter(app => {
+        if (originFilter === 'all') return true;
+        // Handle legacy data where origin might be undefined (treat as manual)
+        const appOrigin = app.origin || 'manual';
+        return appOrigin === originFilter;
+    });
+
     if (applications.length === 0) {
         return (
             <div className="glass-panel text-center py-20 rounded-3xl border border-dashed border-slate-300/50">
@@ -115,7 +124,33 @@ export const ApplicationList = ({
 
     return (
         <div className="space-y-4">
-            {applications.map(app => {
+            {/* Origin Filter - Only show if there are mixed sources */}
+            {applications.some(a => a.origin === 'auto') && (
+                <div className="flex justify-end mb-2">
+                    <div className="bg-white dark:bg-slate-800 p-1 rounded-lg border border-slate-200 dark:border-slate-700 inline-flex">
+                        <button
+                            onClick={() => setOriginFilter('all')}
+                            className={`px-3 py-1 text-xs font-bold rounded-md transition-all ${originFilter === 'all' ? 'bg-slate-100 dark:bg-slate-700 text-slate-900 dark:text-white' : 'text-slate-500 hover:text-slate-700'}`}
+                        >
+                            Tout
+                        </button>
+                        <button
+                            onClick={() => setOriginFilter('manual')}
+                            className={`px-3 py-1 text-xs font-bold rounded-md transition-all flex items-center gap-1 ${originFilter === 'manual' ? 'bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400' : 'text-slate-500 hover:text-slate-700'}`}
+                        >
+                            <Edit2 size={10} /> Manuel
+                        </button>
+                        <button
+                            onClick={() => setOriginFilter('auto')}
+                            className={`px-3 py-1 text-xs font-bold rounded-md transition-all flex items-center gap-1 ${originFilter === 'auto' ? 'bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400' : 'text-slate-500 hover:text-slate-700'}`}
+                        >
+                            <Bot size={10} /> Auto
+                        </button>
+                    </div>
+                </div>
+            )}
+
+            {filteredApplications.map(app => {
                 const relance = getRelanceInfo(app.date, app.status);
                 const isSelected = selectedIds.includes(app.id);
 

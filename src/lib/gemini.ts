@@ -2,11 +2,12 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 import type { JobApplication } from "../types";
 
 // Note: In a production app, the API key should be in VITE_GEMINI_API_KEY
-// The user will need to provide this key in their environment.
 const API_KEY = import.meta.env.VITE_GEMINI_API_KEY || "";
 const genAI = new GoogleGenerativeAI(API_KEY);
 
-export const analyzeJobOpportunity = async (app: JobApplication): Promise<{ score: number; strengths: string[]; weaknesses: string[] }> => {
+const DEFAULT_PROFILE = "Développeur Fullstack avec expérience en React, TypeScript, Node.js et Firebase.";
+
+export const analyzeJobOpportunity = async (app: JobApplication, userProfile: string = DEFAULT_PROFILE): Promise<{ score: number; strengths: string[]; weaknesses: string[] }> => {
     if (!API_KEY) {
         console.warn("Gemini API Key missing. Falling back to heuristic scoring.");
         return { score: -1, strengths: [], weaknesses: [] };
@@ -18,6 +19,9 @@ export const analyzeJobOpportunity = async (app: JobApplication): Promise<{ scor
         const prompt = `
       Analyse cette offre d'emploi par rapport au profil suivant.
       
+      PROFIL CANDIDAT :
+      ${userProfile}
+
       OFFRE :
       Entreprise: ${app.company}
       Poste: ${app.position}
@@ -25,9 +29,6 @@ export const analyzeJobOpportunity = async (app: JobApplication): Promise<{ scor
       Description: ${app.jobDescription || "Non fournie"}
       Salaire: ${app.salary || "Non spécifié"}
       Remote: ${app.remotePolicy || "Non spécifié"}
-      
-      PROFIL RECHERCHÉ :
-      Tech Stack: React, TypeScript, Tailwind, Node, Firebase, Next.js.
       
       RETOURNE UNIQUEMENT UN OBJET JSON avec ce format exact :
       {
@@ -47,5 +48,39 @@ export const analyzeJobOpportunity = async (app: JobApplication): Promise<{ scor
     } catch (error) {
         console.error("Gemini Analysis Error:", error);
         return { score: -1, strengths: [], weaknesses: [] };
+    }
+};
+
+export const generateEmail = async (app: JobApplication, type: 'cover' | 'followup', userProfile: string = DEFAULT_PROFILE): Promise<string> => {
+    if (!API_KEY) return "Erreur : Clé API Gemini manquante.";
+
+    try {
+        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+
+        const prompt = type === 'cover'
+            ? `Rédige une lettre de motivation courte et percutante (format email) pour ce poste, en te basant sur mon profil.
+               
+               MON PROFIL : ${userProfile}
+               
+               L'OFFRE :
+               Entreprise: ${app.company}
+               Poste: ${app.position}
+               Description: ${app.jobDescription || "Non spécifiée"}
+               
+               Ton: Professionnel, enthousiaste, confiant. Pas de bla-bla générique.`
+            : `Rédige un email de relance professionnel pour cette candidature envoyée il y a quelques jours sans réponse.
+               
+               Entreprise: ${app.company}
+               Poste: ${app.position}
+               Contact: ${app.contactName || "Recruteur"}
+               
+               Ton: Poli, concis, rappelant ma motivation.`;
+
+        const result = await model.generateContent(prompt);
+        const response = await result.response;
+        return response.text();
+    } catch (error) {
+        console.error("Gemini Email Error:", error);
+        return "Erreur lors de la génération de l'email.";
     }
 };
