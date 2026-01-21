@@ -1,14 +1,16 @@
 import React, { useState, useMemo } from 'react';
 import {
     Search, Plus, User, Mail, Phone, Linkedin, Building,
-    MoreVertical, Edit2, Trash2, ExternalLink, Filter, X
+    MoreVertical, Edit2, Trash2, ExternalLink, Filter, X, Loader2
 } from 'lucide-react';
-import type { Contact } from '../types';
+import { useContacts, type Contact } from '../hooks/useContacts';
+import { ContactFormModal } from '../components/features/ContactFormModal';
 
 export const ContactsPage = () => {
-    const [contacts, setContacts] = useState<Contact[]>([]);
+    const { contacts, loading, addContact, updateContact, deleteContact } = useContacts();
     const [searchTerm, setSearchTerm] = useState('');
     const [showForm, setShowForm] = useState(false);
+    const [selectedContact, setSelectedContact] = useState<Contact | undefined>(undefined);
 
     // Filtered contacts
     const filteredContacts = useMemo(() => {
@@ -23,6 +25,32 @@ export const ContactsPage = () => {
         const unique = new Set(contacts.map(c => c.company).filter(Boolean));
         return Array.from(unique);
     }, [contacts]);
+
+    const handleEdit = (contact: Contact) => {
+        setSelectedContact(contact);
+        setShowForm(true);
+    };
+
+    const handleDelete = async (id: string) => {
+        if (window.confirm('Voulez-vous vraiment supprimer ce contact ?')) {
+            await deleteContact(id);
+        }
+    };
+
+    const handleFormSubmit = async (data: any) => {
+        if (selectedContact) {
+            await updateContact(selectedContact.id, data);
+        } else {
+            await addContact(data);
+        }
+        setShowForm(false);
+        setSelectedContact(undefined);
+    };
+
+    const closeForm = () => {
+        setShowForm(false);
+        setSelectedContact(undefined);
+    };
 
     return (
         <div className="p-8 max-w-7xl mx-auto animate-in fade-in duration-500">
@@ -97,7 +125,11 @@ export const ContactsPage = () => {
             </div>
 
             {/* Grid */}
-            {filteredContacts.length === 0 ? (
+            {loading ? (
+                <div className="flex justify-center items-center py-20">
+                    <Loader2 className="w-10 h-10 animate-spin text-blue-600" />
+                </div>
+            ) : filteredContacts.length === 0 ? (
                 <div className="glass-panel text-center py-20 rounded-[2.5rem] border-2 border-dashed border-slate-200 dark:border-slate-800">
                     <div className="w-20 h-20 bg-slate-50 dark:bg-slate-800/50 rounded-full flex items-center justify-center mx-auto mb-6">
                         <User size={32} className="text-slate-300" />
@@ -114,8 +146,18 @@ export const ContactsPage = () => {
                                     {contact.name.charAt(0)}
                                 </div>
                                 <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                                    <button className="p-2 text-slate-400 hover:text-blue-500 hover:bg-blue-50 rounded-lg transition-all"><Edit2 size={16} /></button>
-                                    <button className="p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all"><Trash2 size={16} /></button>
+                                    <button
+                                        onClick={() => handleEdit(contact)}
+                                        className="p-2 text-slate-400 hover:text-blue-500 hover:bg-blue-50 rounded-lg transition-all"
+                                    >
+                                        <Edit2 size={16} />
+                                    </button>
+                                    <button
+                                        onClick={() => handleDelete(contact.id)}
+                                        className="p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all"
+                                    >
+                                        <Trash2 size={16} />
+                                    </button>
                                 </div>
                             </div>
 
@@ -124,6 +166,12 @@ export const ContactsPage = () => {
                                 <Building size={14} />
                                 {contact.company || 'Entreprise non spécifiée'}
                             </div>
+
+                            {contact.role && (
+                                <div className="text-sm font-medium text-slate-500 dark:text-slate-400 mb-4">
+                                    {contact.role}
+                                </div>
+                            )}
 
                             <div className="space-y-3 pt-4 border-t border-slate-100 dark:border-slate-800">
                                 {contact.email && (
@@ -150,6 +198,13 @@ export const ContactsPage = () => {
                     ))}
                 </div>
             )}
+
+            <ContactFormModal
+                isOpen={showForm}
+                onClose={closeForm}
+                onSubmit={handleFormSubmit}
+                initialData={selectedContact}
+            />
         </div>
     );
 };

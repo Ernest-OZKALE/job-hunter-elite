@@ -1,17 +1,29 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import {
     FileText, Search, Plus, Filter, Download, Trash2,
-    Share2, ExternalLink, Clock, CheckCircle2, AlertCircle
+    Share2, ExternalLink, Clock, CheckCircle2, AlertCircle, Loader2
 } from 'lucide-react';
+import { useDocuments } from '../../hooks/useDocuments';
 
 export const DocumentLibrary = () => {
+    const { documents, loading, uploading, uploadDocument, deleteDocument } = useDocuments();
     const [searchTerm, setSearchTerm] = useState('');
+    const fileInputRef = useRef<HTMLInputElement>(null);
 
-    const documents = [
-        { id: '1', name: 'CV_Developpeur_React_2026.pdf', type: 'CV', date: '2026-01-15', size: '1.2 MB', status: 'Actif' },
-        { id: '2', name: 'LM_Standard_Tech.pdf', type: 'LM', date: '2026-01-10', size: '850 KB', status: 'Brouillon' },
-        { id: '3', name: 'Diplome_Master_Informatique.pdf', type: 'Certificat', date: '2025-09-20', size: '2.4 MB', status: 'Actif' }
-    ];
+    const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (file) {
+            // Default type 'Autre' for now, could be improved with a selector
+            await uploadDocument(file, 'Autre');
+        }
+    };
+
+    const filteredDocuments = documents.filter(doc =>
+        doc.name.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+
+    const totalSize = documents.reduce((acc, doc) => acc + parseFloat(doc.size), 0);
+    const sizePercentage = Math.min((totalSize / 100) * 100, 100); // Assuming 100MB limit
 
     return (
         <div className="p-8 max-w-7xl mx-auto animate-in fade-in duration-500">
@@ -25,15 +37,33 @@ export const DocumentLibrary = () => {
                         Centralise et gère tes CV, lettres et certificats.
                     </p>
                 </div>
-                <button
-                    className="flex items-center gap-3 bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3.5 rounded-2xl font-bold shadow-xl shadow-indigo-500/20 transition-all hover:-translate-y-1"
-                >
-                    <Plus size={20} strokeWidth={3} />
-                    Importer un Document
-                </button>
+                <div>
+                    <input
+                        type="file"
+                        ref={fileInputRef}
+                        onChange={handleFileChange}
+                        className="hidden"
+                        accept=".pdf,.doc,.docx,.jpg,.png"
+                    />
+                    <button
+                        onClick={() => {
+                            if (fileInputRef.current) {
+                                fileInputRef.current.click();
+                            } else {
+                                console.error("File input ref missing");
+                                alert("Erreur interne : Impossible d'ouvrir le sélecteur. Essayez de rafraîchir la page.");
+                            }
+                        }}
+                        disabled={uploading}
+                        className="flex items-center gap-3 bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3.5 rounded-2xl font-bold shadow-xl shadow-indigo-500/20 transition-all hover:-translate-y-1 disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                        {uploading ? <Loader2 size={20} className="animate-spin" /> : <Plus size={20} strokeWidth={3} />}
+                        {uploading ? 'Importation...' : 'Importer un Document'}
+                    </button>
+                </div>
             </div>
 
-            {/* Quick Filters */}
+            {/* Quick Filters - TODO: Connect to filter logic */}
             <div className="flex flex-wrap gap-3 mb-10">
                 {['Tous', 'CV', 'Lettres de Motivation', 'Certificats', 'Autres'].map((filter) => (
                     <button
@@ -60,56 +90,82 @@ export const DocumentLibrary = () => {
                     </div>
                 </div>
 
-                <div className="overflow-x-auto">
-                    <table className="w-full text-left">
-                        <thead>
-                            <tr className="bg-slate-50/50 dark:bg-slate-900/50">
-                                <th className="px-8 py-4 text-xs font-black text-slate-400 uppercase tracking-widest">Document</th>
-                                <th className="px-8 py-4 text-xs font-black text-slate-400 uppercase tracking-widest">Type</th>
-                                <th className="px-8 py-4 text-xs font-black text-slate-400 uppercase tracking-widest">Dernière Modif</th>
-                                <th className="px-8 py-4 text-xs font-black text-slate-400 uppercase tracking-widest">Taille</th>
-                                <th className="px-8 py-4 text-xs font-black text-slate-400 uppercase tracking-widest">Statut</th>
-                                <th className="px-8 py-4 text-xs font-black text-slate-400 uppercase tracking-widest">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
-                            {documents.map((doc) => (
-                                <tr key={doc.id} className="hover:bg-slate-50/50 dark:hover:bg-slate-800/30 transition-colors group">
-                                    <td className="px-8 py-5">
-                                        <div className="flex items-center gap-4">
-                                            <div className="p-3 bg-indigo-50 dark:bg-indigo-900/20 rounded-xl text-indigo-600">
-                                                <FileText size={20} />
-                                            </div>
-                                            <div className="font-bold text-slate-700 dark:text-slate-200">{doc.name}</div>
-                                        </div>
-                                    </td>
-                                    <td className="px-8 py-5">
-                                        <span className="px-3 py-1 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 rounded-lg text-xs font-bold uppercase tracking-widest">
-                                            {doc.type}
-                                        </span>
-                                    </td>
-                                    <td className="px-8 py-5 text-sm text-slate-500 flex items-center gap-2">
-                                        <Clock size={14} />
-                                        {new Date(doc.date).toLocaleDateString('fr-FR')}
-                                    </td>
-                                    <td className="px-8 py-5 text-sm text-slate-500">{doc.size}</td>
-                                    <td className="px-8 py-5">
-                                        <div className="flex items-center gap-2 text-emerald-600 dark:text-emerald-400 font-bold text-xs uppercase tracking-tighter">
-                                            <CheckCircle2 size={14} />
-                                            {doc.status}
-                                        </div>
-                                    </td>
-                                    <td className="px-8 py-5">
-                                        <div className="flex gap-1">
-                                            <button className="p-2 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-all" title="Télécharger"><Download size={18} /></button>
-                                            <button className="p-2 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-all" title="Partager"><Share2 size={18} /></button>
-                                            <button className="p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all" title="Supprimer"><Trash2 size={18} /></button>
-                                        </div>
-                                    </td>
+                <div className="overflow-x-auto min-h-[300px]">
+                    {loading ? (
+                        <div className="flex justify-center items-center h-64">
+                            <Loader2 className="w-8 h-8 animate-spin text-indigo-600" />
+                        </div>
+                    ) : filteredDocuments.length === 0 ? (
+                        <div className="flex flex-col items-center justify-center h-64 text-slate-400">
+                            <FileText size={48} className="mb-4 opacity-50" />
+                            <p>Aucun document trouvé.</p>
+                        </div>
+                    ) : (
+                        <table className="w-full text-left">
+                            <thead>
+                                <tr className="bg-slate-50/50 dark:bg-slate-900/50">
+                                    <th className="px-8 py-4 text-xs font-black text-slate-400 uppercase tracking-widest">Document</th>
+                                    <th className="px-8 py-4 text-xs font-black text-slate-400 uppercase tracking-widest">Type</th>
+                                    <th className="px-8 py-4 text-xs font-black text-slate-400 uppercase tracking-widest">Date Ajout</th>
+                                    <th className="px-8 py-4 text-xs font-black text-slate-400 uppercase tracking-widest">Taille</th>
+                                    <th className="px-8 py-4 text-xs font-black text-slate-400 uppercase tracking-widest">Statut</th>
+                                    <th className="px-8 py-4 text-xs font-black text-slate-400 uppercase tracking-widest">Actions</th>
                                 </tr>
-                            ))}
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
+                                {filteredDocuments.map((doc) => (
+                                    <tr key={doc.id} className="hover:bg-slate-50/50 dark:hover:bg-slate-800/30 transition-colors group">
+                                        <td className="px-8 py-5">
+                                            <div className="flex items-center gap-4">
+                                                <div className="p-3 bg-indigo-50 dark:bg-indigo-900/20 rounded-xl text-indigo-600">
+                                                    <FileText size={20} />
+                                                </div>
+                                                <div className="font-bold text-slate-700 dark:text-slate-200 truncate max-w-[200px]" title={doc.name}>{doc.name}</div>
+                                            </div>
+                                        </td>
+                                        <td className="px-8 py-5">
+                                            <span className="px-3 py-1 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 rounded-lg text-xs font-bold uppercase tracking-widest">
+                                                {doc.type}
+                                            </span>
+                                        </td>
+                                        <td className="px-8 py-5 text-sm text-slate-500">
+                                            <div className="flex items-center gap-2">
+                                                <Clock size={14} />
+                                                {new Date(doc.created_at).toLocaleDateString('fr-FR')}
+                                            </div>
+                                        </td>
+                                        <td className="px-8 py-5 text-sm text-slate-500">{doc.size} MB</td>
+                                        <td className="px-8 py-5">
+                                            <div className="flex items-center gap-2 text-emerald-600 dark:text-emerald-400 font-bold text-xs uppercase tracking-tighter">
+                                                <CheckCircle2 size={14} />
+                                                {doc.status}
+                                            </div>
+                                        </td>
+                                        <td className="px-8 py-5">
+                                            <div className="flex gap-1">
+                                                <a
+                                                    href={doc.url}
+                                                    target="_blank"
+                                                    rel="noreferrer"
+                                                    className="p-2 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-all flex items-center justify-center"
+                                                    title="Télécharger"
+                                                >
+                                                    <Download size={18} />
+                                                </a>
+                                                <button
+                                                    onClick={() => deleteDocument(doc.id, doc.path)}
+                                                    className="p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all"
+                                                    title="Supprimer"
+                                                >
+                                                    <Trash2 size={18} />
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    )}
                 </div>
             </div>
 
@@ -120,12 +176,12 @@ export const DocumentLibrary = () => {
                         <AlertCircle className="text-indigo-600" size={18} />
                     </div>
                     <div className="text-sm">
-                        <span className="font-bold text-slate-700 dark:text-slate-200">Espace utilisé : 14.5 MB</span>
+                        <span className="font-bold text-slate-700 dark:text-slate-200">Espace utilisé : {totalSize.toFixed(2)} MB</span>
                         <span className="text-slate-400 ml-2">sur 100 MB (Offre Gratuite)</span>
                     </div>
                 </div>
                 <div className="w-64 h-2 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
-                    <div className="h-full bg-indigo-500 w-[15%]" />
+                    <div className="h-full bg-indigo-500 transition-all duration-500" style={{ width: `${sizePercentage}%` }} />
                 </div>
             </div>
         </div>
