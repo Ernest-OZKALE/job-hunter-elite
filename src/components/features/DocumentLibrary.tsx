@@ -10,11 +10,24 @@ export const DocumentLibrary = () => {
     const [searchTerm, setSearchTerm] = useState('');
     const fileInputRef = useRef<HTMLInputElement>(null);
 
-    const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const [selectedFile, setSelectedFile] = useState<File | null>(null);
+    const [isTypeModalOpen, setIsTypeModalOpen] = useState(false);
+
+    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (file) {
-            // Default type 'Autre' for now, could be improved with a selector
-            await uploadDocument(file, 'Autre');
+            setSelectedFile(file);
+            setIsTypeModalOpen(true);
+        }
+        // Reset input
+        e.target.value = '';
+    };
+
+    const confirmUpload = async (type: string) => {
+        if (selectedFile) {
+            await uploadDocument(selectedFile, type);
+            setIsTypeModalOpen(false);
+            setSelectedFile(null);
         }
     };
 
@@ -38,7 +51,44 @@ export const DocumentLibrary = () => {
     const sizePercentage = Math.min((totalSize / 100) * 100, 100); // Assuming 100MB limit
 
     return (
-        <div className="p-8 max-w-7xl mx-auto animate-in fade-in duration-500">
+        <div className="p-8 max-w-7xl mx-auto animate-in fade-in duration-500 relative">
+            {/* Type Selection Modal */}
+            {isTypeModalOpen && (
+                <div className="fixed inset-0 z-[70] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
+                    <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-2xl p-6 w-full max-w-sm border border-slate-200 dark:border-slate-800 animate-in zoom-in-95">
+                        <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-4">Type de document</h3>
+                        <p className="text-sm text-slate-500 mb-6">Quel est le type de ce document ?</p>
+
+                        <div className="space-y-3">
+                            {[
+                                { label: 'CV', value: 'CV', icon: FileText },
+                                { label: 'Lettre de Motivation', value: 'LM', icon: FileText },
+                                { label: 'Certificat / Diplôme', value: 'Certificat', icon: CheckCircle2 },
+                                { label: 'Autre', value: 'Autre', icon: FileText }
+                            ].map((type) => (
+                                <button
+                                    key={type.value}
+                                    onClick={() => confirmUpload(type.value)}
+                                    className="w-full flex items-center gap-3 p-3 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors text-left"
+                                >
+                                    <div className="p-2 bg-indigo-50 dark:bg-indigo-900/20 text-indigo-600 rounded-lg">
+                                        <type.icon size={18} />
+                                    </div>
+                                    <span className="font-bold text-slate-700 dark:text-slate-200">{type.label}</span>
+                                </button>
+                            ))}
+                        </div>
+
+                        <button
+                            onClick={() => { setIsTypeModalOpen(false); setSelectedFile(null); }}
+                            className="w-full mt-6 py-2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 font-medium text-sm"
+                        >
+                            Annuler
+                        </button>
+                    </div>
+                </div>
+            )}
+
             {/* Header */}
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-12">
                 <div>
