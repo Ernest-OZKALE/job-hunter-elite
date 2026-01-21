@@ -1,35 +1,17 @@
 import { useState, useEffect } from 'react';
 import { Target, Plus, Trash2, Trophy, Flame } from 'lucide-react';
 import type { JobApplication } from '../../types';
-
-interface Goal {
-    id: string;
-    type: 'weekly' | 'monthly';
-    target: number;
-    created: string;
-}
+import { useGoals, type Goal } from '../../hooks/useGoals';
 
 interface GoalTrackerProps {
     applications: JobApplication[];
 }
 
-const STORAGE_KEY = 'job-hunter-goals';
-
 export const GoalTracker = ({ applications }: GoalTrackerProps) => {
-    const [goals, setGoals] = useState<Goal[]>(() => {
-        const saved = localStorage.getItem(STORAGE_KEY);
-        return saved ? JSON.parse(saved) : [
-            { id: '1', type: 'weekly', target: 5, created: new Date().toISOString() }
-        ];
-    });
-
+    const { goals, loading, addGoal, deleteGoal } = useGoals();
     const [showAddGoal, setShowAddGoal] = useState(false);
     const [newGoalType, setNewGoalType] = useState<'weekly' | 'monthly'>('weekly');
     const [newGoalTarget, setNewGoalTarget] = useState(5);
-
-    useEffect(() => {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(goals));
-    }, [goals]);
 
     const getProgress = (goal: Goal) => {
         const now = new Date();
@@ -47,19 +29,9 @@ export const GoalTracker = ({ applications }: GoalTrackerProps) => {
         return { count, percentage: Math.min(100, Math.round((count / goal.target) * 100)) };
     };
 
-    const addGoal = () => {
-        const newGoal: Goal = {
-            id: Date.now().toString(),
-            type: newGoalType,
-            target: newGoalTarget,
-            created: new Date().toISOString()
-        };
-        setGoals([...goals, newGoal]);
+    const handleAddGoal = async () => {
+        await addGoal(newGoalType, newGoalTarget);
         setShowAddGoal(false);
-    };
-
-    const deleteGoal = (id: string) => {
-        setGoals(goals.filter(g => g.id !== id));
     };
 
     // Calculate streak
@@ -69,7 +41,8 @@ export const GoalTracker = ({ applications }: GoalTrackerProps) => {
         let streak = 0;
         let currentDate = new Date(today);
 
-        while (true) {
+        // Simple loop to check last 365 days mostly
+        for (let i = 0; i < 365; i++) {
             const dateStr = currentDate.toISOString().split('T')[0];
             const hasApp = applications.some(app => app.date.startsWith(dateStr));
 
@@ -77,6 +50,12 @@ export const GoalTracker = ({ applications }: GoalTrackerProps) => {
                 streak++;
                 currentDate.setDate(currentDate.getDate() - 1);
             } else {
+                // Check if today has no application yet, maybe streak is from yesterday
+                // But for simplicity, we count consecutive days with applications
+                if (i === 0) {
+                    currentDate.setDate(currentDate.getDate() - 1);
+                    continue; // check yesterday
+                }
                 break;
             }
         }
@@ -84,6 +63,8 @@ export const GoalTracker = ({ applications }: GoalTrackerProps) => {
     };
 
     const streak = calculateStreak();
+
+    if (loading) return null; // Or a skeleton
 
     return (
         <div className="bg-white dark:bg-slate-800 rounded-2xl p-4 border border-slate-200 dark:border-slate-700 shadow-sm">
@@ -133,7 +114,7 @@ export const GoalTracker = ({ applications }: GoalTrackerProps) => {
                         />
                     </div>
                     <button
-                        onClick={addGoal}
+                        onClick={handleAddGoal}
                         className="w-full px-4 py-2 bg-indigo-500 text-white rounded-lg font-bold hover:bg-indigo-600 transition-colors"
                     >
                         Ajouter
@@ -169,8 +150,8 @@ export const GoalTracker = ({ applications }: GoalTrackerProps) => {
                             <div className="h-3 bg-slate-200 dark:bg-slate-600 rounded-full overflow-hidden">
                                 <div
                                     className={`h-full transition-all duration-500 ${isComplete
-                                            ? 'bg-gradient-to-r from-amber-400 to-amber-500'
-                                            : 'bg-gradient-to-r from-indigo-500 to-purple-500'
+                                        ? 'bg-gradient-to-r from-amber-400 to-amber-500'
+                                        : 'bg-gradient-to-r from-indigo-500 to-purple-500'
                                         }`}
                                     style={{ width: `${percentage}%` }}
                                 />
