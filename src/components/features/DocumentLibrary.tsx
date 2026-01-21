@@ -18,9 +18,21 @@ export const DocumentLibrary = () => {
         }
     };
 
-    const filteredDocuments = documents.filter(doc =>
-        doc.name.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+    const [activeFilter, setActiveFilter] = useState('Tous');
+
+    // Mappings between UI labels and DB values
+    const getDbType = (label: string) => {
+        if (label === 'Lettres de Motivation') return 'LM';
+        if (label === 'Autres') return 'Autre';
+        if (label === 'Certificats') return 'Certificat';
+        return label; // 'CV' -> 'CV'
+    };
+
+    const filteredDocuments = documents.filter(doc => {
+        const matchesSearch = doc.name.toLowerCase().includes(searchTerm.toLowerCase());
+        const matchesFilter = activeFilter === 'Tous' || doc.type === getDbType(activeFilter);
+        return matchesSearch && matchesFilter;
+    });
 
     const totalSize = documents.reduce((acc, doc) => acc + parseFloat(doc.size), 0);
     const sizePercentage = Math.min((totalSize / 100) * 100, 100); // Assuming 100MB limit
@@ -63,12 +75,13 @@ export const DocumentLibrary = () => {
                 </div>
             </div>
 
-            {/* Quick Filters - TODO: Connect to filter logic */}
+            {/* Quick Filters */}
             <div className="flex flex-wrap gap-3 mb-10">
                 {['Tous', 'CV', 'Lettres de Motivation', 'Certificats', 'Autres'].map((filter) => (
                     <button
                         key={filter}
-                        className={`px-5 py-2.5 rounded-xl text-sm font-bold border-2 transition-all ${filter === 'Tous' ? 'bg-indigo-600 text-white border-indigo-600' : 'bg-white dark:bg-slate-800 border-slate-100 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:border-indigo-200'}`}
+                        onClick={() => setActiveFilter(filter)}
+                        className={`px-5 py-2.5 rounded-xl text-sm font-bold border-2 transition-all ${activeFilter === filter ? 'bg-indigo-600 text-white border-indigo-600' : 'bg-white dark:bg-slate-800 border-slate-100 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:border-indigo-200'}`}
                     >
                         {filter}
                     </button>

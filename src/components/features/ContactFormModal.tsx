@@ -53,16 +53,18 @@ export const ContactFormModal = ({ isOpen, onClose, onSubmit, initialData }: Con
     };
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
-            <div className="bg-white dark:bg-slate-900 rounded-3xl shadow-2xl w-full max-w-2xl overflow-hidden animate-in zoom-in-95 duration-200">
+        <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-slate-900/80 backdrop-blur-md animate-in fade-in duration-200">
+            <div className="bg-white dark:bg-slate-900 rounded-3xl shadow-2xl w-full max-w-2xl overflow-hidden animate-in zoom-in-95 duration-200 border border-slate-200 dark:border-slate-800">
 
                 {/* Header */}
-                <div className="bg-slate-50 dark:bg-slate-800 border-b border-slate-100 dark:border-slate-700 p-6 flex justify-between items-center">
-                    <h2 className="text-2xl font-black text-slate-800 dark:text-white flex items-center gap-3">
-                        <User className="text-blue-600" />
+                <div className="bg-slate-50/50 dark:bg-slate-800/50 border-b border-slate-100 dark:border-slate-800 p-6 flex justify-between items-center backdrop-blur-sm">
+                    <h2 className="text-2xl font-black text-slate-900 dark:text-white flex items-center gap-3">
+                        <div className="p-3 bg-blue-50 dark:bg-blue-900/20 rounded-xl text-blue-600">
+                            <User size={24} />
+                        </div>
                         {initialData ? 'Modifier le Contact' : 'Nouveau Contact'}
                     </h2>
-                    <button onClick={onClose} className="p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-xl transition-all">
+                    <button onClick={onClose} className="p-2 text-slate-400 hover:text-slate-600 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-700/50 rounded-xl transition-all">
                         <X size={24} />
                     </button>
                 </div>
@@ -180,7 +182,7 @@ export const ContactFormModal = ({ isOpen, onClose, onSubmit, initialData }: Con
                         <button
                             type="button"
                             onClick={onClose}
-                            className="px-6 py-3 rounded-xl font-bold text-slate-500 hover:bg-slate-100 transition-colors"
+                            className="px-6 py-3 rounded-xl font-bold text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
                         >
                             Annuler
                         </button>
