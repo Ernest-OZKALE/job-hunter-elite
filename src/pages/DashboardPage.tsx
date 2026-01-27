@@ -121,7 +121,47 @@ export const DashboardPage = ({ user, onLogout }: DashboardPageProps) => {
     }>({ isOpen: false, matches: [], pendingData: null });
     const [showCommandPalette, setShowCommandPalette] = useState(false);
     const [selectedIds, setSelectedIds] = useState<string[]>([]);
+    const lastSelectedIndexRef = useRef<number | null>(null);
     const searchInputRef = useRef<HTMLInputElement>(null);
+
+    // Filters & Sorting (moved up for use in selection)
+    const { filters, updateFilter, resetFilters, filteredApplications, filterOptions, activeFilterCount } = useFilters(applications);
+    const { sortState, updateSort, sortedApplications } = useSorting(filteredApplications);
+
+    // Enhanced toggle selection with Shift+Click range support
+    const handleToggleSelect = useCallback((id: string, shiftKey?: boolean) => {
+        const currentIndex = sortedApplications.findIndex(app => app.id === id);
+
+        if (shiftKey && lastSelectedIndexRef.current !== null) {
+            // Range selection
+            const start = Math.min(lastSelectedIndexRef.current, currentIndex);
+            const end = Math.max(lastSelectedIndexRef.current, currentIndex);
+            const rangeIds = sortedApplications.slice(start, end + 1).map(app => app.id);
+
+            setSelectedIds(prev => {
+                const newSet = new Set(prev);
+                rangeIds.forEach(rangeId => newSet.add(rangeId));
+                return Array.from(newSet);
+            });
+        } else {
+            // Single toggle
+            setSelectedIds(prev =>
+                prev.includes(id)
+                    ? prev.filter(x => x !== id)
+                    : [...prev, id]
+            );
+            lastSelectedIndexRef.current = currentIndex;
+        }
+    }, [sortedApplications]);
+
+    const handleSelectAll = useCallback(() => {
+        setSelectedIds(sortedApplications.map(app => app.id));
+    }, [sortedApplications]);
+
+    const handleDeselectAll = useCallback(() => {
+        setSelectedIds([]);
+        lastSelectedIndexRef.current = null;
+    }, []);
 
     const handleBulkStatusChange = async (status: string) => {
         if (selectedIds.length === 0) return;
@@ -163,10 +203,6 @@ export const DashboardPage = ({ user, onLogout }: DashboardPageProps) => {
         window.addEventListener('keydown', handleKeyDown);
         return () => window.removeEventListener('keydown', handleKeyDown);
     }, []);
-
-    // Filters & Sorting
-    const { filters, updateFilter, resetFilters, filteredApplications, filterOptions, activeFilterCount } = useFilters(applications);
-    const { sortState, updateSort, sortedApplications } = useSorting(filteredApplications);
 
     const handleAddApplication = () => {
         setInitialForm({
@@ -496,9 +532,9 @@ export const DashboardPage = ({ user, onLogout }: DashboardPageProps) => {
                                                 onDeleteAttachmentFromApp={handleDeleteAttachmentFromApp}
                                                 onUpdate={updateApplication}
                                                 selectedIds={selectedIds}
-                                                onToggleSelect={(id) => setSelectedIds(prev =>
-                                                    prev.includes(id) ? prev.filter(i => i !== id) : [...prev, id]
-                                                )}
+                                                onToggleSelect={handleToggleSelect}
+                                                onSelectAll={handleSelectAll}
+                                                onDeselectAll={handleDeselectAll}
                                             />
                                         </div>
                                     )}

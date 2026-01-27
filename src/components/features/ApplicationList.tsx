@@ -1,8 +1,8 @@
 import useDrivePicker from 'react-google-drive-picker';
 import {
-    Search, ExternalLink, Edit2, Trash2, FileText, File, XCircle, Paperclip, Bot, X, TrendingUp
+    Search, ExternalLink, Edit2, Trash2, FileText, File, XCircle, Paperclip, Bot, X, TrendingUp, CheckSquare, Square
 } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useRef, useCallback } from 'react';
 import { StatusSelector } from '../ui/StatusSelector';
 import { ApplicationDetailModal } from '../ApplicationDetailModal';
 import type { JobApplication, Attachment } from '../../types';
@@ -19,7 +19,9 @@ interface ApplicationListProps {
     onDeleteAttachmentFromApp: (appId: string, index: number, att: Attachment) => void;
     onUpdate: (id: string, data: Partial<JobApplication>) => Promise<void>;
     selectedIds?: string[];
-    onToggleSelect?: (id: string) => void;
+    onToggleSelect?: (id: string, shiftKey?: boolean) => void;
+    onSelectAll?: () => void;
+    onDeselectAll?: () => void;
 }
 
 export const ApplicationList = ({
@@ -31,7 +33,9 @@ export const ApplicationList = ({
     onDeleteAttachmentFromApp,
     onUpdate,
     selectedIds = [],
-    onToggleSelect
+    onToggleSelect,
+    onSelectAll,
+    onDeselectAll
 }: ApplicationListProps) => {
 
     const [openPicker] = useDrivePicker();
@@ -122,11 +126,34 @@ export const ApplicationList = ({
         );
     }
 
+    const allSelected = filteredApplications.length > 0 && filteredApplications.every(app => selectedIds.includes(app.id));
+    const someSelected = selectedIds.length > 0;
+
     return (
         <div className="space-y-4">
-            {/* Origin Filter - Only show if there are mixed sources */}
-            {applications.some(a => a.origin === 'auto') && (
-                <div className="flex justify-end mb-2">
+            {/* Selection & Origin Controls */}
+            <div className="flex items-center justify-between flex-wrap gap-3">
+                {/* Select All / Deselect All */}
+                <div className="flex items-center gap-2">
+                    <button
+                        onClick={() => allSelected ? onDeselectAll?.() : onSelectAll?.()}
+                        className={`flex items-center gap-2 px-3 py-2 text-xs font-bold rounded-xl border transition-all ${allSelected
+                            ? 'bg-blue-500 text-white border-blue-500 hover:bg-blue-600'
+                            : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:border-blue-400 hover:text-blue-600'
+                            }`}
+                    >
+                        {allSelected ? <CheckSquare size={14} /> : <Square size={14} />}
+                        {allSelected ? 'Tout désélectionner' : 'Tout sélectionner'}
+                    </button>
+                    {someSelected && !allSelected && (
+                        <span className="text-xs text-slate-500">
+                            {selectedIds.length} sur {filteredApplications.length}
+                        </span>
+                    )}
+                </div>
+
+                {/* Origin Filter - Only show if there are mixed sources */}
+                {applications.some(a => a.origin === 'auto') && (
                     <div className="bg-white dark:bg-slate-800 p-1 rounded-lg border border-slate-200 dark:border-slate-700 inline-flex">
                         <button
                             onClick={() => setOriginFilter('all')}
@@ -147,8 +174,10 @@ export const ApplicationList = ({
                             <Bot size={10} /> Auto
                         </button>
                     </div>
-                </div>
-            )}
+                )}
+            </div>
+
+            <p className="text-xs text-slate-400 italic">💡 Astuce : Maintenez Shift pour sélectionner une plage</p>
 
             {filteredApplications.map(app => {
                 const relance = getRelanceInfo(app.date, app.status);
@@ -165,7 +194,11 @@ export const ApplicationList = ({
                             <input
                                 type="checkbox"
                                 checked={isSelected}
-                                onChange={() => onToggleSelect?.(app.id)}
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    onToggleSelect?.(app.id, e.shiftKey);
+                                }}
+                                onChange={() => { }} // Controlled by onClick
                                 className="w-6 h-6 rounded-lg border-2 border-blue-500 bg-white dark:bg-slate-800 text-blue-500 focus:ring-blue-500 cursor-pointer shadow-lg"
                             />
                         </div>
