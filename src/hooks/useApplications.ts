@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
 import type { JobApplication } from '../types';
 import { migrateOldStatus } from '../lib/statusMigration';
+import { toDbFormat, fromDbFormat } from '../lib/dbMapping';
 
 export const useApplications = (userId: string | undefined) => {
     const [applications, setApplications] = useState<JobApplication[]>([]);
@@ -22,11 +23,13 @@ export const useApplications = (userId: string | undefined) => {
 
             if (error) throw error;
 
-            const apps = (data || []).map(d => ({
-                ...d,
-                status: migrateOldStatus(d.status),
-                attachments: d.attachments || []
-            })) as JobApplication[];
+            const apps = (data || []).map(d => {
+                const app = fromDbFormat(d);
+                return {
+                    ...app,
+                    status: migrateOldStatus(d.status),
+                };
+            }) as JobApplication[];
 
             setApplications(apps);
             calculateStats(apps);
@@ -80,18 +83,21 @@ export const useApplications = (userId: string | undefined) => {
 
     const addApplication = async (data: Omit<JobApplication, 'id'>) => {
         if (!userId) return;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const dbData = toDbFormat({ ...data, userId } as any);
         const { error } = await supabase
             .from('applications')
-            .insert([{ ...data, user_id: userId }]);
+            .insert([dbData]);
 
         if (error) throw error;
     };
 
     const updateApplication = async (id: string, data: Partial<JobApplication>) => {
         if (!userId) return;
+        const dbData = toDbFormat(data);
         const { error } = await supabase
             .from('applications')
-            .update(data)
+            .update(dbData)
             .eq('id', id);
 
         if (error) throw error;
