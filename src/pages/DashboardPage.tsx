@@ -75,14 +75,6 @@ export const DashboardPage = ({ user, onLogout }: DashboardPageProps) => {
         }
     };
 
-    // DEBUG: Expose User ID
-    useEffect(() => {
-        if (user?.id) {
-            console.log("%c YOUR USER ID IS: " + user.id, "background: red; color: white; font-size: 20px; padding: 10px;");
-            (window as any).USER_ID = user.id;
-        }
-    }, [user]);
-
     const {
         applications,
         stats,
