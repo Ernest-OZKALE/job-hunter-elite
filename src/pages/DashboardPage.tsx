@@ -602,20 +602,6 @@ export const DashboardPage = ({ user, onLogout }: DashboardPageProps) => {
                 isDanger={confirmState.isDanger}
             />
 
-            {/* EMERGENCY ID DISPLAY - TO BE REMOVED LATER */}
-            <div className="fixed bottom-4 right-4 z-[9999] bg-red-600 text-white p-6 rounded-2xl shadow-2xl animate-bounce border-4 border-white">
-                <p className="font-black text-lg mb-2">⚠️ CHANGE N8N ID ⚠️</p>
-                <code className="block bg-black/30 p-2 rounded mb-2 text-sm font-mono select-all">
-                    {user?.id}
-                </code>
-                <button
-                    onClick={() => navigator.clipboard.writeText(user?.id)}
-                    className="w-full bg-white text-red-600 font-bold py-2 rounded"
-                >
-                    CLICK TO COPY
-                </button>
-            </div>
-
             {/* Modals */}
             <Suspense fallback={null}>
                 {showHelp && <HelpModal onClose={() => setShowHelp(false)} />}
