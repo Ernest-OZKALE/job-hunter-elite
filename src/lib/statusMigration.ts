@@ -10,5 +10,5 @@ export const migrateOldStatus = (oldStatus: string): ApplicationStatus => {
         'Refus': 'Refus Entreprise',
     };
 
-    return (migrationMap[oldStatus] as ApplicationStatus) || 'À Postuler';
+    return (migrationMap[oldStatus] as ApplicationStatus) || (oldStatus as ApplicationStatus);
 };
