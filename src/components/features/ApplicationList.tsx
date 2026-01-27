@@ -190,7 +190,7 @@ export const ApplicationList = ({
                             }`}
                     >
                         {/* Selection Checkbox */}
-                        <div className={`absolute -left-3 top-1/2 -translate-y-1/2 z-20 transition-opacity ${isSelected ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'}`}>
+                        <div className={`absolute left-4 top-1/2 -translate-y-1/2 z-20 transition-opacity ${isSelected ? 'opacity-100' : 'opacity-40 group-hover:opacity-100'}`}>
                             <input
                                 type="checkbox"
                                 checked={isSelected}
@@ -199,7 +199,7 @@ export const ApplicationList = ({
                                     onToggleSelect?.(app.id, e.shiftKey);
                                 }}
                                 onChange={() => { }} // Controlled by onClick
-                                className="w-6 h-6 rounded-lg border-2 border-blue-500 bg-white dark:bg-slate-800 text-blue-500 focus:ring-blue-500 cursor-pointer shadow-lg"
+                                className="w-5 h-5 rounded border-2 border-slate-300 dark:border-slate-600 bg-white/80 dark:bg-slate-800/80 text-blue-500 focus:ring-blue-500 cursor-pointer backdrop-blur-sm"
                             />
                         </div>
 
@@ -209,7 +209,7 @@ export const ApplicationList = ({
                                 app.status.includes('Entretien') ? 'bg-purple-500' : 'bg-blue-500'
                             }`}></div>
 
-                        <div className="card-content flex flex-col lg:flex-row gap-6 justify-between items-start lg:items-center pl-4 py-6 pr-6">
+                        <div className="card-content flex flex-col lg:flex-row gap-6 justify-between items-start lg:items-center pl-14 py-6 pr-6">
 
                             {/* Main Info */}
                             <div className="flex-1 space-y-2">
