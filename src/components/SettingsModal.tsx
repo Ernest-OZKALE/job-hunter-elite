@@ -82,6 +82,24 @@ export default function SettingsModal({ user, onClose, onLogout }: SettingsModal
                                         <p className="text-slate-500 dark:text-slate-400 mb-1">Email du compte</p>
                                         <p className="font-mono bg-slate-100 dark:bg-slate-900 px-2 py-1 rounded text-slate-600 dark:text-slate-300">{user.email}</p>
                                     </div>
+                                    <div className="text-sm">
+                                        <p className="text-slate-500 dark:text-slate-400 mb-1">ID Utilisateur (pour n8n)</p>
+                                        <div className="flex items-center gap-2">
+                                            <p className="font-mono bg-slate-100 dark:bg-slate-900 px-2 py-1 rounded text-xs text-slate-600 dark:text-slate-300 truncate flex-1" title={user.id}>
+                                                {user.id}
+                                            </p>
+                                            <button
+                                                onClick={() => {
+                                                    navigator.clipboard.writeText(user.id);
+                                                    alert('ID copié !');
+                                                }}
+                                                className="p-1.5 text-blue-600 bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors"
+                                                title="Copier l'ID"
+                                            >
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="14" height="14" x="8" y="8" rx="2" ry="2" /><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2" /></svg>
+                                            </button>
+                                        </div>
+                                    </div>
                                     <button
                                         onClick={async () => {
                                             const { supabase } = await import('../lib/supabase');
