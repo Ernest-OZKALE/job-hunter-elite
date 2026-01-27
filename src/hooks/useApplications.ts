@@ -114,19 +114,10 @@ export const useApplications = (userId: string | undefined) => {
         });
 
         const dbData = toDbFormat(data);
-        console.log(`[UpdateApp] Updating ${id} with`, dbData);
-
-        const { data: updatedData, error } = await supabase
+        const { error } = await supabase
             .from('applications')
             .update(dbData)
-            .eq('id', id)
-            .select();
-
-        if (updatedData && updatedData.length === 0) {
-            console.warn(`[UpdateApp] Update succeeded but returned ZERO rows. Check RLS or ID mismatch for App ID: ${id} and User ID: ${userId}`);
-        } else if (updatedData) {
-            console.log(`[UpdateApp] Success! Updated:`, updatedData);
-        }
+            .eq('id', id);
 
         if (error) {
             // Revert on error (fetching original data would be safer but complex, keeping simple for now)
