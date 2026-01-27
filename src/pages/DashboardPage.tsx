@@ -540,13 +540,7 @@ export const DashboardPage = ({ user, onLogout }: DashboardPageProps) => {
                                     )}
                                 </div>
 
-                                {/* Bulk Actions Bar (Floating) */}
-                                <BulkActionsBar
-                                    count={selectedIds.length}
-                                    onClear={() => setSelectedIds([])}
-                                    onStatusChange={handleBulkStatusChange}
-                                    onDelete={handleBulkDelete}
-                                />
+
                             </div>
                         </section>
 
@@ -600,6 +594,14 @@ export const DashboardPage = ({ user, onLogout }: DashboardPageProps) => {
                 onConfirm={handleConfirmAction}
                 onCancel={() => setConfirmState(prev => ({ ...prev, isOpen: false }))}
                 isDanger={confirmState.isDanger}
+            />
+
+            {/* Bulk Actions Bar (Floating) - Moved here to avoid transform stacking context issues */}
+            <BulkActionsBar
+                count={selectedIds.length}
+                onClear={() => setSelectedIds([])}
+                onStatusChange={handleBulkStatusChange}
+                onDelete={handleBulkDelete}
             />
 
             {/* Modals */}
