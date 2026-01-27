@@ -605,7 +605,7 @@ export const DashboardPage = ({ user, onLogout }: DashboardPageProps) => {
             {/* Modals */}
             <Suspense fallback={null}>
                 {showHelp && <HelpModal onClose={() => setShowHelp(false)} />}
-                <PreferencesModal isOpen={showPrefs} onClose={() => setShowPrefs(false)} />
+                <PreferencesModal isOpen={showPrefs} onClose={() => setShowPrefs(false)} user={user} />
             </Suspense>
 
             {showEmailTemplates && (
