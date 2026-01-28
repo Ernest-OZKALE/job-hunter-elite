@@ -435,11 +435,27 @@ export const extractJobDetailsFromText = async (text: string): Promise<any> => {
         }
 
         // Extract Contract
-        let contractType = 'CDI'; // Default
-        if (lowerText.includes('cdd')) contractType = 'CDD';
-        if (lowerText.includes('freelance') || lowerText.includes('indépendant') || lowerText.includes('prestataire')) contractType = 'Freelance';
-        if (lowerText.includes('stage') || lowerText.includes('internship')) contractType = 'Stage';
-        if (lowerText.includes('alternance') || lowerText.includes('apprentissage') || lowerText.includes('contrat pro')) contractType = 'Alternance';
+        // Extract Contract
+        let contractType = 'CDI'; // Default to CDI if unsure
+
+        // Priority Detection: Check for explicit "Contrat : X" first
+        const contractMatch = lowerText.match(/(?:type de contrat|contrat)\s*[:\n]\s*([^\n]+)/i);
+        if (contractMatch) {
+            const cVal = contractMatch[1].toLowerCase();
+            if (cVal.includes('cdd')) contractType = 'CDD';
+            else if (cVal.includes('freelance') || cVal.includes('indépendant')) contractType = 'Freelance'; // Prestataire removed
+            else if (cVal.includes('stage')) contractType = 'Stage';
+            else if (cVal.includes('alternance') || cVal.includes('profess') || cVal.includes('apprentissage')) contractType = 'Alternance';
+            else if (cVal.includes('cdi')) contractType = 'CDI';
+        } else {
+            // Fallback: Keywords scan (with priority)
+            // Prioritize Specific types > CDI > Freelance (Safe default)
+            if (lowerText.includes('alternance') || lowerText.includes('contrat pro') || lowerText.includes('apprentissage')) contractType = 'Alternance';
+            else if (lowerText.includes('stage') || lowerText.includes('internship')) contractType = 'Stage';
+            else if (lowerText.includes('cdd')) contractType = 'CDD';
+            else if (lowerText.includes('cdi')) contractType = 'CDI'; // CDI wins if present
+            else if (lowerText.includes('freelance') || lowerText.includes('indépendant')) contractType = 'Freelance';
+        }
 
         // Extract Remote
         let remotePolicy = 'Sur site'; // Default
