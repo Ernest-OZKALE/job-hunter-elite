@@ -84,3 +84,53 @@ export const generateEmail = async (app: JobApplication, type: 'cover' | 'follow
         return "Erreur lors de la génération de l'email.";
     }
 };
+
+export const extractJobDetailsFromText = async (text: string): Promise<any> => {
+    if (!API_KEY) {
+        console.warn("Gemini API Key missing.");
+        return {};
+    }
+
+    try {
+        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash-latest" });
+
+        const prompt = `
+            Tu es un expert en recrutement et en analyse d'offres d'emploi.
+            Analyse le texte suivant qui contient (probablement) une offre d'emploi ou des informations sur un poste.
+            
+            TEXTE À ANALYSER :
+            "${text.substring(0, 10000)}"
+
+            TA MISSION :
+            Extrais un maximum d'informations utiles pour remplir un formulaire de candidature.
+            
+            RETOURNE UNIQUEMENT UN OBJET JSON (sans markdown) avec les champs suivants (si l'info n'est pas trouvée, laisse vide ou null) :
+            {
+                "company": "Nom de l'entreprise",
+                "position": "Intitulé du poste",
+                "location": "Lieu (Ville, Pays)",
+                "contractType": "CDI" | "CDD" | "Freelance" | "Stage" | "Alternance" (devine le plus probable),
+                "remotePolicy": "Full Remote" | "Hybride" | "Sur site" (devine le plus probable),
+                "salary": "Fourchette ou montant (ex: 45-55k)",
+                "jobDescription": "Résumé propre et structuré de l'offre (max 500 caractères)",
+                "contactName": "Nom du recruteur si mentionné",
+                "contactEmail": "Email de contact si mentionné",
+                "contactPhone": "Téléphone si mentionné",
+                "link": "Lien de l'offre si trouvé dans le texte",
+                "tags": ["Tag1", "Tag2"] (5 mots clés techniques ou importants max)
+            }
+        `;
+
+        const result = await model.generateContent(prompt);
+        const response = await result.response;
+        const responseText = response.text();
+
+        // Clean markdown
+        const jsonStr = responseText.replace(/```json|```/g, "").trim();
+        return JSON.parse(jsonStr);
+
+    } catch (error) {
+        console.error("Gemini Extraction Error:", error);
+        return {};
+    }
+};

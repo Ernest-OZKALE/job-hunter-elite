@@ -27,6 +27,7 @@ import {
 import type { JobApplication, Attachment, ApplicationStatus } from '../../types';
 import { StatusSelector } from '../ui/StatusSelector';
 import { calculateAiScore, calculateRealAiScore } from '../../lib/aiScoring';
+import { extractJobDetailsFromText } from '../../lib/gemini';
 import { parseJobOffer } from '../../lib/parseJobOffer';
 import { Wand2, Loader2, CheckCircle2 } from 'lucide-react';
 import { useDocuments } from '../../hooks/useDocuments';
@@ -79,6 +80,47 @@ export const ApplicationForm = ({
     const [openPicker] = useDrivePicker();
     const [newFileName, setNewFileName] = useState('');
     const [newFileLink, setNewFileLink] = useState('');
+
+    // --- Magic Fill Logic ---
+    const [showMagicModal, setShowMagicModal] = useState(false);
+    const [magicText, setMagicText] = useState('');
+    const [isMagicLoading, setIsMagicLoading] = useState(false);
+
+    const handleMagicFill = async () => {
+        if (!magicText.trim()) return;
+        setIsMagicLoading(true);
+        try {
+            const extracted = await extractJobDetailsFromText(magicText);
+
+            // Merge with existing data, prioritized extracted data but keep non-empty existing data if extraction is null
+            setFormData(prev => ({
+                ...prev,
+                company: extracted.company || prev.company,
+                position: extracted.position || prev.position,
+                location: extracted.location || prev.location,
+                contractType: extracted.contractType || prev.contractType,
+                remotePolicy: extracted.remotePolicy || prev.remotePolicy,
+                salary: extracted.salary || prev.salary,
+                jobDescription: extracted.jobDescription || prev.jobDescription,
+                contactName: extracted.contactName || prev.contactName,
+                contactEmail: extracted.contactEmail || prev.contactEmail,
+                contactPhone: extracted.contactPhone || prev.contactPhone,
+                link: extracted.link || prev.link,
+                tags: [...(prev.tags || []), ...(extracted.tags || [])].filter((x, i, a) => a.indexOf(x) === i), // Unique tags
+                source: extracted.company ? 'Site Entreprise' : prev.source // Little heuristic
+            }));
+
+            // Close modal
+            setShowMagicModal(false);
+            setMagicText('');
+        } catch (err) {
+            console.error(err);
+            alert("Erreur lors de l'analyse magique.");
+        } finally {
+            setIsMagicLoading(false);
+        }
+    };
+    // ------------------------
 
     // --- Drag & Drop / Manual Upload Logic ---
     const [isDragging, setIsDragging] = useState(false);
@@ -268,6 +310,17 @@ Mon Nom`;
                         </div>
                     </div>
                     <div className="flex items-center gap-3">
+                        {/* Magic Button */}
+                        <button
+                            type="button"
+                            onClick={() => setShowMagicModal(true)}
+                            className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded-xl shadow-lg shadow-indigo-500/20 hover:scale-105 transition-all font-bold animate-pulse"
+                            title="Remplissage Magique via IA"
+                        >
+                            <Wand2 size={18} />
+                            <span className="hidden md:inline">Magie !</span>
+                        </button>
+
                         <div className="hidden md:flex bg-slate-100 rounded-lg p-1">
                             <button type="button" onClick={() => setActiveTab('details')} className={`px-4 py-1.5 rounded-md text-sm font-bold transition-all ${activeTab === 'details' ? 'bg-white shadow text-slate-800' : 'text-slate-500 hover:text-slate-700'}`}>Détails</button>
                             <button type="button" onClick={() => setActiveTab('description')} className={`px-4 py-1.5 rounded-md text-sm font-bold transition-all ${activeTab === 'description' ? 'bg-white shadow text-slate-800' : 'text-slate-500 hover:text-slate-700'}`}>Description & IA</button>
@@ -773,5 +826,56 @@ Mon Nom`;
         </div>
     );
 
-    return createPortal(modalContent, document.body);
+    return createPortal(
+        <>
+            {modalContent}
+
+            {/* Magic Modal Overlay */}
+            {showMagicModal && (
+                <div className="fixed inset-0 z-[110] flex items-center justify-center p-6 bg-slate-900/60 backdrop-blur-md animate-in fade-in duration-300">
+                    <div className="bg-white dark:bg-slate-800 rounded-3xl shadow-2xl w-full max-w-2xl overflow-hidden animate-in zoom-in-95 duration-200 border border-white/20">
+                        <div className="p-6 border-b border-slate-100 flex justify-between items-center bg-gradient-to-r from-indigo-50 to-purple-50">
+                            <h3 className="text-xl font-black text-indigo-900 flex items-center gap-2">
+                                <Wand2 className="text-indigo-600" /> Remplissage Magique
+                            </h3>
+                            <button onClick={() => setShowMagicModal(false)} className="p-2 hover:bg-white/50 rounded-full text-indigo-300 hover:text-indigo-600 transition-colors">
+                                <X size={24} />
+                            </button>
+                        </div>
+                        <div className="p-6 space-y-4">
+                            <p className="text-slate-600 text-sm leading-relaxed">
+                                Collez ici le texte de l'offre d'emploi (depuis LinkedIn, Indeed, etc.). <br />
+                                <strong className="text-indigo-600">L'IA va analyser le texte et pré-remplir le formulaire pour vous !</strong>
+                            </p>
+                            <textarea
+                                value={magicText}
+                                onChange={(e) => setMagicText(e.target.value)}
+                                className="w-full h-64 p-4 bg-slate-50 border-2 border-slate-100 rounded-xl focus:border-indigo-500 focus:ring-0 transition-all text-sm font-medium text-slate-700 placeholder:text-slate-300 resize-none"
+                                placeholder="Collez le texte de l'offre ici..."
+                                autoFocus
+                            />
+                            <div className="flex justify-end pt-2">
+                                <button
+                                    onClick={handleMagicFill}
+                                    disabled={!magicText.trim() || isMagicLoading}
+                                    className="px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-bold shadow-lg shadow-indigo-500/30 flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                                >
+                                    {isMagicLoading ? (
+                                        <>
+                                            <Loader2 size={18} className="animate-spin" /> Analyse en cours...
+                                        </>
+                                    ) : (
+                                        <>
+                                            <Wand2 size={18} /> Lancer la Magie
+                                        </>
+                                    )}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
+        </>,
+        document.body
+    );
 };
