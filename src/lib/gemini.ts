@@ -2,7 +2,7 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 import type { JobApplication } from "../types";
 
 // Note: In a production app, the API key should be in VITE_GEMINI_API_KEY
-const API_KEY = import.meta.env.VITE_GEMINI_API_KEY || "";
+const API_KEY = "AIzaSyCygxxOYkJZOctGOQZnf79GF6OkC4v5MI4";
 const genAI = new GoogleGenerativeAI(API_KEY);
 
 const DEFAULT_PROFILE = "Développeur Fullstack avec expérience en React, TypeScript, Node.js et Firebase.";
