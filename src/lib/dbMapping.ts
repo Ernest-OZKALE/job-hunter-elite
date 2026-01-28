@@ -38,6 +38,14 @@ export const toDbFormat = (app: Partial<JobApplication>) => {
     if ('lastActivityAt' in app) { dbData.last_activity_at = app.lastActivityAt; delete dbData.lastActivityAt; }
     if ('contactId' in app) { dbData.contact_id = app.contactId; delete dbData.contactId; }
 
+    // SANITIZE: Remove fields that don't have matching DB columns to prevent save errors
+    delete dbData.salaryDetails;
+    delete dbData.detectedSkills;
+    delete dbData.redFlags;
+    delete dbData.missions;
+    delete dbData.brutMonth; // Cleanup potential leftovers
+    delete dbData.netMonth;
+
     return dbData;
 };
 
