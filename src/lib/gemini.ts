@@ -119,7 +119,17 @@ export const extractJobDetailsFromText = async (text: string): Promise<any> => {
                     "location": "Lieu (Ville, Pays)",
                     "contractType": "CDI" | "CDD" | "Freelance" | "Stage" | "Alternance" (devine le plus probable),
                     "remotePolicy": "Full Remote" | "Hybride" | "Sur site" (devine le plus probable),
-                    "salary": "Fourchette ou montant (ex: 45-55k)",
+                "salary": "Fourchette ou montant (ex: 45-55k)",
+                    "salaryDetails": {
+                        "brutYear": "Montant brut annuel (ex: 45 000 €)",
+                        "brutMonth": "Montant brut mensuel",
+                        "netYear": "Estimation Net avant impôt annuel",
+                        "netMonth": "Estimation Net avant impôt mensuel",
+                        "analysis": "CRITIQUE & MARCHÉ : Ce salaire est-il bon pour ce poste à cet endroit ? (ex: 'Faible pour Paris', 'Excellent pour un Junior'). Base-toi sur les standards du marché."
+                    },
+                    "missions": ["Mission principale 1", "Mission 2", "Mission 3"],
+                    "detectedSkills": ["Skill Tech 1", "Skill Soft 1"],
+                    "redFlags": ["Red Flag 1", "Red Flag 2"],
                     "jobDescription": "Résumé propre et structuré de l'offre (max 500 caractères)",
                     "contactName": "Nom du recruteur si mentionné",
                     "contactEmail": "Email de contact si mentionné",
@@ -160,7 +170,10 @@ export const extractJobDetailsFromText = async (text: string): Promise<any> => {
                 contents: [{
                     parts: [{
                         text: `
-                            Extrais les infos de ce job en JSON (company, position, location, contractType, remotePolicy, salary, jobDescription, contactName, contactEmail, contactPhone, link, tags):
+                            Extrais les infos de ce job en JSON complet : company, position, location, contractType, remotePolicy, salary,
+                            salaryDetails (avec brutYear, brutMonth, netYear, netMonth, et analysis: "Analyse critique vs marché"),
+                            missions (liste), detectedSkills (liste), redFlags (liste de warnings),
+                            jobDescription, contactName, contactEmail, contactPhone, link, tags.
                             "${text.substring(0, 5000)}"
                         `
                     }]
@@ -253,10 +266,10 @@ export const extractJobDetailsFromText = async (text: string): Promise<any> => {
 
             salary = `${fmt(isAnnual ? (isBrut ? brutYearVal : brutYearVal * COEFF) : (isBrut ? brutYearVal / 12 : (brutYearVal * COEFF) / 12))} € ${isAnnual ? 'Annuel' : 'Mensuel'} ${isBrut ? 'Brut' : 'Net'}`;
 
-            // Simple Market Analysis Heuristic (Placeholder for Offline mode)
-            if (brutYearVal > 45000) salaryDetails.analysis = "Salaire attractif (Top 30% marché).";
-            else if (brutYearVal < 30000) salaryDetails.analysis = "Salaire en dessous de la moyenne cadre.";
-            else salaryDetails.analysis = "Dans la moyenne du marché.";
+            // Offline Analysis Heuristic
+            if (brutYearVal > 55000) salaryDetails.analysis = "Est. Mathématique : Salaire élevé ( > 55k).";
+            else if (brutYearVal > 40000) salaryDetails.analysis = "Est. Mathématique : Standard Cadre (40-55k).";
+            else salaryDetails.analysis = "Est. Mathématique : À vérifier (estimation hors-ligne).";
         }
 
         // --- Missions Extraction ---
