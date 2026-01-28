@@ -1,8 +1,18 @@
 import type { JobApplication } from "../types";
 
-// Configuration for Local AI (Ollama)
-const OLLAMA_BASE_URL = "http://localhost:3000/v1"; // User specified port 3000
-const OLLAMA_MODEL = "qwen2.5:32b";
+export interface LocalAIConfig {
+    provider: 'ollama' | 'gemini'; // Ready for switch
+    baseUrl: string;
+    model: string;
+    apiKey?: string;
+}
+
+// Default config for fallback (Standard Ollama defaults)
+export const DEFAULT_OLLAMA_CONFIG: LocalAIConfig = {
+    provider: 'ollama',
+    baseUrl: "http://localhost:11434/v1", // Correct standard port
+    model: "qwen2.5:32b"
+};
 
 const DEFAULT_PROFILE = "Développeur Fullstack avec expérience en React, TypeScript, Node.js et Firebase.";
 
@@ -17,18 +27,22 @@ interface OpenAIResponse {
 /**
  * Generic fetch wrapper for OpenAI-compatible API
  */
-async function callLocalAI(messages: { role: string; content: string }[], jsonMode: boolean = true): Promise<string> {
+async function callLocalAI(messages: { role: string; content: string }[], config: LocalAIConfig, jsonMode: boolean = true): Promise<string> {
     try {
-        const response = await fetch(`${OLLAMA_BASE_URL}/chat/completions`, {
+        // Ensure no trailing slash
+        const cleanUrl = config.baseUrl.replace(/\/$/, "");
+        const endpoint = `${cleanUrl}/chat/completions`;
+
+        const response = await fetch(endpoint, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                // "Authorization": "Bearer sk-dummy" // Not needed for local Ollama usually, but good practice if behind proxy
+                "Authorization": config.apiKey ? `Bearer ${config.apiKey}` : "Bearer ollama"
             },
             body: JSON.stringify({
-                model: OLLAMA_MODEL,
+                model: config.model,
                 messages: messages,
-                temperature: 0.1, // Low temp for extraction
+                temperature: 0.1,
                 response_format: jsonMode ? { type: "json_object" } : undefined,
                 stream: false
             })
@@ -36,18 +50,18 @@ async function callLocalAI(messages: { role: string; content: string }[], jsonMo
 
         if (!response.ok) {
             const errorText = await response.text();
-            throw new Error(`Local AI Error (${response.status}): ${errorText}`);
+            throw new Error(`AI API Error (${response.status}): ${errorText}`);
         }
 
         const data: OpenAIResponse = await response.json();
         return data.choices[0]?.message?.content || "";
     } catch (error) {
-        console.error("Local AI Connection Error:", error);
+        console.error("AI Connection Error:", error);
         throw error;
     }
 }
 
-export const analyzeJobOpportunityOllama = async (app: JobApplication, userProfile: string = DEFAULT_PROFILE): Promise<{ score: number; strengths: string[]; weaknesses: string[] }> => {
+export const analyzeJobOpportunityOllama = async (app: JobApplication, config: LocalAIConfig = DEFAULT_OLLAMA_CONFIG, userProfile: string = DEFAULT_PROFILE): Promise<{ score: number; strengths: string[]; weaknesses: string[] }> => {
     const prompt = `
       Analyse cette offre d'emploi par rapport au profil suivant.
       
@@ -71,7 +85,7 @@ export const analyzeJobOpportunityOllama = async (app: JobApplication, userProfi
     `;
 
     try {
-        const content = await callLocalAI([{ role: "user", content: prompt }], true);
+        const content = await callLocalAI([{ role: "user", content: prompt }], config, true);
         return JSON.parse(content.replace(/```json|```/g, "").trim());
     } catch (e) {
         console.error("Ollama Analysis Failed", e);
@@ -79,7 +93,7 @@ export const analyzeJobOpportunityOllama = async (app: JobApplication, userProfi
     }
 };
 
-export const generateEmailOllama = async (app: JobApplication, type: 'cover' | 'followup', userProfile: string = DEFAULT_PROFILE): Promise<string> => {
+export const generateEmailOllama = async (app: JobApplication, type: 'cover' | 'followup', config: LocalAIConfig = DEFAULT_OLLAMA_CONFIG, userProfile: string = DEFAULT_PROFILE): Promise<string> => {
     const systemPrompt = "Tu es un expert en rédaction professionnelle. Réponds directment avec le corps de l'email.";
     const userPrompt = type === 'cover'
         ? `Rédige une lettre de motivation courte et percutante (format email) pour ce poste.
@@ -105,14 +119,14 @@ export const generateEmailOllama = async (app: JobApplication, type: 'cover' | '
         return await callLocalAI([
             { role: "system", content: systemPrompt },
             { role: "user", content: userPrompt }
-        ], false);
+        ], config, false);
     } catch (e) {
         console.error("Ollama Email Failed", e);
         return "Erreur de génération avec l'IA locale.";
     }
 };
 
-export const extractJobDetailsOllama = async (text: string): Promise<any> => {
+export const extractJobDetailsOllama = async (text: string, config: LocalAIConfig = DEFAULT_OLLAMA_CONFIG): Promise<any> => {
     const systemPrompt = `Tu es un assistant expert en extraction de données d'offres d'emploi.
     Tu dois extraire les informations et les retourner au format JSON strict selon le schéma fourni.
     Sois précis sur le salaire (annuel vs mensuel) et le contrat (CDI prime sur Freelance).`;
@@ -159,7 +173,7 @@ export const extractJobDetailsOllama = async (text: string): Promise<any> => {
         const content = await callLocalAI([
             { role: "system", content: systemPrompt },
             { role: "user", content: userPrompt }
-        ], true);
+        ], config, true);
 
         const jsonStr = content.replace(/```json|```/g, "").trim();
         return JSON.parse(jsonStr);

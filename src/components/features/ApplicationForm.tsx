@@ -35,8 +35,9 @@ import {
 } from '../../lib/ollama';
 import { parseJobOffer } from '../../lib/parseJobOffer';
 import { calculateSalaryDetails } from '../../lib/salaryCalculator';
-import { Wand2, Loader2, CheckCircle2 } from 'lucide-react';
+import { Wand2, Loader2, CheckCircle2, Settings, Server, Cloud } from 'lucide-react';
 import { useDocuments } from '../../hooks/useDocuments';
+import { useAiConfig } from '../../contexts/AiSettings';
 
 interface ApplicationFormProps {
     initialData: Omit<JobApplication, 'id'> | JobApplication;
@@ -106,11 +107,14 @@ export const ApplicationForm = ({
     const [magicText, setMagicText] = useState('');
     const [isMagicLoading, setIsMagicLoading] = useState(false);
 
+    const { config, updateConfig } = useAiConfig();
+    const [showSettingsModal, setShowSettingsModal] = useState(false);
+
     const handleMagicFill = async () => {
         if (!magicText.trim()) return;
         setIsMagicLoading(true);
         try {
-            const extracted = await extractJobDetails(magicText);
+            const extracted = await extractJobDetails(magicText, config);
 
             if (!extracted || Object.keys(extracted).length === 0) {
                 throw new Error("L'IA n'a retourné aucune donnée. Essayez avec plus de texte.");
@@ -125,10 +129,10 @@ export const ApplicationForm = ({
                 contractType: extracted.contractType || prev.contractType,
                 remotePolicy: extracted.remotePolicy || prev.remotePolicy,
                 salary: extracted.salary || prev.salary,
-                salaryDetails: extracted.salaryDetails || prev.salaryDetails, // New
+                salaryDetails: extracted.salaryDetails || prev.salaryDetails,
                 missions: extracted.missions || prev.missions,
-                detectedSkills: extracted.detectedSkills || prev.detectedSkills, // New
-                redFlags: extracted.redFlags || prev.redFlags,                   // New
+                detectedSkills: extracted.detectedSkills || prev.detectedSkills,
+                redFlags: extracted.redFlags || prev.redFlags,
                 jobDescription: extracted.jobDescription || prev.jobDescription,
                 contactName: extracted.contactName || prev.contactName,
                 contactEmail: extracted.contactEmail || prev.contactEmail,
@@ -136,12 +140,11 @@ export const ApplicationForm = ({
                 link: extracted.link || prev.link,
                 tags: [...(prev.tags || []), ...(extracted.tags || [])].filter((x, i, a) => a.indexOf(x) === i),
                 source: extracted.source || (extracted.company ? 'Site Entreprise' : prev.source),
-                // New Fields Mapping
                 qualification: extracted.qualification || prev.qualification,
                 industry: extracted.industry || prev.industry,
                 companySize: extracted.companySize || prev.companySize,
                 experience: extracted.experience || prev.experience,
-                benefits: extracted.benefits || prev.benefits // Array check? Logic in Input handles join/split but here we might receive array or string? extracted.benefits is array from regex or gemini. Input expects string join.
+                benefits: extracted.benefits || prev.benefits
             }));
 
             // Close modal
@@ -224,8 +227,8 @@ export const ApplicationForm = ({
     const handleAnalyzeJob = async () => {
         setIsAnalyzing(true);
         try {
-            // Use Real AI
-            const analysis = await analyzeJobOpportunity(formData as JobApplication);
+            // Use Real AI with config
+            const analysis = await analyzeJobOpportunity(formData as JobApplication, config);
 
             // Format the analysis for display (convert object to markdown string if needed, or update specific UI state)
             // The existing UI expects a string for aiAnalysis.
@@ -257,8 +260,8 @@ export const ApplicationForm = ({
     const handleGenerateEmail = async () => {
         setIsAnalyzing(true);
         try {
-            // Use Real AI
-            const email = await generateEmail(formData as JobApplication, 'cover'); // Default to cover letter
+            // Use Real AI with config
+            const email = await generateEmail(formData as JobApplication, 'cover', config); // Default to cover letter
             setGeneratedEmail(email);
         } catch (error) {
             console.error("Email generation failed", error);
@@ -362,6 +365,15 @@ export const ApplicationForm = ({
                         >
                             <Wand2 size={18} />
                             <span className="hidden md:inline">Magie !</span>
+                        </button>
+
+                        <button
+                            type="button"
+                            onClick={() => setShowSettingsModal(true)}
+                            className="p-2.5 bg-white text-slate-500 hover:text-indigo-600 hover:bg-indigo-50 rounded-xl border border-slate-200 transition-all shadow-sm"
+                            title="Configuration IA"
+                        >
+                            <Settings size={20} />
                         </button>
 
                         <div className="hidden md:flex bg-slate-100 rounded-lg p-1">
@@ -1003,6 +1015,87 @@ export const ApplicationForm = ({
                 </div>
 
             </form>
+            {/* Settings Modal */}
+            {showSettingsModal && (
+                <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[200] flex items-center justify-center p-4 animate-in fade-in duration-200">
+                    <div className="bg-white rounded-xl shadow-2xl max-w-md w-full overflow-hidden animate-in zoom-in-95 duration-200">
+                        <div className="p-6 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
+                            <div className="flex items-center gap-3">
+                                <div className="p-2 bg-indigo-100 text-indigo-600 rounded-lg">
+                                    <Settings className="w-5 h-5" />
+                                </div>
+                                <div>
+                                    <h3 className="font-bold text-slate-800 text-lg">Configuration IA</h3>
+                                    <p className="text-xs text-slate-500">Choisissez votre cerveau</p>
+                                </div>
+                            </div>
+                            <button onClick={() => setShowSettingsModal(false)} className="text-slate-400 hover:text-slate-600 transition-colors">
+                                <X className="w-5 h-5" />
+                            </button>
+                        </div>
+
+                        <div className="p-6 space-y-6">
+                            {/* Provider Switch */}
+                            <div className="grid grid-cols-2 gap-4">
+                                <button
+                                    type="button"
+                                    onClick={() => updateConfig({ provider: 'ollama' })}
+                                    className={`p-4 rounded-xl border-2 flex flex-col items-center gap-2 transition-all ${config.provider === 'ollama' ? 'border-indigo-600 bg-indigo-50 text-indigo-700 ring-2 ring-indigo-100' : 'border-slate-200 hover:border-slate-300 text-slate-600 hover:bg-slate-50'}`}
+                                >
+                                    <Server className="w-6 h-6" />
+                                    <span className="font-bold text-sm">Local (Ollama)</span>
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={() => updateConfig({ provider: 'gemini' })}
+                                    className={`p-4 rounded-xl border-2 flex flex-col items-center gap-2 transition-all ${config.provider === 'gemini' ? 'border-indigo-600 bg-indigo-50 text-indigo-700 ring-2 ring-indigo-100' : 'border-slate-200 hover:border-slate-300 text-slate-600 hover:bg-slate-50'}`}
+                                >
+                                    <Cloud className="w-6 h-6" />
+                                    <span className="font-bold text-sm">Cloud (Gemini)</span>
+                                </button>
+                            </div>
+
+                            {/* Settings Form */}
+                            <div className="space-y-4">
+                                <div className="space-y-2">
+                                    <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">URL de l'API</label>
+                                    <input
+                                        type="text"
+                                        value={config.baseUrl}
+                                        onChange={(e) => updateConfig({ baseUrl: e.target.value })}
+                                        className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm font-mono focus:ring-2 focus:ring-indigo-500 outline-none transition-all"
+                                        placeholder="http://localhost:11434/v1"
+                                    />
+                                    <p className="text-xs text-slate-400">
+                                        {config.provider === 'ollama' ? 'Standard: http://localhost:11434/v1 ou :3000/v1' : 'Non modifiable pour Gemini'}
+                                    </p>
+                                </div>
+
+                                <div className="space-y-2">
+                                    <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Modèle</label>
+                                    <input
+                                        type="text"
+                                        value={config.model}
+                                        onChange={(e) => updateConfig({ model: e.target.value })}
+                                        className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm font-mono focus:ring-2 focus:ring-indigo-500 outline-none transition-all"
+                                        placeholder="qwen2.5:32b"
+                                    />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="p-4 bg-slate-50 border-t border-slate-100 flex justify-end">
+                            <button
+                                type="button"
+                                onClick={() => setShowSettingsModal(false)}
+                                className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-lg transition-colors shadow-sm shadow-indigo-200"
+                            >
+                                Enregistrer
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 
