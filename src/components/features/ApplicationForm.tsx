@@ -28,7 +28,7 @@ import {
 import type { JobApplication, Attachment, ApplicationStatus } from '../../types';
 import { StatusSelector } from '../ui/StatusSelector';
 import { calculateAiScore, calculateRealAiScore } from '../../lib/aiScoring';
-import { extractJobDetailsFromText } from '../../lib/gemini';
+import { extractJobDetailsFromText, generateEmail, analyzeJobOpportunity } from '../../lib/gemini';
 import { parseJobOffer } from '../../lib/parseJobOffer';
 import { calculateSalaryDetails } from '../../lib/salaryCalculator';
 import { Wand2, Loader2, CheckCircle2 } from 'lucide-react';
@@ -217,44 +217,51 @@ export const ApplicationForm = ({
     const [generatedEmail, setGeneratedEmail] = useState<string | null>(null);
     const [isAnalyzing, setIsAnalyzing] = useState(false);
 
-    const handleAnalyzeJob = () => {
+    const handleAnalyzeJob = async () => {
         setIsAnalyzing(true);
-        // Simulation d'IA
-        setTimeout(() => {
-            const keywords = ['React', 'TypeScript', 'Node', 'Firebase', 'Tailwind'];
-            const found = keywords.filter(k => formData.jobDescription?.toLowerCase().includes(k.toLowerCase()));
-            const score = Math.floor(Math.random() * 30) + 70; // Random score 70-100
+        try {
+            // Use Real AI
+            const analysis = await analyzeJobOpportunity(formData as JobApplication);
 
-            setAiAnalysis(`
-                **Score de compatibilité : ${score}%**
+            // Format the analysis for display (convert object to markdown string if needed, or update specific UI state)
+            // The existing UI expects a string for aiAnalysis.
+            // analyzeJobOpportunity returns { score, strengths, weaknesses }
+            // Let's format it nicely:
+
+            const formattedAnalysis = `
+                **Score IA : ${analysis.score}/100**
                 
-                ✅ Points forts identifiés : ${found.length > 0 ? found.join(', ') : 'Polyvalence, Motivation'}
-                ⚠️ Points à surveiller : Expérience spécifique sur outils internes.
+                ✅ **Points Forts** :
+                ${analysis.strengths.map(s => `- ${s}`).join('\n')}
                 
-                💡 Conseil : Mettez en avant vos projets personnels utilisant ces technologies.
-            `);
+                ⚠️ **Points d'Attention** :
+                ${analysis.weaknesses.map(w => `- ${w}`).join('\n')}
+            `;
+
+            setAiAnalysis(formattedAnalysis);
+            // Also update the score in the form data
+            setFormData(prev => ({ ...prev, aiScore: analysis.score }));
+
+        } catch (error) {
+            console.error("Analysis failed", error);
+            alert("Erreur lors de l'analyse IA. Vérifiez votre connexion.");
+        } finally {
             setIsAnalyzing(false);
-        }, 1500);
+        }
     };
 
-    const handleGenerateEmail = () => {
+    const handleGenerateEmail = async () => {
         setIsAnalyzing(true);
-        setTimeout(() => {
-            const email = `Objet : Candidature pour le poste de ${formData.position} - ${formData.company}
-
-Bonjour ${formData.contactName || 'Monsieur/Madame'},
-
-C'est avec un grand enthousiasme que je vous adresse ma candidature pour le poste de ${formData.position} chez ${formData.company}.
-
-Votre entreprise, reconnue pour son excellence, correspond parfaitement à l'environnement dans lequel je souhaite évoluer. Mes compétences en développement (React, TypeScript) et mon expérience récente seraient des atouts pour votre équipe.
-
-Je serais ravi de discuter de la manière dont je peux contribuer à votre succès.
-
-Cordialement,
-Mon Nom`;
+        try {
+            // Use Real AI
+            const email = await generateEmail(formData as JobApplication, 'cover'); // Default to cover letter
             setGeneratedEmail(email);
+        } catch (error) {
+            console.error("Email generation failed", error);
+            alert("Erreur lors de la génération de l'email.");
+        } finally {
             setIsAnalyzing(false);
-        }, 1500);
+        }
     };
     // ----------------------
 
@@ -336,7 +343,7 @@ Mon Nom`;
                         </div>
                         <div>
                             <h2 className="text-2xl font-black text-slate-800 tracking-tight">
-                                {isEditing ? "Modifier l'Opportunité" : "Nouvelle Candidature"} <span className="text-xs text-slate-400 font-normal">v2.7</span>
+                                {isEditing ? "Modifier l'Opportunité" : "Nouvelle Candidature"} <span className="text-xs text-slate-400 font-normal">v2.8 (Pro AI)</span>
                             </h2>
                             <p className="text-slate-500 font-medium">Capturez chaque détail pour décrocher le job.</p>
                         </div>

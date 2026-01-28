@@ -14,7 +14,7 @@ export const analyzeJobOpportunity = async (app: JobApplication, userProfile: st
     }
 
     try {
-        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash-latest" });
+        const model = genAI.getGenerativeModel({ model: "gemini-1.5-pro-latest" });
 
         const prompt = `
       Analyse cette offre d'emploi par rapport au profil suivant.
@@ -55,7 +55,7 @@ export const generateEmail = async (app: JobApplication, type: 'cover' | 'follow
     if (!API_KEY) return "Erreur : Clé API Gemini manquante.";
 
     try {
-        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash-latest" });
+        const model = genAI.getGenerativeModel({ model: "gemini-1.5-pro-latest" });
 
         const prompt = type === 'cover'
             ? `Rédige une lettre de motivation courte et percutante (format email) pour ce poste, en te basant sur mon profil.
@@ -91,7 +91,7 @@ export const extractJobDetailsFromText = async (text: string): Promise<any> => {
         throw new Error("Clé API Gemini manquante. Vérifiez votre configuration .env");
     }
 
-    const modelsToTry = ["gemini-1.5-flash-latest", "gemini-1.5-flash", "gemini-1.0-pro", "gemini-pro"];
+    const modelsToTry = ["gemini-1.5-pro-latest", "gemini-1.5-pro", "gemini-1.5-flash-latest", "gemini-1.5-flash"];
     let lastError;
 
     // Debug info
@@ -103,42 +103,48 @@ export const extractJobDetailsFromText = async (text: string): Promise<any> => {
             const model = genAI.getGenerativeModel({ model: modelName });
 
             const prompt = `
-                Tu es un expert en recrutement et en analyse d'offres d'emploi.
-                Analyse le texte suivant qui contient (probablement) une offre d'emploi ou des informations sur un poste.
+                Tu es un expert en recrutement et en analyse sémantique d'offres d'emploi.
+                
+                TA MISSION :
+                Analyse le texte brut ci-dessous (qui peut être mal formaté coller depuis un site comme France Travail, LinkedIn, Indeed...) et extrais structurément les données pour remplir un formulaire de candidature.
                 
                 TEXTE À ANALYSER :
-                "${text.substring(0, 10000)}"
+                "${text.substring(0, 15000)}"
 
-                TA MISSION :
-                Extrais un maximum d'informations utiles pour remplir un formulaire de candidature.
-                
-                RETOURNE UNIQUEMENT UN OBJET JSON (sans markdown) avec les champs suivants (si l'info n'est pas trouvée, laisse vide ou null) :
+                CONSIGNES D'EXTRACTION :
+                - Sois "smart" : si le salaire est "24k", convertis-le. Si c'est "24 377", nettoie-le.
+                - Détecte l'expérience (ex: "1 An(s)" -> "1 an").
+                - Détecte les avantages même s'ils sont dans une liste à puces.
+                - Pour "Missions", "Mots clés" (tags), "Compétences", fais une synthèse intelligente.
+                - Si tu trouves "Secteur d'activité" ou "Domaine", mets-le dans "industry".
+                - Si tu trouves "Taille" ou "Effectif", mets-le dans "companySize".
+
+                RETOURNE UNIQUEMENT UN OBJET JSON (sans markdown) avec ce format exact :
                 {
-                    "company": "Nom de l'entreprise",
-                    "position": "Intitulé du poste",
-                    "location": "Lieu (Ville, Pays)",
-                    "contractType": "CDI" | "CDD" | "Freelance" | "Stage" | "Alternance" (devine le plus probable),
-                    "remotePolicy": "Full Remote" | "Hybride" | "Sur site" (devine le plus probable),
-                "salary": "Fourchette ou montant (ex: 45-55k)",
+                    "company": "Nom de l'entreprise (ou 'Confidentiel')",
+                    "position": "Intitulé du poste (ex: Développeur Fullstack)",
+                    "location": "Lieu (Ville, CP, ou Région)",
+                    "contractType": "CDI" | "CDD" | "Freelance" | "Stage" | "Alternance" (déduis-le),
+                    "remotePolicy": "Full Remote" | "Hybride" | "Sur site" (déduis-le),
+                    "salary": "Format brut original (ex: 35-45k€)",
                     "salaryDetails": {
-                        "brutYear": "Montant brut annuel (ex: 45 000 €)",
-                        "brutMonth": "Montant brut mensuel",
-                        "netYear": "Estimation Net avant impôt annuel",
-                        "netMonth": "Estimation Net avant impôt mensuel",
-                        "analysis": "CRITIQUE & MARCHÉ : Ce salaire est-il bon pour ce poste à cet endroit ? (ex: 'Faible pour Paris', 'Excellent pour un Junior'). Base-toi sur les standards du marché."
+                        "brutYear": "Montant annuel estimé (chiffres et texte)",
+                        "analysis": "Ton avis d'expert court (ex: 'Bon salaire pour Junior')"
                     },
-                    "missions": ["Mission principale 1", "Mission 2", "Mission 3"],
-                    "detectedSkills": ["Skill Tech 1", "Skill Soft 1"],
-                    "redFlags": ["Red Flag 1", "Red Flag 2"],
-                    "jobDescription": "Résumé propre et structuré de l'offre (max 500 caractères)",
-                    "contactName": "Nom du recruteur si mentionné",
-                    "contactEmail": "Email de contact si mentionné",
-                    "contactPhone": "Téléphone si mentionné",
-                    "link": "Lien de l'offre si trouvé dans le texte",
-                    "tags": ["Tag1", "Tag2"], (5 mots clés techniques ou importants max)
-                    "qualification": "Niveau de qualif (ex: Employé qualifié, Cadre)",
-                    "industry": "Secteur d'activité",
-                    "companySize": "Taille entreprise (ex: 20-49 salariés)"
+                    "missions": ["Mission 1", "Mission 2", "Mission 3"],
+                    "detectedSkills": ["Skill 1", "Skill 2", "Skill 3", "Skill 4"],
+                    "redFlags": ["Warning 1 (ex: stress)", "Warning 2"],
+                    "jobDescription": "Résumé pro (max 600 chars)",
+                    "contactName": "Nom contact",
+                    "contactEmail": "Email contact",
+                    "contactPhone": "Téléphone contact",
+                    "link": "URL détectée",
+                    "tags": ["MotClé1", "MotClé2", "MotClé3"],
+                    "qualification": "Niveau (ex: Cadre, Employé qualifié)",
+                    "industry": "Secteur (ex: Informatique, BTP)",
+                    "companySize": "Taille (ex: 50-99 salariés)",
+                    "experience": "Expérience requise (ex: 2 ans, Débutant)",
+                    "benefits": ["Ticket resto", "Mutuelle"]
                 }
             `;
 
