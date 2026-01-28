@@ -8,6 +8,7 @@ import {
     Briefcase,
     Globe,
     User,
+    Clock,
     Calendar,
     Euro,
     Star,
@@ -477,8 +478,35 @@ Mon Nom`;
                                                     placeholder="45-55k..."
                                                 />
                                             </div>
+                                        </div>
 
+                                        {/* New Field: Experience */}
+                                        <div className="space-y-1.5">
+                                            <label className="text-xs font-bold text-slate-400 uppercase tracking-wider ml-1">Expérience</label>
+                                            <div className="relative group">
+                                                <Clock className="absolute left-3 top-3.5 text-slate-400 group-focus-within:text-blue-500 transition-colors" size={18} />
+                                                <input
+                                                    type="text"
+                                                    value={formData.experience || ''}
+                                                    onChange={e => setFormData({ ...formData, experience: e.target.value })}
+                                                    className="w-full pl-10 pr-4 py-3 bg-slate-50 border-0 rounded-xl focus:ring-2 focus:ring-blue-100 focus:bg-white transition-all font-semibold text-slate-700 placeholder:text-slate-300"
+                                                    placeholder="ex: 2 ans"
+                                                />
+                                            </div>
+                                        </div>
 
+                                        {/* New Field: Benefits */}
+                                        <div className="space-y-1.5 md:col-span-2">
+                                            <label className="text-xs font-bold text-slate-400 uppercase tracking-wider ml-1">Avantages</label>
+                                            <div className="relative group">
+                                                <input
+                                                    type="text"
+                                                    value={formData.benefits?.join(', ') || ''}
+                                                    onChange={e => setFormData({ ...formData, benefits: e.target.value.split(',').map(s => s.trim()) })}
+                                                    className="w-full px-4 py-3 bg-slate-50 border-0 rounded-xl focus:ring-2 focus:ring-blue-100 focus:bg-white transition-all font-semibold text-slate-700 placeholder:text-slate-300"
+                                                    placeholder="Tickets resto, Mutuelle, Transport..."
+                                                />
+                                            </div>
                                         </div>
                                     </div>
 
