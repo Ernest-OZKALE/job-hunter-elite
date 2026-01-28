@@ -14,7 +14,7 @@ export const analyzeJobOpportunity = async (app: JobApplication, userProfile: st
     }
 
     try {
-        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash-latest" });
 
         const prompt = `
       Analyse cette offre d'emploi par rapport au profil suivant.
@@ -55,7 +55,7 @@ export const generateEmail = async (app: JobApplication, type: 'cover' | 'follow
     if (!API_KEY) return "Erreur : Clé API Gemini manquante.";
 
     try {
-        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash-latest" });
 
         const prompt = type === 'cover'
             ? `Rédige une lettre de motivation courte et percutante (format email) pour ce poste, en te basant sur mon profil.
@@ -91,7 +91,7 @@ export const extractJobDetailsFromText = async (text: string): Promise<any> => {
         throw new Error("Clé API Gemini manquante. Vérifiez votre configuration .env");
     }
 
-    const modelsToTry = ["gemini-1.5-flash", "gemini-1.5-pro", "gemini-pro", "gemini-1.0-pro"];
+    const modelsToTry = ["gemini-1.5-flash-latest", "gemini-1.5-flash", "gemini-1.0-pro", "gemini-pro"];
     let lastError;
 
     // Debug info

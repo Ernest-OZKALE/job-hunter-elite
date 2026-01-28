@@ -43,8 +43,18 @@ export const toDbFormat = (app: Partial<JobApplication>) => {
     delete dbData.detectedSkills;
     delete dbData.redFlags;
     delete dbData.missions;
-    delete dbData.brutMonth; // Cleanup potential leftovers
+    delete dbData.brutMonth;
     delete dbData.netMonth;
+
+    // Remove Recruiter/Contact fields causing errors (unless schema is updated)
+    delete dbData.recruiter_name;
+    delete dbData.recruiter_email;
+    delete dbData.recruiter_phone;
+    delete dbData.recruiter_linkedin;
+    delete dbData.contact_name;
+    delete dbData.contact_email;
+    delete dbData.contact_phone;
+    delete dbData.contact_linkedin;
 
     return dbData;
 };
