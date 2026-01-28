@@ -212,8 +212,12 @@ export const extractJobDetailsFromText = async (text: string): Promise<any> => {
         let salaryDetails = {
             brutYear: "",
             brutMonth: "",
+            brutDay: "",   // New
+            brutHour: "",  // New
             netYear: "",
             netMonth: "",
+            netDay: "",    // New
+            netHour: "",   // New
             currency: "€",
             analysis: "En attente d'IA pour analyse marché précise."
         };
