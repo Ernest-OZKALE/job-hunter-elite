@@ -92,6 +92,10 @@ export const ApplicationForm = ({
         try {
             const extracted = await extractJobDetailsFromText(magicText);
 
+            if (!extracted || Object.keys(extracted).length === 0) {
+                throw new Error("L'IA n'a retourné aucune donnée. Essayez avec plus de texte.");
+            }
+
             // Merge with existing data, prioritized extracted data but keep non-empty existing data if extraction is null
             setFormData(prev => ({
                 ...prev,
@@ -113,9 +117,9 @@ export const ApplicationForm = ({
             // Close modal
             setShowMagicModal(false);
             setMagicText('');
-        } catch (err) {
-            console.error(err);
-            alert("Erreur lors de l'analyse magique.");
+        } catch (err: any) {
+            console.error("Magic Fill Error:", err);
+            alert(err.message || "Une erreur est survenue lors de l'analyse.");
         } finally {
             setIsMagicLoading(false);
         }

@@ -88,7 +88,7 @@ export const generateEmail = async (app: JobApplication, type: 'cover' | 'follow
 export const extractJobDetailsFromText = async (text: string): Promise<any> => {
     if (!API_KEY) {
         console.warn("Gemini API Key missing.");
-        return {};
+        throw new Error("Clé API Gemini manquante. Vérifiez votre configuration .env");
     }
 
     try {
@@ -131,6 +131,6 @@ export const extractJobDetailsFromText = async (text: string): Promise<any> => {
 
     } catch (error) {
         console.error("Gemini Extraction Error:", error);
-        return {};
+        throw new Error("Erreur lors de l'analyse IA. Vérifiez la console pour plus de détails.");
     }
 };
