@@ -91,46 +91,59 @@ export const extractJobDetailsFromText = async (text: string): Promise<any> => {
         throw new Error("Clé API Gemini manquante. Vérifiez votre configuration .env");
     }
 
-    try {
-        const model = genAI.getGenerativeModel({ model: "gemini-pro" });
+    const modelsToTry = ["gemini-1.5-flash", "gemini-1.5-pro", "gemini-pro", "gemini-1.0-pro"];
+    let lastError;
 
-        const prompt = `
-            Tu es un expert en recrutement et en analyse d'offres d'emploi.
-            Analyse le texte suivant qui contient (probablement) une offre d'emploi ou des informations sur un poste.
-            
-            TEXTE À ANALYSER :
-            "${text.substring(0, 10000)}"
+    for (const modelName of modelsToTry) {
+        try {
+            console.log(`Tentative avec le modèle : ${modelName}`);
+            const model = genAI.getGenerativeModel({ model: modelName });
 
-            TA MISSION :
-            Extrais un maximum d'informations utiles pour remplir un formulaire de candidature.
-            
-            RETOURNE UNIQUEMENT UN OBJET JSON (sans markdown) avec les champs suivants (si l'info n'est pas trouvée, laisse vide ou null) :
-            {
-                "company": "Nom de l'entreprise",
-                "position": "Intitulé du poste",
-                "location": "Lieu (Ville, Pays)",
-                "contractType": "CDI" | "CDD" | "Freelance" | "Stage" | "Alternance" (devine le plus probable),
-                "remotePolicy": "Full Remote" | "Hybride" | "Sur site" (devine le plus probable),
-                "salary": "Fourchette ou montant (ex: 45-55k)",
-                "jobDescription": "Résumé propre et structuré de l'offre (max 500 caractères)",
-                "contactName": "Nom du recruteur si mentionné",
-                "contactEmail": "Email de contact si mentionné",
-                "contactPhone": "Téléphone si mentionné",
-                "link": "Lien de l'offre si trouvé dans le texte",
-                "tags": ["Tag1", "Tag2"] (5 mots clés techniques ou importants max)
-            }
-        `;
+            const prompt = `
+                Tu es un expert en recrutement et en analyse d'offres d'emploi.
+                Analyse le texte suivant qui contient (probablement) une offre d'emploi ou des informations sur un poste.
+                
+                TEXTE À ANALYSER :
+                "${text.substring(0, 10000)}"
 
-        const result = await model.generateContent(prompt);
-        const response = await result.response;
-        const responseText = response.text();
+                TA MISSION :
+                Extrais un maximum d'informations utiles pour remplir un formulaire de candidature.
+                
+                RETOURNE UNIQUEMENT UN OBJET JSON (sans markdown) avec les champs suivants (si l'info n'est pas trouvée, laisse vide ou null) :
+                {
+                    "company": "Nom de l'entreprise",
+                    "position": "Intitulé du poste",
+                    "location": "Lieu (Ville, Pays)",
+                    "contractType": "CDI" | "CDD" | "Freelance" | "Stage" | "Alternance" (devine le plus probable),
+                    "remotePolicy": "Full Remote" | "Hybride" | "Sur site" (devine le plus probable),
+                    "salary": "Fourchette ou montant (ex: 45-55k)",
+                    "jobDescription": "Résumé propre et structuré de l'offre (max 500 caractères)",
+                    "contactName": "Nom du recruteur si mentionné",
+                    "contactEmail": "Email de contact si mentionné",
+                    "contactPhone": "Téléphone si mentionné",
+                    "link": "Lien de l'offre si trouvé dans le texte",
+                    "tags": ["Tag1", "Tag2"] (5 mots clés techniques ou importants max)
+                }
+            `;
 
-        // Clean markdown
-        const jsonStr = responseText.replace(/```json|```/g, "").trim();
-        return JSON.parse(jsonStr);
+            const result = await model.generateContent(prompt);
+            const response = await result.response;
+            const responseText = response.text();
 
-    } catch (error) {
-        console.error("Gemini Extraction Error:", error);
-        throw new Error("Erreur lors de l'analyse IA. Vérifiez la console pour plus de détails.");
+            // Clean markdown
+            const jsonStr = responseText.replace(/```json|```/g, "").trim();
+            const parsed = JSON.parse(jsonStr);
+            console.log(`Succès avec le modèle : ${modelName}`);
+            return parsed;
+
+        } catch (error: any) {
+            console.warn(`Échec avec le modèle ${modelName}:`, error.message);
+            lastError = error;
+            // Continue to next model if it's a 404 (Not Found) or 503 (Service Unavailable)
+            // If it's an API Key error (400/403), we might want to stop, but let's try all just in case.
+        }
     }
+
+    console.error("Gemini Extraction Error after trying all models:", lastError);
+    throw new Error(`Échec de l'analyse IA avec tous les modèles testés (${modelsToTry.join(', ')}). Vérifiez votre clé API.`);
 };
