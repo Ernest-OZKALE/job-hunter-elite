@@ -89,12 +89,19 @@ export function calculateSalaryDetails(text: string): SalaryDetails | null {
     if (lowerSnippet.includes('mois') || lowerSnippet.includes('mensuel') || lowerSnippet.includes('mjm')) isAnnual = false;
     // Keywords for daily
     if (lowerSnippet.includes('jour') || lowerSnippet.includes('tjm')) {
-        isAnnual = false; // logic handled below
-        // Special case for TJM checks later if needed
+        isAnnual = false;
     }
 
-    // Heuristic correction: if < 10000 and not small (like TJM < 1000), probably monthly
-    if (rawValue > 1200 && rawValue < 10000 && !lowerSnippet.includes('an')) isAnnual = false;
+    // CRITICAL FIX: "Annuel" takes precedence over "sur 12 mois"
+    // Example: "26000.0 Euros sur 12.0 mois" -> The presence of "mois" made it monthly.
+    // We override it back to Annual if "annuel" or " an " is explicitly detected.
+    if (lowerSnippet.includes('annuel') || lowerSnippet.includes(' an ') || lowerSnippet.includes('/an')) {
+        isAnnual = true;
+    }
+
+    // Heuristic correction: if < 10000 and explicitly NOT annual, probably monthly
+    // But if it IS annual (detected above), we trust the user/text (e.g. stage gratifications or very low part-time)
+    if (rawValue > 1200 && rawValue < 10000 && !isAnnual) isAnnual = false;
 
 
     // 3. Calculator Engine (Calibrated on salaire-brut-en-net.fr)

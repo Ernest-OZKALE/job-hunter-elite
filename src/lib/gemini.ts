@@ -255,13 +255,17 @@ export const extractJobDetailsFromText = async (text: string): Promise<any> => {
             if (lowerSnippet.includes('mois') || lowerSnippet.includes('mensuel') || lowerSnippet.includes('mjm')) isAnnual = false;
             // Keywords for daily
             if (lowerSnippet.includes('jour') || lowerSnippet.includes('tjm')) {
-                isAnnual = false; // logic handled below
-                // Special case for TJM not handled yet in this simple logic, assuming monthly if not annual for now,
-                // BUT if rawValue < 1000 it might be TJM. Let's stick to standard Annual/Monthly detection for safety first.
+                isAnnual = false;
+            }
+
+            // CRITICAL FIX: "Annuel" takes precedence
+            if (lowerSnippet.includes('annuel') || lowerSnippet.includes(' an ') || lowerSnippet.includes('/an')) {
+                isAnnual = true;
             }
 
             // Heuristic correction: if < 10000 and not small (like TJM < 1000), probably monthly
-            if (rawValue > 1200 && rawValue < 10000 && !lowerSnippet.includes('an')) isAnnual = false;
+            // ONLY if we didn't just force it to Annual
+            if (rawValue > 1200 && rawValue < 10000 && !isAnnual) isAnnual = false;
 
 
             // 3. Calculator Engine (Calibrated on salaire-brut-en-net.fr)
