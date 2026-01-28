@@ -106,7 +106,9 @@ export const ApplicationForm = ({
                 remotePolicy: extracted.remotePolicy || prev.remotePolicy,
                 salary: extracted.salary || prev.salary,
                 salaryDetails: extracted.salaryDetails || prev.salaryDetails, // New
-                missions: extracted.missions || prev.missions,             // New
+                missions: extracted.missions || prev.missions,
+                detectedSkills: extracted.detectedSkills || prev.detectedSkills, // New
+                redFlags: extracted.redFlags || prev.redFlags,                   // New
                 jobDescription: extracted.jobDescription || prev.jobDescription,
                 contactName: extracted.contactName || prev.contactName,
                 contactEmail: extracted.contactEmail || prev.contactEmail,
@@ -312,7 +314,7 @@ Mon Nom`;
                         </div>
                         <div>
                             <h2 className="text-2xl font-black text-slate-800 tracking-tight">
-                                {isEditing ? "Modifier l'Opportunité" : "Nouvelle Candidature"} <span className="text-xs text-slate-400 font-normal">v1.6</span>
+                                {isEditing ? "Modifier l'Opportunité" : "Nouvelle Candidature"} <span className="text-xs text-slate-400 font-normal">v1.7</span>
                             </h2>
                             <p className="text-slate-500 font-medium">Capturez chaque détail pour décrocher le job.</p>
                         </div>
@@ -511,6 +513,44 @@ Mon Nom`;
                                                                     </li>
                                                                 ))}
                                                             </ul>
+                                                        </div>
+                                                    )}
+
+                                                    {/* Smart Insights : Skills & Red Flags */}
+                                                    {((formData.detectedSkills && formData.detectedSkills.length > 0) || (formData.redFlags && formData.redFlags.length > 0)) && (
+                                                        <div className="pt-4 border-t border-slate-200 grid grid-cols-1 md:grid-cols-2 gap-4">
+
+                                                            {/* Skills */}
+                                                            {formData.detectedSkills && formData.detectedSkills.length > 0 && (
+                                                                <div>
+                                                                    <h4 className="flex items-center gap-2 text-sm font-bold text-slate-700 mb-2">
+                                                                        <Star size={16} className="text-blue-500" /> Compétences
+                                                                    </h4>
+                                                                    <div className="flex flex-wrap gap-1.5">
+                                                                        {formData.detectedSkills.map((skill, idx) => (
+                                                                            <span key={idx} className="px-2 py-1 bg-blue-50 text-blue-700 text-[10px] font-bold rounded-md border border-blue-100">
+                                                                                {skill}
+                                                                            </span>
+                                                                        ))}
+                                                                    </div>
+                                                                </div>
+                                                            )}
+
+                                                            {/* Red Flags */}
+                                                            {formData.redFlags && formData.redFlags.length > 0 && (
+                                                                <div>
+                                                                    <h4 className="flex items-center gap-2 text-sm font-bold text-red-600 mb-2">
+                                                                        <Target size={16} className="text-red-500" /> Points de Vigilance
+                                                                    </h4>
+                                                                    <div className="space-y-1">
+                                                                        {formData.redFlags.map((flag, idx) => (
+                                                                            <div key={idx} className="flex items-center gap-2 text-[10px] font-bold text-red-600 bg-red-50 px-2 py-1 rounded-md border border-red-100">
+                                                                                ⚠️ {flag}
+                                                                            </div>
+                                                                        ))}
+                                                                    </div>
+                                                                </div>
+                                                            )}
                                                         </div>
                                                     )}
                                                 </div>

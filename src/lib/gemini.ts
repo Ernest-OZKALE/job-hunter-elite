@@ -273,6 +273,49 @@ export const extractJobDetailsFromText = async (text: string): Promise<any> => {
         }
 
 
+        // --- Skills Extraction ---
+        const detectedSkills: string[] = [];
+        const techKeywords = [
+            'React', 'Vue', 'Angular', 'Svelte', 'Node', 'Next', 'Nuxt', 'TypeScript', 'JavaScript',
+            'Python', 'Java', 'C#', 'PHP', 'Laravel', 'Symfony', 'Docker', 'Kubernetes', 'AWS', 'Azure',
+            'GCP', 'Firebase', 'Supabase', 'SQL', 'PostgreSQL', 'Mongo', 'Redis', 'Git', 'CI/CD', 'Tailwind',
+            'Sass', 'Figma', 'Adobe', 'Jira', 'Agile', 'Scrum'
+        ];
+        const softKeywords = [
+            'Autonomie', 'Rigueur', 'Curiosité', 'Communication', 'Force de proposition', 'Esprit d\'équipe',
+            'Team player', 'Leadership', 'Mentoring', 'Anglais'
+        ];
+
+        [...techKeywords, ...softKeywords].forEach(skill => {
+            // Whole word match, case insensitive, escape special chars if any (none in this list really)
+            const regex = new RegExp(`\\b${skill.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`, 'i');
+            if (regex.test(text)) {
+                // Store the properly cased version from our list
+                detectedSkills.push(skill);
+            }
+        });
+
+        // --- Red Flags Detection ---
+        const redFlags: string[] = [];
+        const toxicPatterns = [
+            { term: /(?:résistan|toléran)(?:ce|t)?\s*(?:au|aux?)\s*stress/i, label: "Environnement Stressant" },
+            { term: /work\s*hard\s*,?\s*play\s*hard/i, label: "Culture 'Burnout'" },
+            { term: /heures?\s*sup/i, label: "Heures Sup fréquentes" },
+            { term: /(?:famille|family)/i, label: "\"On est une famille\" (Frontières floues)" },
+            { term: /rockstar|ninja|super-?h[ée]ros/i, label: "Attentes Irréalistes (Rockstar/Ninja)" },
+            { term: /salaire\s*selon\s*profil/i, label: "Salaire non transparent" },
+            { term: /urgent/i, label: "Recrutement Urgent (Désorganisation ?)" },
+            { term: /multi-?casquettes?/i, label: "Rôle mal défini / 3 postes en 1" },
+            { term: /soir[s]?\s*et\s*week-?end[s]?/i, label: "Travail Soir/Week-end" }
+        ];
+
+        toxicPatterns.forEach(pattern => {
+            if (pattern.term.test(text)) {
+                redFlags.push(pattern.label);
+            }
+        });
+
+
         // Extract Experience for Tags
         const tags = ["Extraction_Offline"];
         const expMatch = lowerText.match(/(?:expérience|experience)\s*:\s*(\d+(?:\s?-\s?\d+)?)\s*an/i);
@@ -332,8 +375,10 @@ export const extractJobDetailsFromText = async (text: string): Promise<any> => {
             contractType: contractType,
             remotePolicy: remotePolicy,
             salary: salary,
-            salaryDetails: salaryDetails, // NEW FIELD
-            missions: missions,           // NEW FIELD
+            salaryDetails: salaryDetails,
+            missions: missions,
+            detectedSkills: detectedSkills, // NEW FIELD
+            redFlags: redFlags,             // NEW FIELD
             jobDescription: text.substring(0, 500) + "...\n\n(Texte complet sauvegardé)",
             contactName: "",
             contactEmail: emailMatch ? emailMatch[0] : "",

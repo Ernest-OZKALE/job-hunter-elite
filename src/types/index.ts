@@ -111,6 +111,8 @@ export interface JobApplication {
         analysis?: string; // "Correct par rapport au marché", etc.
     };
     missions?: string[];
+    detectedSkills?: string[]; // Extracted tech/soft skills
+    redFlags?: string[];       // Potential warning signs
 }
 
 export interface Contact {
