@@ -309,7 +309,9 @@ Mon Nom`;
                             {isEditing ? <Edit2 size={26} strokeWidth={2.5} /> : <Target size={26} strokeWidth={2.5} />}
                         </div>
                         <div>
-                            <h2 className="text-2xl font-black text-slate-800 tracking-tight">{isEditing ? "Modifier l'Opportunité" : "Nouvelle Candidature"}</h2>
+                            <h2 className="text-2xl font-black text-slate-800 tracking-tight">
+                                {isEditing ? "Modifier l'Opportunité" : "Nouvelle Candidature"} <span className="text-xs text-slate-400 font-normal">v1.2</span>
+                            </h2>
                             <p className="text-slate-500 font-medium">Capturez chaque détail pour décrocher le job.</p>
                         </div>
                     </div>
