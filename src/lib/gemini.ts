@@ -114,7 +114,7 @@ export const extractJobDetailsFromText = async (text: string): Promise<any> => {
                 CONSIGNES D'EXTRACTION :
                 - Sois "smart" : Distingue le LIEU DU POSTE du siège social. Si "78 - Jouy-en-Josas" est écrit, c'est le lieu (pas Paris).
                 - Si le salaire est "24k", convertis-le. Si c'est "24 377", nettoie-le.
-                - Détecte l'expérience (ex: "1 An(s)" -> "1 an").
+                - Détecte l'expérience même mal formatée (ex: "1 An(s)", "Exper. : 2-3 ans", "Junior accepté").
                 - Détecte les avantages même s'ils sont dans une liste à puces.
                 - Pour "Missions", "Mots clés" (tags), "Compétences", fais une synthèse intelligente.
                 - Si tu trouves "Secteur d'activité" ou "Domaine", mets-le dans "industry".
@@ -395,7 +395,24 @@ export const extractJobDetailsFromText = async (text: string): Promise<any> => {
 
         // Extract Experience for Tags
         const tags = ["Extraction_Offline"];
-        const expMatch = lowerText.match(/(?:expérience|experience)\s*:\s*(\d+(?:\s?-\s?\d+)?)\s*an/i);
+        // Extract Experience for Tags & Field
+        const tags = ["Extraction_Offline"];
+
+        let expMatch = lowerText.match(/(?:expérience|experience)(?:\s*:?)\s*([\d\w\s+]+?)(?=\n|$)/i);
+        // Better regex strategies
+        // Strategy 1: "Expérience : 2 ans" or "Expérience\n2 ans"
+        const expRegex1 = /(?:expérience|experience)(?:[\s\S]{0,50}?)\b(\d+(?:\s?-\s?\d+)?)\s*(?:an|ans|année|années|mois)\b/i;
+        // Strategy 2: "2 ans d'expérience"
+        const expRegex2 = /\b(\d+(?:\s?-\s?\d+)?)\s*(?:an|ans|année|années)\s*d['’]?\s*expérience/i; // 2 ans d'expérience
+        // Strategy 3: "1 An(s)" specific format
+        const expRegex3 = /\b(\d+)\s*an\(s\)/i;
+
+        const mainExpMatch = lowerText.match(expRegex1) || lowerText.match(expRegex2) || lowerText.match(expRegex3);
+
+        // We use the capture group from the best match, or fallback to simpler parsing if needed.
+        // Re-assign expMatch for usage below (keeping the variable name for compatibility)
+        expMatch = mainExpMatch;
+
         if (expMatch) {
             tags.push(`Exp ${expMatch[1]} ans`);
         } else if (lowerText.match(/junior/)) {
