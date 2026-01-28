@@ -421,6 +421,19 @@ export const extractJobDetailsFromText = async (text: string): Promise<any> => {
             tags.push("Senior");
         }
 
+        // Extract Position/Title
+        const lines = text.split('\n').map(l => l.trim()).filter(l => l.length > 0);
+        let position = "";
+        for (let i = 0; i < Math.min(lines.length, 5); i++) {
+            const line = lines[i];
+            const lowerLine = line.toLowerCase();
+            if (lowerLine.startsWith('offre n') || lowerLine.startsWith('publié') || lowerLine.includes('localiser avec')) continue;
+            if (line.length > 5 && line.length < 80) {
+                position = line;
+                break;
+            }
+        }
+
         // Extract Contract
         let contractType = 'CDI'; // Default
         if (lowerText.includes('cdd')) contractType = 'CDD';
