@@ -124,8 +124,8 @@ export const extractJobDetailsFromText = async (text: string): Promise<any> => {
                     "company": "Nom de l'entreprise (ou 'Confidentiel')",
                     "position": "Intitulé du poste (ex: Développeur Fullstack)",
                     "location": "Lieu (Ville, CP, ou Région)",
-                    "contractType": "CDI" | "CDD" | "Freelance" | "Stage" | "Alternance" (déduis-le),
-                    "remotePolicy": "Full Remote" | "Hybride" | "Sur site" (déduis-le),
+                    "contractType": "Type de contrat (ex: CDI, Freelance, CDD, Intérim...)",
+                    "remotePolicy": "Politique Télétravail (ex: Full Remote, Hybride 3j, Sur site...)",
                     "salary": "Format brut original (ex: 35-45k€)",
                     "salaryDetails": {
                         "brutYear": "Montant annuel estimé (chiffres et texte)",

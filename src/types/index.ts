@@ -69,8 +69,8 @@ export interface JobApplication {
     contactEmail?: string;
     contactPhone?: string;
     contactLinkedin?: string;
-    contractType?: 'CDI' | 'CDD' | 'Freelance' | 'Alternance' | 'Stage';
-    remotePolicy?: 'Full Remote' | 'Hybride' | 'Sur site';
+    contractType?: string; // Changed from enum to string for flexibility
+    remotePolicy?: string; // Changed from enum to string for flexibility
     interestLevel?: number;
     jobDescription?: string;
     nextStep?: string;

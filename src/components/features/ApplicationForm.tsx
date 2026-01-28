@@ -343,7 +343,7 @@ export const ApplicationForm = ({
                         </div>
                         <div>
                             <h2 className="text-2xl font-black text-slate-800 tracking-tight">
-                                {isEditing ? "Modifier l'Opportunité" : "Nouvelle Candidature"} <span className="text-xs text-slate-400 font-normal">v2.8 (Pro AI)</span>
+                                {isEditing ? "Modifier l'Opportunité" : "Nouvelle Candidature"} <span className="text-xs text-slate-400 font-normal">v2.9 (Champs Libres)</span>
                             </h2>
                             <p className="text-slate-500 font-medium">Capturez chaque détail pour décrocher le job.</p>
                         </div>
@@ -455,29 +455,29 @@ export const ApplicationForm = ({
                                     <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mt-5">
                                         <div className="space-y-1.5">
                                             <label className="text-xs font-bold text-slate-400 uppercase tracking-wider ml-1">Contrat</label>
-                                            <select
-                                                value={formData.contractType}
-                                                onChange={e => setFormData({ ...formData, contractType: e.target.value as any })}
-                                                className="w-full px-4 py-3 bg-slate-50 border-0 rounded-xl focus:ring-2 focus:ring-blue-100 focus:bg-white font-semibold text-slate-700 cursor-pointer appearance-none"
-                                            >
-                                                <option value="CDI">CDI</option>
-                                                <option value="CDD">CDD</option>
-                                                <option value="Freelance">Freelance</option>
-                                                <option value="Alternance">Alternance</option>
-                                                <option value="Stage">Stage</option>
-                                            </select>
+                                            <div className="relative group">
+                                                <FileText className="absolute left-3 top-3.5 text-slate-400 group-focus-within:text-blue-500 transition-colors" size={18} />
+                                                <input
+                                                    type="text"
+                                                    value={formData.contractType || ''}
+                                                    onChange={e => setFormData({ ...formData, contractType: e.target.value })}
+                                                    className="w-full pl-10 pr-4 py-3 bg-slate-50 border-0 rounded-xl focus:ring-2 focus:ring-blue-100 focus:bg-white transition-all font-semibold text-slate-700 placeholder:text-slate-300"
+                                                    placeholder="CDI, Freelance..."
+                                                />
+                                            </div>
                                         </div>
                                         <div className="space-y-1.5">
                                             <label className="text-xs font-bold text-slate-400 uppercase tracking-wider ml-1">Télétravail</label>
-                                            <select
-                                                value={formData.remotePolicy}
-                                                onChange={e => setFormData({ ...formData, remotePolicy: e.target.value as any })}
-                                                className="w-full px-4 py-3 bg-slate-50 border-0 rounded-xl focus:ring-2 focus:ring-blue-100 focus:bg-white font-semibold text-slate-700 cursor-pointer appearance-none"
-                                            >
-                                                <option value="Hybride">Hybride</option>
-                                                <option value="Full Remote">Full Remote</option>
-                                                <option value="Sur site">Sur site</option>
-                                            </select>
+                                            <div className="relative group">
+                                                <Globe className="absolute left-3 top-3.5 text-slate-400 group-focus-within:text-blue-500 transition-colors" size={18} />
+                                                <input
+                                                    type="text"
+                                                    value={formData.remotePolicy || ''}
+                                                    onChange={e => setFormData({ ...formData, remotePolicy: e.target.value })}
+                                                    className="w-full pl-10 pr-4 py-3 bg-slate-50 border-0 rounded-xl focus:ring-2 focus:ring-blue-100 focus:bg-white transition-all font-semibold text-slate-700 placeholder:text-slate-300"
+                                                    placeholder="Hybride 2j/sem..."
+                                                />
+                                            </div>
                                         </div>
                                         <div className="space-y-1.5">
                                             <label className="text-xs font-bold text-slate-400 uppercase tracking-wider ml-1">Salaire</label>
