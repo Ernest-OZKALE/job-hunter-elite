@@ -105,13 +105,15 @@ export const ApplicationForm = ({
                 contractType: extracted.contractType || prev.contractType,
                 remotePolicy: extracted.remotePolicy || prev.remotePolicy,
                 salary: extracted.salary || prev.salary,
+                salaryDetails: extracted.salaryDetails || prev.salaryDetails, // New
+                missions: extracted.missions || prev.missions,             // New
                 jobDescription: extracted.jobDescription || prev.jobDescription,
                 contactName: extracted.contactName || prev.contactName,
                 contactEmail: extracted.contactEmail || prev.contactEmail,
                 contactPhone: extracted.contactPhone || prev.contactPhone,
                 link: extracted.link || prev.link,
-                tags: [...(prev.tags || []), ...(extracted.tags || [])].filter((x, i, a) => a.indexOf(x) === i), // Unique tags
-                source: extracted.company ? 'Site Entreprise' : prev.source // Little heuristic
+                tags: [...(prev.tags || []), ...(extracted.tags || [])].filter((x, i, a) => a.indexOf(x) === i),
+                source: extracted.company ? 'Site Entreprise' : prev.source
             }));
 
             // Close modal
@@ -310,7 +312,7 @@ Mon Nom`;
                         </div>
                         <div>
                             <h2 className="text-2xl font-black text-slate-800 tracking-tight">
-                                {isEditing ? "Modifier l'Opportunité" : "Nouvelle Candidature"} <span className="text-xs text-slate-400 font-normal">v1.5</span>
+                                {isEditing ? "Modifier l'Opportunité" : "Nouvelle Candidature"} <span className="text-xs text-slate-400 font-normal">v1.6</span>
                             </h2>
                             <p className="text-slate-500 font-medium">Capturez chaque détail pour décrocher le job.</p>
                         </div>
@@ -458,6 +460,61 @@ Mon Nom`;
                                                     placeholder="45-55k..."
                                                 />
                                             </div>
+
+                                            {/* Advanced Details Display (Auto-filled by Magic Button) */}
+                                            {(formData.salaryDetails?.brutYear || (formData.missions && formData.missions.length > 0)) && (
+                                                <div className="mt-5 p-4 bg-slate-50 rounded-2xl border border-slate-200 animate-in fade-in slide-in-from-top-2">
+
+                                                    {/* Salary Breakdown */}
+                                                    {formData.salaryDetails?.brutYear && (
+                                                        <div className="mb-4">
+                                                            <h4 className="flex items-center gap-2 text-sm font-bold text-slate-700 mb-3">
+                                                                <Euro size={16} className="text-emerald-500" /> Analyse Rémunération
+                                                            </h4>
+                                                            <div className="grid grid-cols-2 md:grid-cols-4 gap-2 text-xs">
+                                                                <div className="p-2 bg-white rounded-lg border border-slate-100 shadow-sm">
+                                                                    <div className="text-slate-400 font-semibold mb-1">Brut Annuel</div>
+                                                                    <div className="font-bold text-slate-800">{formData.salaryDetails.brutYear}</div>
+                                                                </div>
+                                                                <div className="p-2 bg-white rounded-lg border border-slate-100 shadow-sm">
+                                                                    <div className="text-slate-400 font-semibold mb-1">Brut Mensuel</div>
+                                                                    <div className="font-bold text-slate-800">{formData.salaryDetails.brutMonth}</div>
+                                                                </div>
+                                                                <div className="p-2 bg-emerald-50 rounded-lg border border-emerald-100 shadow-sm">
+                                                                    <div className="text-emerald-600 font-semibold mb-1">Net Annuel (Est.)</div>
+                                                                    <div className="font-bold text-emerald-900">{formData.salaryDetails.netYear}</div>
+                                                                </div>
+                                                                <div className="p-2 bg-emerald-50 rounded-lg border border-emerald-100 shadow-sm">
+                                                                    <div className="text-emerald-600 font-semibold mb-1">Net Mensuel (Est.)</div>
+                                                                    <div className="font-bold text-emerald-900">{formData.salaryDetails.netMonth}</div>
+                                                                </div>
+                                                            </div>
+                                                            {formData.salaryDetails.analysis && (
+                                                                <div className="mt-2 text-xs text-slate-500 italic bg-white px-3 py-1.5 rounded-full inline-block border border-slate-100">
+                                                                    💡 {formData.salaryDetails.analysis}
+                                                                </div>
+                                                            )}
+                                                        </div>
+                                                    )}
+
+                                                    {/* Missions List */}
+                                                    {formData.missions && formData.missions.length > 0 && (
+                                                        <div className="pt-4 border-t border-slate-200">
+                                                            <h4 className="flex items-center gap-2 text-sm font-bold text-slate-700 mb-3">
+                                                                <Target size={16} className="text-indigo-500" /> Missions Clés Identifiées
+                                                            </h4>
+                                                            <ul className="space-y-1.5">
+                                                                {formData.missions.map((mission, idx) => (
+                                                                    <li key={idx} className="flex items-start gap-2 text-sm text-slate-600">
+                                                                        <span className="mt-1.5 w-1.5 h-1.5 rounded-full bg-indigo-400 shrink-0" />
+                                                                        {mission}
+                                                                    </li>
+                                                                ))}
+                                                            </ul>
+                                                        </div>
+                                                    )}
+                                                </div>
+                                            )}
                                         </div>
                                     </div>
 

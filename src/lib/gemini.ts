@@ -194,47 +194,84 @@ export const extractJobDetailsFromText = async (text: string): Promise<any> => {
         // Extract Emails
         const emailMatch = text.match(/\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b/);
 
-        // Extract Salary with Nuance (Brut/Net, Annual/Monthly)
+        // --- Advanced Salary Analysis ---
         let salary = "";
-        // Match:
-        // - "25k", "25.5k"
-        // - "25000", "25 000", "25,000" followed by €/euros
-        // - "25000.0"
+        let salaryDetails = {
+            brutYear: "",
+            brutMonth: "",
+            netYear: "",
+            netMonth: "",
+            currency: "€",
+            analysis: "En attente d'IA pour analyse marché précise."
+        };
+
+        // Match: "25k", "25.5k", "25000", "25 000", "25000.0"
         const salaryRegex = /(?:(\d{1,3}(?:[.,]\d+)?)\s?k)|(?:(\d{1,3}(?:[\s,.]\d{3})*|\d{4,8})(?:[.,]\d+)?\s?(?:€|euros?))/i;
         const salaryMatch = text.match(salaryRegex);
 
         if (salaryMatch) {
-            // Find which group matched (k-amount or full-amount)
-            let extractedAmount = salaryMatch[0];
+            // Normalize amount
+            let rawValue = 0;
+            let isAnnual = true; // Default assumption
+            let isBrut = true;   // Default assumption
 
-            // Context: Range logic (e.g. 25000 à 30000)
-            // Look for pattern: Number1 ... (à/au/-) ... Number2
-            const rangeRegex = /(\d{1,3}(?:[\s,.]\d{3})*|\d{4,8})(?:[.,]\d+)?\s?(?:€|k|euros?)?\s*(?:à|au|to|-)\s*(\d{1,3}(?:[\s,.]\d{3})*|\d{4,8})(?:[.,]\d+)?\s?(?:€|k|euros?)/i;
-            const rangeMatch = text.match(rangeRegex);
-
-            if (rangeMatch) {
-                // Check if it's "k" range or full number range
-                const isK = text.toLowerCase().includes('k') && !rangeMatch[1].includes('000');
-                const suffix = isK ? 'k' : ' €';
-                extractedAmount = `${rangeMatch[1]}-${rangeMatch[2]}${suffix}`;
+            if (salaryMatch[1]) { // Format "35k"
+                rawValue = parseFloat(salaryMatch[1].replace(',', '.')) * 1000;
+            } else if (salaryMatch[0]) { // Format "35000 €"
+                rawValue = parseFloat(salaryMatch[0].replace(/[^0-9,.]/g, '').replace(',', '.'));
             }
 
-            const lowerSnippet = text.substring(Math.max(0, salaryMatch.index! - 20), Math.min(text.length, salaryMatch.index! + 50)).toLowerCase();
+            // Detect nuances in context
+            const lowerSnippet = text.substring(Math.max(0, salaryMatch.index! - 30), Math.min(text.length, salaryMatch.index! + 50)).toLowerCase();
 
-            let nuance = "";
-            if (lowerSnippet.includes('brut')) nuance += " Brut";
-            else if (lowerSnippet.includes('net')) nuance += " Net";
+            if (lowerSnippet.includes('net')) isBrut = false;
+            if (lowerSnippet.includes('mois') || lowerSnippet.includes('mensuel')) isAnnual = false;
 
-            if (lowerSnippet.includes('mois') || lowerSnippet.includes('mensuel')) nuance += " Mensuel";
-            else if (lowerSnippet.includes('an') || lowerSnippet.includes('annuel')) nuance += " Annuel";
-            // Heuristic for annual: if amount > 12000 and "mois" is not present
-            else {
-                const numVal = parseInt(extractedAmount.replace(/[^0-9]/g, ''));
-                if (numVal > 12000 && !nuance.includes('Mensuel')) nuance += " Annuel";
+            // Heuristic correction: if < 10000, probably monthly
+            if (rawValue < 10000 && !lowerSnippet.includes('an')) isAnnual = false;
+
+            // Calculate all values (Approximate: Net = Brut * 0.77, Brut = Net / 0.77)
+            const COEFF = 0.77;
+
+            let brutYearVal = 0;
+
+            if (isAnnual) {
+                if (isBrut) brutYearVal = rawValue;
+                else brutYearVal = rawValue / COEFF;
+            } else {
+                if (isBrut) brutYearVal = rawValue * 12;
+                else brutYearVal = (rawValue / COEFF) * 12;
             }
 
-            salary = `${extractedAmount}${nuance}`;
+            // Fill details
+            const fmt = (n: number) => Math.round(n).toLocaleString('fr-FR');
+
+            salaryDetails.brutYear = fmt(brutYearVal) + " €";
+            salaryDetails.brutMonth = fmt(brutYearVal / 12) + " €";
+            salaryDetails.netYear = fmt(brutYearVal * COEFF) + " €";
+            salaryDetails.netMonth = fmt((brutYearVal * COEFF) / 12) + " €";
+
+            salary = `${fmt(isAnnual ? (isBrut ? brutYearVal : brutYearVal * COEFF) : (isBrut ? brutYearVal / 12 : (brutYearVal * COEFF) / 12))} € ${isAnnual ? 'Annuel' : 'Mensuel'} ${isBrut ? 'Brut' : 'Net'}`;
+
+            // Simple Market Analysis Heuristic (Placeholder for Offline mode)
+            if (brutYearVal > 45000) salaryDetails.analysis = "Salaire attractif (Top 30% marché).";
+            else if (brutYearVal < 30000) salaryDetails.analysis = "Salaire en dessous de la moyenne cadre.";
+            else salaryDetails.analysis = "Dans la moyenne du marché.";
         }
+
+        // --- Missions Extraction ---
+        // Look for block starts like "Missions", "Responsabilités", "Tasks"
+        const missions: string[] = [];
+        const missionBlockRegex = /(?:Missions?|Responsabilit(?:é|e)s?|Tâches?|Rôle)(?:\s*:?)([\s\S]{0,800}?)(?=\n\n|\n[A-Z]|$)/i;
+        const missionMatch = text.match(missionBlockRegex);
+
+        if (missionMatch) {
+            const missionText = missionMatch[1];
+            // Split by hyphens or bullets
+            const items = missionText.split(/\n\s*[-•*]\s*/).map(s => s.trim()).filter(s => s.length > 5);
+            missions.push(...items.slice(0, 8)); // Top 8 missions
+        }
+
 
         // Extract Experience for Tags
         const tags = ["Extraction_Offline"];
@@ -295,6 +332,8 @@ export const extractJobDetailsFromText = async (text: string): Promise<any> => {
             contractType: contractType,
             remotePolicy: remotePolicy,
             salary: salary,
+            salaryDetails: salaryDetails, // NEW FIELD
+            missions: missions,           // NEW FIELD
             jobDescription: text.substring(0, 500) + "...\n\n(Texte complet sauvegardé)",
             contactName: "",
             contactEmail: emailMatch ? emailMatch[0] : "",

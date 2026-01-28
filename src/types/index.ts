@@ -100,6 +100,17 @@ export interface JobApplication {
     lastActivityAt?: string;
     aiScore?: number;
     contactId?: string; // Reference to a Contact
+
+    // New Analysis Fields
+    salaryDetails?: {
+        brutYear?: string;
+        brutMonth?: string;
+        netYear?: string;
+        netMonth?: string;
+        currency?: string;
+        analysis?: string; // "Correct par rapport au marché", etc.
+    };
+    missions?: string[];
 }
 
 export interface Contact {
