@@ -443,20 +443,6 @@ export const extractJobDetailsFromText = async (text: string): Promise<any> => {
             if (chezMatch) company = chezMatch[1];
         }
 
-        // Extract Position/Title
-        const lines = text.split('\n').map(l => l.trim()).filter(l => l.length > 0);
-        let position = "";
-        for (let i = 0; i < Math.min(lines.length, 5); i++) {
-            const line = lines[i];
-            const lowerLine = line.toLowerCase();
-            if (lowerLine.startsWith('offre n') || lowerLine.startsWith('publié') || lowerLine.includes('localiser avec')) continue;
-            if (line.length > 5 && line.length < 80) {
-                position = line;
-                break;
-            }
-        }
-
-        // Extract Location
         // Extract Location
         let location = "";
         // Match "75001 - Paris", "78 - Jouy-en-Josas", "33 - Bordeaux"
@@ -464,10 +450,16 @@ export const extractJobDetailsFromText = async (text: string): Promise<any> => {
             text.match(/(\d{2,5})\s*[-–]\s*([^\n\r,.(]+)/);
 
         if (locationMatch) {
-            // Group 2 is code, Group 3 is city (in first regex) OR Group 1 is code, Group 2 is city (in second)
-            // Let's simplify: simple regex first
+            // Normalize: remove garbage like "- Localiser avec Mappy"
+            // The previous code had specific group logic, let's stick to the simple one which was robust enough IF we clean it.
             const simpleMatch = text.match(/(\d{2,5})\s*[-–]\s*([^\n\r,.(]+)/);
-            if (simpleMatch) location = `${simpleMatch[1]} - ${simpleMatch[2].trim()}`;
+            if (simpleMatch) {
+                let city = simpleMatch[2].trim();
+                // CLEANUP: Remove common noise
+                city = city.split('- Localiser')[0].trim();
+                city = city.split('Localiser')[0].trim();
+                location = `${simpleMatch[1]} - ${city}`;
+            }
         }
 
         // Secondary Fallback: look for "Lieu : X"
