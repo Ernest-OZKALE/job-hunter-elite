@@ -143,7 +143,7 @@ export const extractJobDetailsFromText = async (text: string): Promise<any> => {
                     "qualification": "Niveau (ex: Cadre, Employé qualifié)",
                     "industry": "Secteur (ex: Informatique, BTP)",
                     "companySize": "Taille (ex: 50-99 salariés)",
-                    "experience": "Expérience requise (ex: 2 ans, Débutant)",
+                    "experience": "Expérience requise (ex: '2 ans', 'Débutant accepté', 'Senior', 'Expérience souhaitée')",
                     "benefits": ["Ticket resto", "Mutuelle"]
                 }
             `;
@@ -471,7 +471,11 @@ export const extractJobDetailsFromText = async (text: string): Promise<any> => {
             link: "",
             tags: tags,
             // New Fields
-            experience: expMatch ? `${expMatch[1]} ans` : (lowerText.includes('junior') ? 'Junior' : (lowerText.includes('senior') ? 'Senior' : '')),
+            experience: expMatch ? `${expMatch[1]} ans` : (
+                lowerText.includes('junior') ? 'Junior' :
+                    (lowerText.includes('senior') ? 'Senior' :
+                        (lowerText.includes('débutant') || lowerText.includes('debutant') ? 'Débutant accepté' : ''))
+            ),
             benefits: text.match(/(?:Primes?|Tickets? resto|Panier|Participation|Intéressement|Mutuelle|Transport|RTT)/gi) || [],
             qualification: qualification,
             industry: industry,
