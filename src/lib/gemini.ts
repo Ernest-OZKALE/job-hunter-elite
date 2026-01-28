@@ -186,6 +186,59 @@ export const extractJobDetailsFromText = async (text: string): Promise<any> => {
         lastError = restError;
     }
 
-    console.error("Gemini Extraction Error after trying all models and fallback:", lastError);
-    throw new Error(`Échec total de l'analyse (SDK & REST). Vérifiez votre clé API.`);
+    // FINAL FALLBACK: Local Regex Heuristic (Offline Mode)
+    console.warn("Switching to Offline Regex Extraction.");
+    try {
+        const lowerText = text.toLowerCase();
+
+        // Extract Emails
+        const emailMatch = text.match(/\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b/);
+
+        // Extract Salary (simple heuristics)
+        const salaryMatch = lowerText.match(/(\d{2,3}\s?k)|(\d{1,3}\s?000\s?€)/);
+
+        // Extract Contract
+        let contractType = 'CDI'; // Default
+        if (lowerText.includes('cdd')) contractType = 'CDD';
+        if (lowerText.includes('freelance') || lowerText.includes('indépendant')) contractType = 'Freelance';
+        if (lowerText.includes('stage')) contractType = 'Stage';
+        if (lowerText.includes('alternance') || lowerText.includes('apprentissage')) contractType = 'Alternance';
+
+        // Extract Remote
+        let remotePolicy = 'Sur site'; // Default
+        if (lowerText.includes('full remote') || lowerText.includes('100% télétravail')) remotePolicy = 'Full Remote';
+        else if (lowerText.includes('remote') || lowerText.includes('télétravail') || lowerText.includes('hybride')) remotePolicy = 'Hybride';
+
+        // Extract Company (Hard to guess, try to find "chez [Company]" or first words)
+        // This is very rough, but better than nothing
+        let company = "";
+        const companyMatch = text.match(/(?:chez|pour)\s+([A-Z][a-z0-9]+(?:\s[A-Z][a-z0-9]+)*)/);
+        if (companyMatch) company = companyMatch[1];
+
+        // Position (look for headers or first line)
+        let position = "";
+        const lines = text.split('\n').map(l => l.trim()).filter(l => l.length > 0);
+        if (lines.length > 0) position = lines[0].substring(0, 50); // Assume title is at top
+
+        return {
+            company: company,
+            position: position,
+            location: "", // Hard to extract reliably with regex
+            contractType: contractType,
+            remotePolicy: remotePolicy,
+            salary: salaryMatch ? salaryMatch[0] : "",
+            jobDescription: text.substring(0, 500) + "...",
+            contactName: "",
+            contactEmail: emailMatch ? emailMatch[0] : "",
+            contactPhone: "",
+            link: "",
+            tags: ["Extraction_Offline"]
+        };
+
+    } catch (localError) {
+        console.error("Local Regex Error:", localError);
+    }
+
+    console.error("All extraction methods failed.");
+    throw new Error(`Échec total de l'analyse (IA & Offline). Vérifiez votre clé API ou le texte fourni.`);
 };
