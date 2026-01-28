@@ -196,27 +196,42 @@ export const extractJobDetailsFromText = async (text: string): Promise<any> => {
 
         // Extract Salary with Nuance (Brut/Net, Annual/Monthly)
         let salary = "";
-        // Match numbers with k, €, Euros, maybe followed by "brut/net" or "annuel/mensuel"
-        // ex: "35k", "35000€", "2000 € net", "3000 € brut mensuel"
-        const salaryRegex = /(\d{2,3}(?:[.,]\d+)?\s?k|\d{1,3}(?:[.,]\s?\d{3})*(?:[.,]\d+)?\s?(?:€|euros?))/i;
+        // Match:
+        // - "25k", "25.5k"
+        // - "25000", "25 000", "25,000" followed by €/euros
+        // - "25000.0"
+        const salaryRegex = /(?:(\d{1,3}(?:[.,]\d+)?)\s?k)|(?:(\d{1,3}(?:[\s,.]\d{3})*|\d{4,8})(?:[.,]\d+)?\s?(?:€|euros?))/i;
         const salaryMatch = text.match(salaryRegex);
 
         if (salaryMatch) {
+            // Find which group matched (k-amount or full-amount)
             let extractedAmount = salaryMatch[0];
-            const lowerSnippet = text.substring(Math.max(0, salaryMatch.index! - 20), Math.min(text.length, salaryMatch.index! + 50)).toLowerCase();
 
-            // Context: Range?
-            const rangeMatch = text.match(/(\d{2,3}(?:000)?(?:[.,]\d+)?)\s?(?:€|k)?\s*(?:à|au|to|-)\s*(\d{2,3}(?:000)?(?:[.,]\d+)?)\s?(?:€|k|euros?)/i);
+            // Context: Range logic (e.g. 25000 à 30000)
+            // Look for pattern: Number1 ... (à/au/-) ... Number2
+            const rangeRegex = /(\d{1,3}(?:[\s,.]\d{3})*|\d{4,8})(?:[.,]\d+)?\s?(?:€|k|euros?)?\s*(?:à|au|to|-)\s*(\d{1,3}(?:[\s,.]\d{3})*|\d{4,8})(?:[.,]\d+)?\s?(?:€|k|euros?)/i;
+            const rangeMatch = text.match(rangeRegex);
+
             if (rangeMatch) {
-                extractedAmount = `${rangeMatch[1]}-${rangeMatch[2]} ${text.includes('k') ? 'k' : '€'}`;
+                // Check if it's "k" range or full number range
+                const isK = text.toLowerCase().includes('k') && !rangeMatch[1].includes('000');
+                const suffix = isK ? 'k' : ' €';
+                extractedAmount = `${rangeMatch[1]}-${rangeMatch[2]}${suffix}`;
             }
+
+            const lowerSnippet = text.substring(Math.max(0, salaryMatch.index! - 20), Math.min(text.length, salaryMatch.index! + 50)).toLowerCase();
 
             let nuance = "";
             if (lowerSnippet.includes('brut')) nuance += " Brut";
             else if (lowerSnippet.includes('net')) nuance += " Net";
 
             if (lowerSnippet.includes('mois') || lowerSnippet.includes('mensuel')) nuance += " Mensuel";
-            else if (lowerSnippet.includes('an') || lowerSnippet.includes('annuel') || parseInt(extractedAmount.replace(/\D/g, '')) > 10000) nuance += " Annuel"; // Heuristic: >10k is likely annual
+            else if (lowerSnippet.includes('an') || lowerSnippet.includes('annuel')) nuance += " Annuel";
+            // Heuristic for annual: if amount > 12000 and "mois" is not present
+            else {
+                const numVal = parseInt(extractedAmount.replace(/[^0-9]/g, ''));
+                if (numVal > 12000 && !nuance.includes('Mensuel')) nuance += " Annuel";
+            }
 
             salary = `${extractedAmount}${nuance}`;
         }

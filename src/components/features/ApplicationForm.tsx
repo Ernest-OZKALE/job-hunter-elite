@@ -310,7 +310,7 @@ Mon Nom`;
                         </div>
                         <div>
                             <h2 className="text-2xl font-black text-slate-800 tracking-tight">
-                                {isEditing ? "Modifier l'Opportunité" : "Nouvelle Candidature"} <span className="text-xs text-slate-400 font-normal">v1.4</span>
+                                {isEditing ? "Modifier l'Opportunité" : "Nouvelle Candidature"} <span className="text-xs text-slate-400 font-normal">v1.5</span>
                             </h2>
                             <p className="text-slate-500 font-medium">Capturez chaque détail pour décrocher le job.</p>
                         </div>
@@ -612,7 +612,7 @@ Mon Nom`;
                                                 <p className="text-slate-400 font-medium">Aucun document dans la bibliothèque.</p>
                                             </div>
                                         ) : (
-                                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                            <div className="grid grid-cols-1 gap-3">
                                                 {libraryDocuments.map((doc) => {
                                                     const isSelected = formData.attachments.some(att => att.url === doc.url);
                                                     return (
