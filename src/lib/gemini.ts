@@ -194,40 +194,78 @@ export const extractJobDetailsFromText = async (text: string): Promise<any> => {
         // Extract Emails
         const emailMatch = text.match(/\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b/);
 
-        // Extract Salary (simple heuristics)
-        const salaryMatch = lowerText.match(/(\d{2,3}\s?k)|(\d{1,3}\s?000\s?€)/);
+        // Extract Salary
+        // Handles: "25000.0 Euros", "30-35k", "40 000 €", "35000€"
+        let salary = "";
+        const salaryMatch = text.match(/(\d{2,3}\s?k)|(\d{1,3}(?:[.,]\d+)?\s?(?:000)?\s?(?:€|euros?))/i);
+        if (salaryMatch) {
+            // Find the full line or context usually contains range "25000 à 30000"
+            const salaryRangeMatch = text.match(/(\d{2,3}(?:000)?(?:[.,]\d+)?)\s?(?:€|euros?)?\s*(?:à|au|to|-)\s*(\d{2,3}(?:000)?(?:[.,]\d+)?)\s?(?:€|euros?)/i);
+            if (salaryRangeMatch) {
+                salary = `${salaryRangeMatch[1]}-${salaryRangeMatch[2]} ${text.includes('k') ? 'k' : '€'}`;
+            } else {
+                salary = salaryMatch[0];
+            }
+        }
 
         // Extract Contract
         let contractType = 'CDI'; // Default
         if (lowerText.includes('cdd')) contractType = 'CDD';
-        if (lowerText.includes('freelance') || lowerText.includes('indépendant')) contractType = 'Freelance';
-        if (lowerText.includes('stage')) contractType = 'Stage';
-        if (lowerText.includes('alternance') || lowerText.includes('apprentissage')) contractType = 'Alternance';
+        if (lowerText.includes('freelance') || lowerText.includes('indépendant') || lowerText.includes('prestataire')) contractType = 'Freelance';
+        if (lowerText.includes('stage') || lowerText.includes('internship')) contractType = 'Stage';
+        if (lowerText.includes('alternance') || lowerText.includes('apprentissage') || lowerText.includes('contrat pro')) contractType = 'Alternance';
 
         // Extract Remote
         let remotePolicy = 'Sur site'; // Default
-        if (lowerText.includes('full remote') || lowerText.includes('100% télétravail')) remotePolicy = 'Full Remote';
-        else if (lowerText.includes('remote') || lowerText.includes('télétravail') || lowerText.includes('hybride')) remotePolicy = 'Hybride';
+        if (lowerText.includes('full remote') || lowerText.includes('100% télétravail') || lowerText.includes('télétravail total')) remotePolicy = 'Full Remote';
+        else if (lowerText.includes('remote') || lowerText.includes('télétravail') || lowerText.includes('hybride') || lowerText.includes('hybrid')) remotePolicy = 'Hybride';
 
-        // Extract Company (Hard to guess, try to find "chez [Company]" or first words)
-        // This is very rough, but better than nothing
+        // Extract Company
         let company = "";
-        const companyMatch = text.match(/(?:chez|pour)\s+([A-Z][a-z0-9]+(?:\s[A-Z][a-z0-9]+)*)/);
-        if (companyMatch) company = companyMatch[1];
+        // Strategy 1: Look for "Employeur" or "Entreprise" followed by name
+        const employerMatch = text.match(/(?:Employeur|Entreprise|Société)\s*[:\n]\s*([^\n\r]+)/i);
+        if (employerMatch) {
+            company = employerMatch[1].trim();
+        } else {
+            // Strategy 2: Look for "chez [Name]"
+            const chezMatch = text.match(/(?:chez|pour)\s+([A-Z][a-z0-9]+(?:\s[A-Z][a-z0-9]+)*)/);
+            if (chezMatch) company = chezMatch[1];
+        }
 
-        // Position (look for headers or first line)
+        // Extract Position/Title
+        // Heuristic: The title is usually in the first 3 lines.
+        // We skip lines that look like Reference numbers "Offre n°..." or dates "Publié le..."
         let position = "";
         const lines = text.split('\n').map(l => l.trim()).filter(l => l.length > 0);
-        if (lines.length > 0) position = lines[0].substring(0, 50); // Assume title is at top
+        for (let i = 0; i < Math.min(lines.length, 5); i++) {
+            const line = lines[i];
+            const lowerLine = line.toLowerCase();
+            // Skip utility lines
+            if (lowerLine.startsWith('offre n') || lowerLine.startsWith('publié') || lowerLine.includes('localiser avec')) continue;
+            // If line is short but not too short, and likely not a location
+            if (line.length > 5 && line.length < 80) {
+                position = line;
+                break;
+            }
+        }
+
+        // Extract Location (Simple fallback)
+        let location = "";
+        const locationMatch = text.match(/\d{5}\s+-\s+([^\n-]+)/); // Matches "75000 - Paris" format often seen
+        if (locationMatch) {
+            location = locationMatch[1].trim();
+        } else if (text.match(/paris/i)) {
+            location = "Paris";
+        }
 
         return {
-            company: company,
-            position: position,
-            location: "", // Hard to extract reliably with regex
+            company: company || "",
+            position: position || "Poste à définir",
+            location: location || "", // Hard to extract reliably with regex
             contractType: contractType,
             remotePolicy: remotePolicy,
-            salary: salaryMatch ? salaryMatch[0] : "",
-            jobDescription: text.substring(0, 500) + "...",
+            salary: salary,
+            jobDescription: text.substring(0, 500) + "...\n\n(Texte complet sauvegardé)",
             contactName: "",
             contactEmail: emailMatch ? emailMatch[0] : "",
             contactPhone: "",
