@@ -29,6 +29,7 @@ import { StatusSelector } from '../ui/StatusSelector';
 import { calculateAiScore, calculateRealAiScore } from '../../lib/aiScoring';
 import { extractJobDetailsFromText } from '../../lib/gemini';
 import { parseJobOffer } from '../../lib/parseJobOffer';
+import { calculateSalaryDetails } from '../../lib/salaryCalculator';
 import { Wand2, Loader2, CheckCircle2 } from 'lucide-react';
 import { useDocuments } from '../../hooks/useDocuments';
 
@@ -65,6 +66,20 @@ export const ApplicationForm = ({
         const { id, ...rest } = initialData as JobApplication;
         setFormData(prev => ({ ...prev, ...rest }));
     }, [initialData]);
+
+    // Live Salary Calculator
+    useEffect(() => {
+        if (formData.salary && formData.salary.length > 2) {
+            // Debounce or just direct calculation? Direct is fine for now as regex is fast.
+            const details = calculateSalaryDetails(formData.salary);
+            if (details) {
+                setFormData(prev => ({
+                    ...prev,
+                    salaryDetails: { ...prev.salaryDetails, ...details }
+                }));
+            }
+        }
+    }, [formData.salary]);
 
     // Lock body scroll when modal is open
     useEffect(() => {
@@ -314,7 +329,7 @@ Mon Nom`;
                         </div>
                         <div>
                             <h2 className="text-2xl font-black text-slate-800 tracking-tight">
-                                {isEditing ? "Modifier l'Opportunité" : "Nouvelle Candidature"} <span className="text-xs text-slate-400 font-normal">v2.2</span>
+                                {isEditing ? "Modifier l'Opportunité" : "Nouvelle Candidature"} <span className="text-xs text-slate-400 font-normal">v2.3</span>
                             </h2>
                             <p className="text-slate-500 font-medium">Capturez chaque détail pour décrocher le job.</p>
                         </div>
@@ -466,6 +481,114 @@ Mon Nom`;
 
                                         </div>
                                     </div>
+
+                                    {/* MOVED: Advanced Details Display (Full Width) */}
+                                    {(formData.salaryDetails?.brutYear || (formData.missions && formData.missions.length > 0)) && (
+                                        <div className="mt-6 w-full p-6 bg-slate-50/80 rounded-2xl border border-slate-200 animate-in fade-in slide-in-from-top-2">
+
+                                            {/* Salary Breakdown */}
+                                            {formData.salaryDetails?.brutYear && (
+                                                <div className="mb-6">
+                                                    <h4 className="flex items-center gap-2 text-base font-bold text-slate-800 mb-4">
+                                                        <Euro size={20} className="text-emerald-500" /> Analyse Rémunération Détaillée
+                                                    </h4>
+                                                    <div className="overflow-hidden bg-white rounded-xl border border-slate-200 shadow-sm mb-4">
+                                                        <table className="w-full text-sm text-left">
+                                                            <thead className="text-xs text-slate-500 uppercase bg-slate-50 border-b border-slate-100">
+                                                                <tr>
+                                                                    <th className="px-6 py-4 font-semibold">Période</th>
+                                                                    <th className="px-6 py-4 font-semibold">Brut Estimation</th>
+                                                                    <th className="px-6 py-4 font-semibold text-emerald-600">Net <span className="text-[10px] text-emerald-400 font-normal ml-1"> (Avant impôt)</span></th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody className="divide-y divide-slate-100">
+                                                                {['Annuel', 'Mensuel', 'Journalier', 'Horaire'].map((period) => {
+                                                                    const keySuffix = period === 'Annuel' ? 'Year' : period === 'Mensuel' ? 'Month' : period === 'Journalier' ? 'Day' : 'Hour';
+                                                                    const brut = formData.salaryDetails?.[`brut${keySuffix}` as keyof typeof formData.salaryDetails];
+                                                                    const net = formData.salaryDetails?.[`net${keySuffix}` as keyof typeof formData.salaryDetails];
+
+                                                                    if (!brut && !net) return null;
+
+                                                                    return (
+                                                                        <tr key={period} className="hover:bg-slate-50/50 transition-colors">
+                                                                            <td className="px-6 py-3 font-medium text-slate-700">{period}</td>
+                                                                            <td className="px-6 py-3 font-bold text-slate-800">{brut || '-'}</td>
+                                                                            <td className="px-6 py-3 font-bold text-emerald-600">{net || '-'}</td>
+                                                                        </tr>
+                                                                    );
+                                                                })}
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                    {formData.salaryDetails.analysis && (
+                                                        <div className={`text-sm px-5 py-4 rounded-xl border flex gap-3 items-start ${formData.salaryDetails.analysis.includes('Mathématique')
+                                                            ? 'bg-amber-50 border-amber-100 text-amber-800'
+                                                            : 'bg-blue-50 border-blue-100 text-blue-800'
+                                                            }`}>
+                                                            <span className="text-xl">💡</span>
+                                                            <span className="font-medium leading-relaxed">{formData.salaryDetails.analysis}</span>
+                                                        </div>
+                                                    )}
+                                                </div>
+                                            )}
+
+                                            {/* Missions & Skills Grid */}
+                                            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 pt-6 border-t border-slate-200">
+
+                                                {/* Missions */}
+                                                {formData.missions && formData.missions.length > 0 && (
+                                                    <div>
+                                                        <h4 className="flex items-center gap-2 text-sm font-bold text-slate-700 mb-3">
+                                                            <Target size={16} className="text-indigo-500" /> Missions Clés
+                                                        </h4>
+                                                        <ul className="space-y-2">
+                                                            {formData.missions.map((mission, idx) => (
+                                                                <li key={idx} className="flex items-start gap-2 text-sm text-slate-600 bg-white p-2.5 rounded-lg border border-slate-100 shadow-sm">
+                                                                    <span className="mt-1.5 w-1.5 h-1.5 rounded-full bg-indigo-400 shrink-0" />
+                                                                    {mission}
+                                                                </li>
+                                                            ))}
+                                                        </ul>
+                                                    </div>
+                                                )}
+
+                                                {/* Insights */}
+                                                <div className="space-y-6">
+                                                    {/* Skills */}
+                                                    {formData.detectedSkills && formData.detectedSkills.length > 0 && (
+                                                        <div>
+                                                            <h4 className="flex items-center gap-2 text-sm font-bold text-slate-700 mb-3">
+                                                                <Star size={16} className="text-blue-500" /> Stack & Skills
+                                                            </h4>
+                                                            <div className="flex flex-wrap gap-2">
+                                                                {formData.detectedSkills.map((skill, idx) => (
+                                                                    <span key={idx} className="px-3 py-1.5 bg-white text-slate-700 text-xs font-bold rounded-lg border border-slate-200 shadow-sm">
+                                                                        {skill}
+                                                                    </span>
+                                                                ))}
+                                                            </div>
+                                                        </div>
+                                                    )}
+
+                                                    {/* Red Flags */}
+                                                    {formData.redFlags && formData.redFlags.length > 0 && (
+                                                        <div>
+                                                            <h4 className="flex items-center gap-2 text-sm font-bold text-red-600 mb-3">
+                                                                <Target size={16} className="text-red-500" /> Points de Vigilance
+                                                            </h4>
+                                                            <div className="space-y-2">
+                                                                {formData.redFlags.map((flag, idx) => (
+                                                                    <div key={idx} className="flex items-center gap-3 text-xs font-bold text-red-700 bg-red-50 px-3 py-2 rounded-lg border border-red-100">
+                                                                        ⚠️ {flag}
+                                                                    </div>
+                                                                ))}
+                                                            </div>
+                                                        </div>
+                                                    )}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    )}
 
                                     <div className="mt-5 space-y-1.5">
                                         <label className="text-xs font-bold text-slate-400 uppercase tracking-wider ml-1">Lien de l'offre</label>
