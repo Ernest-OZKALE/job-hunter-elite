@@ -105,10 +105,14 @@ export interface JobApplication {
     salaryDetails?: {
         brutYear?: string;
         brutMonth?: string;
+        brutDay?: string;  // New
+        brutHour?: string; // New
         netYear?: string;
         netMonth?: string;
+        netDay?: string;   // New
+        netHour?: string;  // New
         currency?: string;
-        analysis?: string; // "Correct par rapport au marché", etc.
+        analysis?: string;
     };
     missions?: string[];
     detectedSkills?: string[]; // Extracted tech/soft skills

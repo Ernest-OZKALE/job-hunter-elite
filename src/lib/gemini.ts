@@ -223,7 +223,7 @@ export const extractJobDetailsFromText = async (text: string): Promise<any> => {
         const salaryMatch = text.match(salaryRegex);
 
         if (salaryMatch) {
-            // Normalize amount
+            // 1. Normalize Extracted Amount
             let rawValue = 0;
             let isAnnual = true; // Default assumption
             let isBrut = true;   // Default assumption
@@ -234,42 +234,61 @@ export const extractJobDetailsFromText = async (text: string): Promise<any> => {
                 rawValue = parseFloat(salaryMatch[0].replace(/[^0-9,.]/g, '').replace(',', '.'));
             }
 
-            // Detect nuances in context
+            // 2. Context Analysis (Brut/Net, Monthly/Annual)
             const lowerSnippet = text.substring(Math.max(0, salaryMatch.index! - 30), Math.min(text.length, salaryMatch.index! + 50)).toLowerCase();
 
             if (lowerSnippet.includes('net')) isBrut = false;
-            if (lowerSnippet.includes('mois') || lowerSnippet.includes('mensuel')) isAnnual = false;
-
-            // Heuristic correction: if < 10000, probably monthly
-            if (rawValue < 10000 && !lowerSnippet.includes('an')) isAnnual = false;
-
-            // Calculate all values (Approximate: Net = Brut * 0.77, Brut = Net / 0.77)
-            const COEFF = 0.77;
-
-            let brutYearVal = 0;
-
-            if (isAnnual) {
-                if (isBrut) brutYearVal = rawValue;
-                else brutYearVal = rawValue / COEFF;
-            } else {
-                if (isBrut) brutYearVal = rawValue * 12;
-                else brutYearVal = (rawValue / COEFF) * 12;
+            // Keywords for monthly
+            if (lowerSnippet.includes('mois') || lowerSnippet.includes('mensuel') || lowerSnippet.includes('mjm')) isAnnual = false;
+            // Keywords for daily
+            if (lowerSnippet.includes('jour') || lowerSnippet.includes('tjm')) {
+                isAnnual = false; // logic handled below
+                // Special case for TJM not handled yet in this simple logic, assuming monthly if not annual for now,
+                // BUT if rawValue < 1000 it might be TJM. Let's stick to standard Annual/Monthly detection for safety first.
             }
 
-            // Fill details
-            const fmt = (n: number) => Math.round(n).toLocaleString('fr-FR');
+            // Heuristic correction: if < 10000 and not small (like TJM < 1000), probably monthly
+            if (rawValue > 1200 && rawValue < 10000 && !lowerSnippet.includes('an')) isAnnual = false;
 
-            salaryDetails.brutYear = fmt(brutYearVal) + " €";
-            salaryDetails.brutMonth = fmt(brutYearVal / 12) + " €";
-            salaryDetails.netYear = fmt(brutYearVal * COEFF) + " €";
-            salaryDetails.netMonth = fmt((brutYearVal * COEFF) / 12) + " €";
 
-            salary = `${fmt(isAnnual ? (isBrut ? brutYearVal : brutYearVal * COEFF) : (isBrut ? brutYearVal / 12 : (brutYearVal * COEFF) / 12))} € ${isAnnual ? 'Annuel' : 'Mensuel'} ${isBrut ? 'Brut' : 'Net'}`;
+            // 3. Calculator Engine (French Rules Approx)
+            const COEFF_NET = 0.77; // Avg for mixed status (Cadre is ~0.75, Non-cadre ~0.78)
+            const MONTHS = 12;
+            const DAYS_WORKED_YEAR = 218; // Standard forfait jour
+            const HOURS_WORKED_YEAR = 1607; // Legal standard
 
-            // Offline Analysis Heuristic
-            if (brutYearVal > 55000) salaryDetails.analysis = "Est. Mathématique : Salaire élevé ( > 55k).";
-            else if (brutYearVal > 40000) salaryDetails.analysis = "Est. Mathématique : Standard Cadre (40-55k).";
-            else salaryDetails.analysis = "Est. Mathématique : À vérifier (estimation hors-ligne).";
+            let annualBrut = 0;
+
+            if (isAnnual) {
+                annualBrut = isBrut ? rawValue : rawValue / COEFF_NET;
+            } else {
+                // Monthly
+                annualBrut = isBrut ? rawValue * 12 : (rawValue / COEFF_NET) * 12;
+            }
+
+            const annualNet = annualBrut * COEFF_NET;
+
+            // 4. Generate All Fields
+            const fmt = (n: number) => Math.round(n).toLocaleString('fr-FR') + " €";
+
+            salaryDetails = {
+                brutYear: fmt(annualBrut),
+                brutMonth: fmt(annualBrut / 12),
+                brutDay: fmt(annualBrut / DAYS_WORKED_YEAR),
+                brutHour: fmt(annualBrut / HOURS_WORKED_YEAR),
+
+                netYear: fmt(annualNet),
+                netMonth: fmt(annualNet / 12),
+                netDay: fmt(annualNet / DAYS_WORKED_YEAR),
+                netHour: fmt(annualNet / HOURS_WORKED_YEAR),
+
+                currency: "€",
+                analysis: isAnnual ?
+                    (annualBrut > 45000 ? "Salaire attractif (Top 30% marché)." : (annualBrut < 30000 ? "Salaire standard/junior." : "Salaire dans la moyenne."))
+                    : "Estimation basée sur un montant mensuel.",
+            };
+
+            salary = `${fmt(isAnnual ? annualBrut : annualBrut / 12)} ${isAnnual ? 'Annuel' : 'Mensuel'} Brut`;
         }
 
         // --- Missions Extraction ---

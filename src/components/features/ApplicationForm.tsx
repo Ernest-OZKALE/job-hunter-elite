@@ -314,7 +314,7 @@ Mon Nom`;
                         </div>
                         <div>
                             <h2 className="text-2xl font-black text-slate-800 tracking-tight">
-                                {isEditing ? "Modifier l'Opportunité" : "Nouvelle Candidature"} <span className="text-xs text-slate-400 font-normal">v1.9</span>
+                                {isEditing ? "Modifier l'Opportunité" : "Nouvelle Candidature"} <span className="text-xs text-slate-400 font-normal">v2.0</span>
                             </h2>
                             <p className="text-slate-500 font-medium">Capturez chaque détail pour décrocher le job.</p>
                         </div>
@@ -473,23 +473,42 @@ Mon Nom`;
                                                             <h4 className="flex items-center gap-2 text-sm font-bold text-slate-700 mb-3">
                                                                 <Euro size={16} className="text-emerald-500" /> Analyse Rémunération
                                                             </h4>
-                                                            <div className="grid grid-cols-2 gap-3 text-xs mb-4">
-                                                                <div className="p-3 bg-white rounded-xl border border-slate-100 shadow-sm flex flex-col justify-center text-center">
-                                                                    <div className="text-slate-400 font-medium mb-0.5">Brut Annuel</div>
-                                                                    <div className="font-bold text-slate-800 text-sm">{formData.salaryDetails.brutYear}</div>
-                                                                </div>
-                                                                <div className="p-3 bg-white rounded-xl border border-slate-100 shadow-sm flex flex-col justify-center text-center">
-                                                                    <div className="text-slate-400 font-medium mb-0.5">Brut Mensuel</div>
-                                                                    <div className="font-bold text-slate-800 text-sm">{formData.salaryDetails.brutMonth}</div>
-                                                                </div>
-                                                                <div className="p-3 bg-emerald-50 rounded-xl border border-emerald-100 shadow-sm flex flex-col justify-center text-center">
-                                                                    <div className="text-emerald-600 font-medium mb-0.5">Net Annuel (Est.)</div>
-                                                                    <div className="font-bold text-emerald-900 text-sm">{formData.salaryDetails.netYear}</div>
-                                                                </div>
-                                                                <div className="p-3 bg-emerald-50 rounded-xl border border-emerald-100 shadow-sm flex flex-col justify-center text-center">
-                                                                    <div className="text-emerald-600 font-medium mb-0.5">Net Mensuel (Est.)</div>
-                                                                    <div className="font-bold text-emerald-900 text-sm">{formData.salaryDetails.netMonth}</div>
-                                                                </div>
+                                                            <div className="overflow-hidden bg-white rounded-xl border border-slate-200 shadow-sm mb-4">
+                                                                <table className="w-full text-sm text-left">
+                                                                    <thead className="text-xs text-slate-500 uppercase bg-slate-50 border-b border-slate-100">
+                                                                        <tr>
+                                                                            <th className="px-4 py-3 font-semibold">Période</th>
+                                                                            <th className="px-4 py-3 font-semibold">Brut <span className="text-[10px] text-slate-400 font-normal ml-1">(Est.)</span></th>
+                                                                            <th className="px-4 py-3 font-semibold text-emerald-600">Net <span className="text-[10px] text-emerald-400 font-normal ml-1">(~23% char.)</span></th>
+                                                                        </tr>
+                                                                    </thead>
+                                                                    <tbody className="divide-y divide-slate-100">
+                                                                        <tr className="hover:bg-slate-50/50 transition-colors">
+                                                                            <td className="px-4 py-2.5 font-medium text-slate-700">Annuel</td>
+                                                                            <td className="px-4 py-2.5 font-bold text-slate-800">{formData.salaryDetails.brutYear || '-'}</td>
+                                                                            <td className="px-4 py-2.5 font-bold text-emerald-600">{formData.salaryDetails.netYear || '-'}</td>
+                                                                        </tr>
+                                                                        <tr className="hover:bg-slate-50/50 transition-colors">
+                                                                            <td className="px-4 py-2.5 font-medium text-slate-700">Mensuel</td>
+                                                                            <td className="px-4 py-2.5 text-slate-600">{formData.salaryDetails.brutMonth || '-'}</td>
+                                                                            <td className="px-4 py-2.5 font-semibold text-emerald-600">{formData.salaryDetails.netMonth || '-'}</td>
+                                                                        </tr>
+                                                                        {(formData.salaryDetails.brutDay || formData.salaryDetails.netDay) && (
+                                                                            <tr className="hover:bg-slate-50/50 transition-colors">
+                                                                                <td className="px-4 py-2.5 font-medium text-slate-700">Journalier</td>
+                                                                                <td className="px-4 py-2.5 text-slate-600">{formData.salaryDetails.brutDay || '-'}</td>
+                                                                                <td className="px-4 py-2.5 text-emerald-600">{formData.salaryDetails.netDay || '-'}</td>
+                                                                            </tr>
+                                                                        )}
+                                                                        {(formData.salaryDetails.brutHour || formData.salaryDetails.netHour) && (
+                                                                            <tr className="hover:bg-slate-50/50 transition-colors">
+                                                                                <td className="px-4 py-2.5 font-medium text-slate-700">Horaire</td>
+                                                                                <td className="px-4 py-2.5 text-slate-600">{formData.salaryDetails.brutHour || '-'}</td>
+                                                                                <td className="px-4 py-2.5 text-emerald-600">{formData.salaryDetails.netHour || '-'}</td>
+                                                                            </tr>
+                                                                        )}
+                                                                    </tbody>
+                                                                </table>
                                                             </div>
                                                             {formData.salaryDetails.analysis && (
                                                                 <div className={`mt-3 text-xs px-4 py-3 rounded-xl border flex gap-3 ${formData.salaryDetails.analysis.includes('Mathématique')
