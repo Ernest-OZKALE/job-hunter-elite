@@ -310,7 +310,7 @@ Mon Nom`;
                         </div>
                         <div>
                             <h2 className="text-2xl font-black text-slate-800 tracking-tight">
-                                {isEditing ? "Modifier l'Opportunité" : "Nouvelle Candidature"} <span className="text-xs text-slate-400 font-normal">v1.3</span>
+                                {isEditing ? "Modifier l'Opportunité" : "Nouvelle Candidature"} <span className="text-xs text-slate-400 font-normal">v1.4</span>
                             </h2>
                             <p className="text-slate-500 font-medium">Capturez chaque détail pour décrocher le job.</p>
                         </div>
@@ -637,23 +637,23 @@ Mon Nom`;
                                                                     }));
                                                                 }
                                                             }}
-                                                            className={`p-4 rounded-xl border transition-all cursor-pointer flex items-center gap-4 group ${isSelected
+                                                            className={`p-3 rounded-xl border transition-all cursor-pointer flex items-center gap-3 group relative overflow-hidden ${isSelected
                                                                 ? 'bg-blue-600 border-blue-600 text-white shadow-lg shadow-blue-500/20'
                                                                 : 'bg-white border-slate-200 hover:border-blue-400 hover:shadow-md'
                                                                 }`}
                                                         >
-                                                            <div className={`p-3 rounded-lg ${isSelected ? 'bg-white/20 text-white' : 'bg-slate-100 text-slate-500'}`}>
+                                                            <div className={`p-2.5 rounded-lg shrink-0 ${isSelected ? 'bg-white/20 text-white' : 'bg-slate-100 text-slate-500'}`}>
                                                                 <FileText size={20} />
                                                             </div>
-                                                            <div className="flex-1 min-w-0">
-                                                                <div className={`font-bold truncate ${isSelected ? 'text-white' : 'text-slate-700'}`}>
+                                                            <div className="flex-1 min-w-0 pr-8">
+                                                                <div className={`font-bold truncate text-sm mb-0.5 ${isSelected ? 'text-white' : 'text-slate-700'}`} title={doc.name}>
                                                                     {doc.name}
                                                                 </div>
-                                                                <div className={`text-xs ${isSelected ? 'text-blue-100' : 'text-slate-400'}`}>
+                                                                <div className={`text-[10px] ${isSelected ? 'text-blue-100' : 'text-slate-400'}`}>
                                                                     {doc.type} • {doc.size}
                                                                 </div>
                                                             </div>
-                                                            <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all ${isSelected ? 'border-white bg-white text-blue-600' : 'border-slate-300'}`}>
+                                                            <div className={`absolute right-3 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all ${isSelected ? 'border-white bg-white text-blue-600' : 'border-slate-200 opacity-0 group-hover:opacity-100'}`}>
                                                                 {isSelected && <CheckCircle2 size={14} strokeWidth={4} />}
                                                             </div>
                                                         </div>

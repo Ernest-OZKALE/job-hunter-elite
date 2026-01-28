@@ -194,18 +194,42 @@ export const extractJobDetailsFromText = async (text: string): Promise<any> => {
         // Extract Emails
         const emailMatch = text.match(/\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b/);
 
-        // Extract Salary
-        // Handles: "25000.0 Euros", "30-35k", "40 000 €", "35000€"
+        // Extract Salary with Nuance (Brut/Net, Annual/Monthly)
         let salary = "";
-        const salaryMatch = text.match(/(\d{2,3}\s?k)|(\d{1,3}(?:[.,]\d+)?\s?(?:000)?\s?(?:€|euros?))/i);
+        // Match numbers with k, €, Euros, maybe followed by "brut/net" or "annuel/mensuel"
+        // ex: "35k", "35000€", "2000 € net", "3000 € brut mensuel"
+        const salaryRegex = /(\d{2,3}(?:[.,]\d+)?\s?k|\d{1,3}(?:[.,]\s?\d{3})*(?:[.,]\d+)?\s?(?:€|euros?))/i;
+        const salaryMatch = text.match(salaryRegex);
+
         if (salaryMatch) {
-            // Find the full line or context usually contains range "25000 à 30000"
-            const salaryRangeMatch = text.match(/(\d{2,3}(?:000)?(?:[.,]\d+)?)\s?(?:€|euros?)?\s*(?:à|au|to|-)\s*(\d{2,3}(?:000)?(?:[.,]\d+)?)\s?(?:€|euros?)/i);
-            if (salaryRangeMatch) {
-                salary = `${salaryRangeMatch[1]}-${salaryRangeMatch[2]} ${text.includes('k') ? 'k' : '€'}`;
-            } else {
-                salary = salaryMatch[0];
+            let extractedAmount = salaryMatch[0];
+            const lowerSnippet = text.substring(Math.max(0, salaryMatch.index! - 20), Math.min(text.length, salaryMatch.index! + 50)).toLowerCase();
+
+            // Context: Range?
+            const rangeMatch = text.match(/(\d{2,3}(?:000)?(?:[.,]\d+)?)\s?(?:€|k)?\s*(?:à|au|to|-)\s*(\d{2,3}(?:000)?(?:[.,]\d+)?)\s?(?:€|k|euros?)/i);
+            if (rangeMatch) {
+                extractedAmount = `${rangeMatch[1]}-${rangeMatch[2]} ${text.includes('k') ? 'k' : '€'}`;
             }
+
+            let nuance = "";
+            if (lowerSnippet.includes('brut')) nuance += " Brut";
+            else if (lowerSnippet.includes('net')) nuance += " Net";
+
+            if (lowerSnippet.includes('mois') || lowerSnippet.includes('mensuel')) nuance += " Mensuel";
+            else if (lowerSnippet.includes('an') || lowerSnippet.includes('annuel') || parseInt(extractedAmount.replace(/\D/g, '')) > 10000) nuance += " Annuel"; // Heuristic: >10k is likely annual
+
+            salary = `${extractedAmount}${nuance}`;
+        }
+
+        // Extract Experience for Tags
+        const tags = ["Extraction_Offline"];
+        const expMatch = lowerText.match(/(?:expérience|experience)\s*:\s*(\d+(?:\s?-\s?\d+)?)\s*an/i);
+        if (expMatch) {
+            tags.push(`Exp ${expMatch[1]} ans`);
+        } else if (lowerText.match(/junior/)) {
+            tags.push("Junior");
+        } else if (lowerText.match(/senior/)) {
+            tags.push("Senior");
         }
 
         // Extract Contract
@@ -222,46 +246,37 @@ export const extractJobDetailsFromText = async (text: string): Promise<any> => {
 
         // Extract Company
         let company = "";
-        // Strategy 1: Look for "Employeur" or "Entreprise" followed by name
         const employerMatch = text.match(/(?:Employeur|Entreprise|Société)\s*[:\n]\s*([^\n\r]+)/i);
         if (employerMatch) {
             company = employerMatch[1].trim();
         } else {
-            // Strategy 2: Look for "chez [Name]"
             const chezMatch = text.match(/(?:chez|pour)\s+([A-Z][a-z0-9]+(?:\s[A-Z][a-z0-9]+)*)/);
             if (chezMatch) company = chezMatch[1];
         }
 
         // Extract Position/Title
-        // Heuristic: The title is usually in the first 3 lines.
-        // We skip lines that look like Reference numbers "Offre n°..." or dates "Publié le..."
-        let position = "";
         const lines = text.split('\n').map(l => l.trim()).filter(l => l.length > 0);
+        let position = "";
         for (let i = 0; i < Math.min(lines.length, 5); i++) {
             const line = lines[i];
             const lowerLine = line.toLowerCase();
-            // Skip utility lines
             if (lowerLine.startsWith('offre n') || lowerLine.startsWith('publié') || lowerLine.includes('localiser avec')) continue;
-            // If line is short but not too short, and likely not a location
             if (line.length > 5 && line.length < 80) {
                 position = line;
                 break;
             }
         }
 
-        // Extract Location (Simple fallback)
+        // Extract Location
         let location = "";
-        const locationMatch = text.match(/\d{5}\s+-\s+([^\n-]+)/); // Matches "75000 - Paris" format often seen
-        if (locationMatch) {
-            location = locationMatch[1].trim();
-        } else if (text.match(/paris/i)) {
-            location = "Paris";
-        }
+        const locationMatch = text.match(/\d{5}\s+-\s+([^\n-]+)/);
+        if (locationMatch) location = locationMatch[1].trim();
+        else if (text.match(/paris/i)) location = "Paris";
 
         return {
             company: company || "",
             position: position || "Poste à définir",
-            location: location || "", // Hard to extract reliably with regex
+            location: location || "",
             contractType: contractType,
             remotePolicy: remotePolicy,
             salary: salary,
@@ -270,7 +285,7 @@ export const extractJobDetailsFromText = async (text: string): Promise<any> => {
             contactEmail: emailMatch ? emailMatch[0] : "",
             contactPhone: "",
             link: "",
-            tags: ["Extraction_Offline"]
+            tags: tags
         };
 
     } catch (localError) {
