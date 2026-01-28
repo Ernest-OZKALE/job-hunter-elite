@@ -131,7 +131,6 @@ export const ApplicationForm = ({
                 contactPhone: extracted.contactPhone || prev.contactPhone,
                 link: extracted.link || prev.link,
                 tags: [...(prev.tags || []), ...(extracted.tags || [])].filter((x, i, a) => a.indexOf(x) === i),
-                tags: [...(prev.tags || []), ...(extracted.tags || [])].filter((x, i, a) => a.indexOf(x) === i),
                 source: extracted.company ? 'Site Entreprise' : prev.source,
                 // New Fields Mapping
                 qualification: extracted.qualification || prev.qualification,
