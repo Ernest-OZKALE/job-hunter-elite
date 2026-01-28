@@ -112,7 +112,8 @@ export const extractJobDetailsFromText = async (text: string): Promise<any> => {
                 "${text.substring(0, 15000)}"
 
                 CONSIGNES D'EXTRACTION :
-                - Sois "smart" : si le salaire est "24k", convertis-le. Si c'est "24 377", nettoie-le.
+                - Sois "smart" : Distingue le LIEU DU POSTE du siège social. Si "78 - Jouy-en-Josas" est écrit, c'est le lieu (pas Paris).
+                - Si le salaire est "24k", convertis-le. Si c'est "24 377", nettoie-le.
                 - Détecte l'expérience (ex: "1 An(s)" -> "1 an").
                 - Détecte les avantages même s'ils sont dans une liste à puces.
                 - Pour "Missions", "Mots clés" (tags), "Compétences", fais une synthèse intelligente.
@@ -439,10 +440,25 @@ export const extractJobDetailsFromText = async (text: string): Promise<any> => {
         }
 
         // Extract Location
+        // Extract Location
         let location = "";
-        const locationMatch = text.match(/\d{5}\s+-\s+([^\n-]+)/);
-        if (locationMatch) location = locationMatch[1].trim();
-        else if (text.match(/paris/i)) location = "Paris";
+        // Match "75001 - Paris", "78 - Jouy-en-Josas", "33 - Bordeaux"
+        const locationMatch = text.match(/(:?Lieu|Localisation)?\s*:?\s*(\d{2,5})\s*[-–]\s*([^\n\r,.(]+)/i) ||
+            text.match(/(\d{2,5})\s*[-–]\s*([^\n\r,.(]+)/);
+
+        if (locationMatch) {
+            // Group 2 is code, Group 3 is city (in first regex) OR Group 1 is code, Group 2 is city (in second)
+            // Let's simplify: simple regex first
+            const simpleMatch = text.match(/(\d{2,5})\s*[-–]\s*([^\n\r,.(]+)/);
+            if (simpleMatch) location = `${simpleMatch[1]} - ${simpleMatch[2].trim()}`;
+        }
+
+        // Secondary Fallback: look for "Lieu : X"
+        if (!location) {
+            const lieuMatch = text.match(/(?:Lieu|Localisation|Ville)\s*:\s*([^\n\r]+)/i);
+            if (lieuMatch) location = lieuMatch[1].trim();
+            else if (text.match(/\bParis\b/i) && !text.match(/78|92|93|94|77|91|95/)) location = "Paris"; // Only default to Paris if no surrounding suburbs mentioned
+        }
 
         // Extract Qualification
         let qualification = "";
