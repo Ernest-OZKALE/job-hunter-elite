@@ -28,7 +28,11 @@ import {
 import type { JobApplication, Attachment, ApplicationStatus } from '../../types';
 import { StatusSelector } from '../ui/StatusSelector';
 import { calculateAiScore, calculateRealAiScore } from '../../lib/aiScoring';
-import { extractJobDetailsFromText, generateEmail, analyzeJobOpportunity } from '../../lib/gemini';
+import {
+    extractJobDetailsOllama as extractJobDetails,
+    analyzeJobOpportunityOllama as analyzeJobOpportunity,
+    generateEmailOllama as generateEmail
+} from '../../lib/ollama';
 import { parseJobOffer } from '../../lib/parseJobOffer';
 import { calculateSalaryDetails } from '../../lib/salaryCalculator';
 import { Wand2, Loader2, CheckCircle2 } from 'lucide-react';
@@ -106,7 +110,7 @@ export const ApplicationForm = ({
         if (!magicText.trim()) return;
         setIsMagicLoading(true);
         try {
-            const extracted = await extractJobDetailsFromText(magicText);
+            const extracted = await extractJobDetails(magicText);
 
             if (!extracted || Object.keys(extracted).length === 0) {
                 throw new Error("L'IA n'a retourné aucune donnée. Essayez avec plus de texte.");
@@ -343,7 +347,7 @@ export const ApplicationForm = ({
                         </div>
                         <div>
                             <h2 className="text-2xl font-black text-slate-800 tracking-tight">
-                                {isEditing ? "Modifier l'Opportunité" : "Nouvelle Candidature"} <span className="text-xs text-slate-400 font-normal">v2.16 (Fix Contrat Final)</span>
+                                {isEditing ? "Modifier l'Opportunité" : "Nouvelle Candidature"} <span className="text-xs text-slate-400 font-normal">v2.17 (Local AI: Ollama)</span>
                             </h2>
                             <p className="text-slate-500 font-medium">Capturez chaque détail pour décrocher le job.</p>
                         </div>
