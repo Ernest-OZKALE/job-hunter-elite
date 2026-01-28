@@ -74,6 +74,7 @@ export interface JobApplication {
     interestLevel?: number;
     jobDescription?: string;
     nextStep?: string;
+    experience?: string; // New: e.g. "2 ans", "Junior"
 
     // New Advanced Fields
     timeline?: TimelineEvent[];

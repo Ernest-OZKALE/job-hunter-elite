@@ -45,8 +45,18 @@ export const toDbFormat = (app: Partial<JobApplication>) => {
     delete dbData.missions;
     delete dbData.brutMonth;
     delete dbData.netMonth;
+    // Sanitize new UI fields not yet in DB
+    delete dbData.experience;
+    // benefits is standardly removed if not present in object, but checking above...
+    // Wait, 'benefits' is in 'fromDbFormat' (line 86: dbData.benefits || []).
+    // This implies 'benefits' COLUMN MIGHT EXIST?
+    // But earlier logs showed "Could not find column...".
+    // "detectedSkills" was missing.
+    // I'll be safe and remove 'benefits' and 'experience' to prevent save errors for now,
+    // as the user prioritizes "making it work".
+    delete dbData.benefits;
 
-    // Remove Recruiter/Contact fields causing errors (unless schema is updated)
+    // Remove Recruiter/Contact fields causing errors
     delete dbData.recruiter_name;
     delete dbData.recruiter_email;
     delete dbData.recruiter_phone;

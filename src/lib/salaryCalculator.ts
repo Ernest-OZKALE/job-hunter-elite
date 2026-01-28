@@ -26,8 +26,59 @@ export function calculateSalaryDetails(text: string): SalaryDetails | null {
 
     if (salaryMatch[1]) { // Format "35k"
         rawValue = parseFloat(salaryMatch[1].replace(',', '.')) * 1000;
-    } else if (salaryMatch[0]) { // Format "35000 €"
-        rawValue = parseFloat(salaryMatch[0].replace(/[^0-9,.]/g, '').replace(',', '.'));
+    } else if (salaryMatch[0]) { // Format "35000 €" or "24 377.00"
+        let clean = salaryMatch[0].replace(/[^0-9,.]/g, ''); // "24377.00" or "24.377,00"
+
+        // Advanced Parsing Logic for "Intuition"
+        // 1. If contains 'k', handle separate
+        if (clean.toLowerCase().includes('k')) {
+            rawValue = parseFloat(clean.replace('k', '').replace(',', '.')) * 1000;
+        } else {
+            // 2. Normalize separator
+            // If both . and , exist: last one is decimal, first is thousands
+            if (clean.includes('.') && clean.includes(',')) {
+                const lastDot = clean.lastIndexOf('.');
+                const lastComma = clean.lastIndexOf(',');
+                if (lastDot > lastComma) {
+                    // 24,377.00 -> remove commas
+                    clean = clean.replace(/,/g, '');
+                } else {
+                    // 24.377,00 -> remove dots, replace comma with dot
+                    clean = clean.replace(/\./g, '').replace(',', '.');
+                }
+            } else if (clean.includes(',')) {
+                // only comma: "24,377" (English) or "24377,00" (French)?
+                // Heuristic: check decimals. 
+                // If ",00" or ",50" (2 digits) -> likely decimal
+                // If ",377" (3 digits) -> likely thousands
+                if (/,\d{3}$/.test(clean) && !/,\d{2}$/.test(clean)) {
+                    // matches ,123 but maybe not ,12 (wait ,123 matches ,12? No ,123$ matches ,123)
+                    // Assume thousands
+                    clean = clean.replace(/,/g, '');
+                } else {
+                    // Assume decimal
+                    clean = clean.replace(',', '.');
+                }
+            }
+            // if only dot, JS parseFloat handles it, unless "24.377" is thousands?
+            // JS: parseFloat("24.377") = 24.377
+            // If user meant 24377? 
+            // Logic: Salaries are usually > 1000. 
+            // If result is small (e.g. 24.377) and "Annual", multiply by 1000? 
+            // Risk: Hourly rate 15.50 -> 15500?
+
+            rawValue = parseFloat(clean);
+
+            // Intuition for "Forgot Comma" or "Weird format"
+            // If Annual and < 100, likely k multiplier needed (e.g. "35" -> "35k")
+            if (isAnnual && rawValue > 10 && rawValue < 150) {
+                rawValue *= 1000;
+            }
+            // If "24.377" was parsed as 24.37, convert to 24377 if Annual
+            if (isAnnual && rawValue > 10 && rawValue < 100 && clean.split('.')[1]?.length === 3) {
+                rawValue *= 1000;
+            }
+        }
     }
 
     // 2. Context Analysis (Brut/Net, Monthly/Annual)

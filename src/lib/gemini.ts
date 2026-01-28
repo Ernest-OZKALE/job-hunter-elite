@@ -445,7 +445,10 @@ export const extractJobDetailsFromText = async (text: string): Promise<any> => {
             contactEmail: emailMatch ? emailMatch[0] : "",
             contactPhone: "",
             link: "",
-            tags: tags
+            tags: tags,
+            // New Fields
+            experience: expMatch ? `${expMatch[1]} ans` : (lowerText.includes('junior') ? 'Junior' : (lowerText.includes('senior') ? 'Senior' : '')),
+            benefits: text.match(/(?:Primes?|Tickets? resto|Panier|Participation|Intéressement|Mutuelle|Transport|RTT)/gi) || []
         };
 
     } catch (localError) {
