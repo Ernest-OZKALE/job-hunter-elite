@@ -396,7 +396,7 @@ export const extractJobDetailsFromText = async (text: string): Promise<any> => {
         // Extract Experience for Tags
         const tags = ["Extraction_Offline"];
         // Extract Experience for Tags & Field
-        const tags = ["Extraction_Offline"];
+
 
         let expMatch = lowerText.match(/(?:expérience|experience)(?:\s*:?)\s*([\d\w\s+]+?)(?=\n|$)/i);
         // Better regex strategies
