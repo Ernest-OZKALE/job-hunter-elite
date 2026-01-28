@@ -85,6 +85,8 @@ export interface JobApplication {
     salaryMax?: number;
     benefits?: string[];
     companySize?: string;
+    qualification?: string; // e.g. "Employé qualifié", "Cadre"
+    industry?: string;      // e.g. "Informatique", "Commerce"
     techStack?: string[];
     applicationMethod?: 'Site Entreprise' | 'LinkedIn' | 'Indeed' | 'Email Direct' | 'Recommandation' | 'Autre';
     responseTime?: number; // days

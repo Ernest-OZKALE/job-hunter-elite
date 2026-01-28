@@ -135,7 +135,10 @@ export const extractJobDetailsFromText = async (text: string): Promise<any> => {
                     "contactEmail": "Email de contact si mentionné",
                     "contactPhone": "Téléphone si mentionné",
                     "link": "Lien de l'offre si trouvé dans le texte",
-                    "tags": ["Tag1", "Tag2"] (5 mots clés techniques ou importants max)
+                    "tags": ["Tag1", "Tag2"], (5 mots clés techniques ou importants max)
+                    "qualification": "Niveau de qualif (ex: Employé qualifié, Cadre)",
+                    "industry": "Secteur d'activité",
+                    "companySize": "Taille entreprise (ex: 20-49 salariés)"
                 }
             `;
 
@@ -429,6 +432,21 @@ export const extractJobDetailsFromText = async (text: string): Promise<any> => {
         if (locationMatch) location = locationMatch[1].trim();
         else if (text.match(/paris/i)) location = "Paris";
 
+        // Extract Qualification
+        let qualification = "";
+        const qualifMatch = text.match(/Qualification\s*:\s*([^\n]+)/i);
+        if (qualifMatch) qualification = qualifMatch[1].trim();
+
+        // Extract Industry
+        let industry = "";
+        const industryMatch = text.match(/Secteur\s*d['’]?\s*activité\s*:\s*([^\n]+)/i);
+        if (industryMatch) industry = industryMatch[1].trim();
+
+        // Extract Company Size
+        let companySize = "";
+        const sizeMatch = text.match(/(\d+\s*(?:à|to|-)\s*\d+\s*salariés?)/i);
+        if (sizeMatch) companySize = sizeMatch[1].trim();
+
         return {
             company: company || "",
             position: position || "Poste à définir",
@@ -448,7 +466,10 @@ export const extractJobDetailsFromText = async (text: string): Promise<any> => {
             tags: tags,
             // New Fields
             experience: expMatch ? `${expMatch[1]} ans` : (lowerText.includes('junior') ? 'Junior' : (lowerText.includes('senior') ? 'Senior' : '')),
-            benefits: text.match(/(?:Primes?|Tickets? resto|Panier|Participation|Intéressement|Mutuelle|Transport|RTT)/gi) || []
+            benefits: text.match(/(?:Primes?|Tickets? resto|Panier|Participation|Intéressement|Mutuelle|Transport|RTT)/gi) || [],
+            qualification: qualification,
+            industry: industry,
+            companySize: companySize
         };
 
     } catch (localError) {

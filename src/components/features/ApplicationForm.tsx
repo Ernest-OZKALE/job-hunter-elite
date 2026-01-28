@@ -131,7 +131,14 @@ export const ApplicationForm = ({
                 contactPhone: extracted.contactPhone || prev.contactPhone,
                 link: extracted.link || prev.link,
                 tags: [...(prev.tags || []), ...(extracted.tags || [])].filter((x, i, a) => a.indexOf(x) === i),
-                source: extracted.company ? 'Site Entreprise' : prev.source
+                tags: [...(prev.tags || []), ...(extracted.tags || [])].filter((x, i, a) => a.indexOf(x) === i),
+                source: extracted.company ? 'Site Entreprise' : prev.source,
+                // New Fields Mapping
+                qualification: extracted.qualification || prev.qualification,
+                industry: extracted.industry || prev.industry,
+                companySize: extracted.companySize || prev.companySize,
+                experience: extracted.experience || prev.experience,
+                benefits: extracted.benefits || prev.benefits // Array check? Logic in Input handles join/split but here we might receive array or string? extracted.benefits is array from regex or gemini. Input expects string join.
             }));
 
             // Close modal
@@ -330,7 +337,7 @@ Mon Nom`;
                         </div>
                         <div>
                             <h2 className="text-2xl font-black text-slate-800 tracking-tight">
-                                {isEditing ? "Modifier l'Opportunité" : "Nouvelle Candidature"} <span className="text-xs text-slate-400 font-normal">v2.6</span>
+                                {isEditing ? "Modifier l'Opportunité" : "Nouvelle Candidature"} <span className="text-xs text-slate-400 font-normal">v2.7</span>
                             </h2>
                             <p className="text-slate-500 font-medium">Capturez chaque détail pour décrocher le job.</p>
                         </div>
