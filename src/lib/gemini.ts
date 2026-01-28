@@ -94,9 +94,12 @@ export const extractJobDetailsFromText = async (text: string): Promise<any> => {
     const modelsToTry = ["gemini-1.5-flash", "gemini-1.5-pro", "gemini-pro", "gemini-1.0-pro"];
     let lastError;
 
+    // Debug info
+    console.log(`[Gemini Debug] Key loaded: ${API_KEY ? 'Yes (' + API_KEY.substring(0, 4) + '...)' : 'No'}`);
+
     for (const modelName of modelsToTry) {
         try {
-            console.log(`Tentative avec le modèle : ${modelName}`);
+            console.log(`[SDK] Tentative avec le modèle : ${modelName}`);
             const model = genAI.getGenerativeModel({ model: modelName });
 
             const prompt = `
@@ -133,17 +136,56 @@ export const extractJobDetailsFromText = async (text: string): Promise<any> => {
             // Clean markdown
             const jsonStr = responseText.replace(/```json|```/g, "").trim();
             const parsed = JSON.parse(jsonStr);
-            console.log(`Succès avec le modèle : ${modelName}`);
+            console.log(`[SDK] Succès avec le modèle : ${modelName}`);
             return parsed;
 
         } catch (error: any) {
-            console.warn(`Échec avec le modèle ${modelName}:`, error.message);
+            console.warn(`[SDK] Échec avec le modèle ${modelName}:`, error.message);
             lastError = error;
-            // Continue to next model if it's a 404 (Not Found) or 503 (Service Unavailable)
-            // If it's an API Key error (400/403), we might want to stop, but let's try all just in case.
         }
     }
 
-    console.error("Gemini Extraction Error after trying all models:", lastError);
-    throw new Error(`Échec de l'analyse IA avec tous les modèles testés (${modelsToTry.join(', ')}). Vérifiez votre clé API.`);
+    // FALLBACK: Raw REST API (bypassing SDK)
+    console.log("[Fallback] Tentative via API REST directe...");
+    try {
+        const fallbackModel = "gemini-1.5-flash";
+        const url = `https://generativelanguage.googleapis.com/v1beta/models/${fallbackModel}:generateContent?key=${API_KEY}`;
+
+        const response = await fetch(url, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                contents: [{
+                    parts: [{
+                        text: `
+                            Extrais les infos de ce job en JSON (company, position, location, contractType, remotePolicy, salary, jobDescription, contactName, contactEmail, contactPhone, link, tags):
+                            "${text.substring(0, 5000)}"
+                        `
+                    }]
+                }]
+            })
+        });
+
+        if (!response.ok) {
+            const errText = await response.text();
+            throw new Error(`REST API Error ${response.status}: ${errText}`);
+        }
+
+        const data = await response.json();
+        const rawText = data.candidates?.[0]?.content?.parts?.[0]?.text;
+
+        if (!rawText) throw new Error("Réponse vide de l'API REST");
+
+        const jsonStr = rawText.replace(/```json|```/g, "").trim();
+        return JSON.parse(jsonStr);
+
+    } catch (restError: any) {
+        console.error("REST Fallback Error:", restError);
+        lastError = restError;
+    }
+
+    console.error("Gemini Extraction Error after trying all models and fallback:", lastError);
+    throw new Error(`Échec total de l'analyse (SDK & REST). Vérifiez votre clé API.`);
 };
