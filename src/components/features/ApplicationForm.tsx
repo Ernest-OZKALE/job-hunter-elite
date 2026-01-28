@@ -314,7 +314,7 @@ Mon Nom`;
                         </div>
                         <div>
                             <h2 className="text-2xl font-black text-slate-800 tracking-tight">
-                                {isEditing ? "Modifier l'Opportunité" : "Nouvelle Candidature"} <span className="text-xs text-slate-400 font-normal">v2.1</span>
+                                {isEditing ? "Modifier l'Opportunité" : "Nouvelle Candidature"} <span className="text-xs text-slate-400 font-normal">v2.2</span>
                             </h2>
                             <p className="text-slate-500 font-medium">Capturez chaque détail pour décrocher le job.</p>
                         </div>
@@ -463,121 +463,7 @@ Mon Nom`;
                                                 />
                                             </div>
 
-                                            {/* Advanced Details Display (Auto-filled by Magic Button) */}
-                                            {(formData.salaryDetails?.brutYear || (formData.missions && formData.missions.length > 0)) && (
-                                                <div className="mt-5 p-4 bg-slate-50 rounded-2xl border border-slate-200 animate-in fade-in slide-in-from-top-2">
 
-                                                    {/* Salary Breakdown */}
-                                                    {formData.salaryDetails?.brutYear && (
-                                                        <div className="mb-4">
-                                                            <h4 className="flex items-center gap-2 text-sm font-bold text-slate-700 mb-3">
-                                                                <Euro size={16} className="text-emerald-500" /> Analyse Rémunération
-                                                            </h4>
-                                                            <div className="overflow-hidden bg-white rounded-xl border border-slate-200 shadow-sm mb-4">
-                                                                <table className="w-full text-sm text-left">
-                                                                    <thead className="text-xs text-slate-500 uppercase bg-slate-50 border-b border-slate-100">
-                                                                        <tr>
-                                                                            <th className="px-4 py-3 font-semibold">Période</th>
-                                                                            <th className="px-4 py-3 font-semibold">Brut</th>
-                                                                            <th className="px-4 py-3 font-semibold text-emerald-600">Net <span className="text-[10px] text-emerald-400 font-normal ml-1"> (Avant impôt)</span></th>
-                                                                        </tr>
-                                                                    </thead>
-                                                                    <tbody className="divide-y divide-slate-100">
-                                                                        <tr className="hover:bg-slate-50/50 transition-colors">
-                                                                            <td className="px-4 py-2.5 font-medium text-slate-700">Annuel</td>
-                                                                            <td className="px-4 py-2.5 font-bold text-slate-800">{formData.salaryDetails.brutYear || '-'}</td>
-                                                                            <td className="px-4 py-2.5 font-bold text-emerald-600">{formData.salaryDetails.netYear || '-'}</td>
-                                                                        </tr>
-                                                                        <tr className="hover:bg-slate-50/50 transition-colors">
-                                                                            <td className="px-4 py-2.5 font-medium text-slate-700">Mensuel</td>
-                                                                            <td className="px-4 py-2.5 text-slate-600">{formData.salaryDetails.brutMonth || '-'}</td>
-                                                                            <td className="px-4 py-2.5 font-semibold text-emerald-600">{formData.salaryDetails.netMonth || '-'}</td>
-                                                                        </tr>
-                                                                        {(formData.salaryDetails.brutDay || formData.salaryDetails.netDay) && (
-                                                                            <tr className="hover:bg-slate-50/50 transition-colors">
-                                                                                <td className="px-4 py-2.5 font-medium text-slate-700">Journalier</td>
-                                                                                <td className="px-4 py-2.5 text-slate-600">{formData.salaryDetails.brutDay || '-'}</td>
-                                                                                <td className="px-4 py-2.5 text-emerald-600">{formData.salaryDetails.netDay || '-'}</td>
-                                                                            </tr>
-                                                                        )}
-                                                                        {(formData.salaryDetails.brutHour || formData.salaryDetails.netHour) && (
-                                                                            <tr className="hover:bg-slate-50/50 transition-colors">
-                                                                                <td className="px-4 py-2.5 font-medium text-slate-700">Horaire</td>
-                                                                                <td className="px-4 py-2.5 text-slate-600">{formData.salaryDetails.brutHour || '-'}</td>
-                                                                                <td className="px-4 py-2.5 text-emerald-600">{formData.salaryDetails.netHour || '-'}</td>
-                                                                            </tr>
-                                                                        )}
-                                                                    </tbody>
-                                                                </table>
-                                                            </div>
-                                                            {formData.salaryDetails.analysis && (
-                                                                <div className={`mt-3 text-xs px-4 py-3 rounded-xl border flex gap-3 ${formData.salaryDetails.analysis.includes('Mathématique')
-                                                                    ? 'bg-amber-50 border-amber-100 text-amber-800' // Offline / Warning style
-                                                                    : 'bg-blue-50 border-blue-100 text-blue-800'    // AI Insight style
-                                                                    }`}>
-                                                                    <span className="text-lg">💡</span>
-                                                                    <span className="font-medium leading-relaxed">{formData.salaryDetails.analysis}</span>
-                                                                </div>
-                                                            )}
-                                                        </div>
-                                                    )}
-
-                                                    {/* Missions List */}
-                                                    {formData.missions && formData.missions.length > 0 && (
-                                                        <div className="pt-4 border-t border-slate-200">
-                                                            <h4 className="flex items-center gap-2 text-sm font-bold text-slate-700 mb-3">
-                                                                <Target size={16} className="text-indigo-500" /> Missions Clés Identifiées
-                                                            </h4>
-                                                            <ul className="space-y-1.5">
-                                                                {formData.missions.map((mission, idx) => (
-                                                                    <li key={idx} className="flex items-start gap-2 text-sm text-slate-600">
-                                                                        <span className="mt-1.5 w-1.5 h-1.5 rounded-full bg-indigo-400 shrink-0" />
-                                                                        {mission}
-                                                                    </li>
-                                                                ))}
-                                                            </ul>
-                                                        </div>
-                                                    )}
-
-                                                    {/* Smart Insights : Skills & Red Flags */}
-                                                    {((formData.detectedSkills && formData.detectedSkills.length > 0) || (formData.redFlags && formData.redFlags.length > 0)) && (
-                                                        <div className="pt-4 border-t border-slate-200 grid grid-cols-1 md:grid-cols-2 gap-4">
-
-                                                            {/* Skills */}
-                                                            {formData.detectedSkills && formData.detectedSkills.length > 0 && (
-                                                                <div>
-                                                                    <h4 className="flex items-center gap-2 text-sm font-bold text-slate-700 mb-2">
-                                                                        <Star size={16} className="text-blue-500" /> Compétences
-                                                                    </h4>
-                                                                    <div className="flex flex-wrap gap-1.5">
-                                                                        {formData.detectedSkills.map((skill, idx) => (
-                                                                            <span key={idx} className="px-2 py-1 bg-blue-50 text-blue-700 text-[10px] font-bold rounded-md border border-blue-100">
-                                                                                {skill}
-                                                                            </span>
-                                                                        ))}
-                                                                    </div>
-                                                                </div>
-                                                            )}
-
-                                                            {/* Red Flags */}
-                                                            {formData.redFlags && formData.redFlags.length > 0 && (
-                                                                <div>
-                                                                    <h4 className="flex items-center gap-2 text-sm font-bold text-red-600 mb-2">
-                                                                        <Target size={16} className="text-red-500" /> Points de Vigilance
-                                                                    </h4>
-                                                                    <div className="space-y-1">
-                                                                        {formData.redFlags.map((flag, idx) => (
-                                                                            <div key={idx} className="flex items-center gap-2 text-[10px] font-bold text-red-600 bg-red-50 px-2 py-1 rounded-md border border-red-100">
-                                                                                ⚠️ {flag}
-                                                                            </div>
-                                                                        ))}
-                                                                    </div>
-                                                                </div>
-                                                            )}
-                                                        </div>
-                                                    )}
-                                                </div>
-                                            )}
                                         </div>
                                     </div>
 
