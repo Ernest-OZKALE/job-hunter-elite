@@ -251,11 +251,30 @@ export const extractJobDetailsFromText = async (text: string): Promise<any> => {
             if (rawValue > 1200 && rawValue < 10000 && !lowerSnippet.includes('an')) isAnnual = false;
 
 
-            // 3. Calculator Engine (French Rules Approx)
-            const COEFF_NET = 0.77; // Avg for mixed status (Cadre is ~0.75, Non-cadre ~0.78)
-            const MONTHS = 12;
-            const DAYS_WORKED_YEAR = 218; // Standard forfait jour
-            const HOURS_WORKED_YEAR = 1607; // Legal standard
+            // 3. Calculator Engine (Calibrated on salaire-brut-en-net.fr)
+            // Standards 2024/2025
+            const HOURS_MONTH_LEGAL = 151.67; // 35h
+            const HOURS_YEAR_LEGAL = 1820;    // 35h * 52 weeks
+            const DAYS_YEAR_FORFAIT = 218;    // Standard Cadre Forfait Jour
+
+            // Charges estimation: 
+            // - Non-Cadre: ~22-23% (Coeff 0.77)
+            // - Cadre: ~25% (Coeff 0.75)
+            // - Public: ~15% (Coeff 0.85)
+            let chargeRate = 0.23; // Default (Non-cadre avg)
+            let statusLabel = "Non-Cadre";
+
+            // Keyword detection for Status
+            if (lowerSnippet.includes('cadre') || rawValue > 40000) { // Assume Cadre if >40k
+                chargeRate = 0.25;
+                statusLabel = "Cadre";
+            }
+            if (lowerSnippet.includes('fonctionnaire') || lowerSnippet.includes('public')) {
+                chargeRate = 0.15;
+                statusLabel = "Public";
+            }
+
+            const COEFF_NET = 1 - chargeRate;
 
             let annualBrut = 0;
 
@@ -268,24 +287,24 @@ export const extractJobDetailsFromText = async (text: string): Promise<any> => {
 
             const annualNet = annualBrut * COEFF_NET;
 
-            // 4. Generate All Fields
+            // 4. Generate All Fields with High Precision
             const fmt = (n: number) => Math.round(n).toLocaleString('fr-FR') + " €";
 
             salaryDetails = {
                 brutYear: fmt(annualBrut),
                 brutMonth: fmt(annualBrut / 12),
-                brutDay: fmt(annualBrut / DAYS_WORKED_YEAR),
-                brutHour: fmt(annualBrut / HOURS_WORKED_YEAR),
+                brutDay: fmt(annualBrut / DAYS_YEAR_FORFAIT),
+                brutHour: fmt(annualBrut / HOURS_YEAR_LEGAL),
 
                 netYear: fmt(annualNet),
                 netMonth: fmt(annualNet / 12),
-                netDay: fmt(annualNet / DAYS_WORKED_YEAR),
-                netHour: fmt(annualNet / HOURS_WORKED_YEAR),
+                netDay: fmt(annualNet / DAYS_YEAR_FORFAIT),
+                netHour: fmt(annualNet / HOURS_YEAR_LEGAL),
 
                 currency: "€",
                 analysis: isAnnual ?
-                    (annualBrut > 45000 ? "Salaire attractif (Top 30% marché)." : (annualBrut < 30000 ? "Salaire standard/junior." : "Salaire dans la moyenne."))
-                    : "Estimation basée sur un montant mensuel.",
+                    (annualBrut > 45000 ? `Salaire ${statusLabel} attractif (Top 30%).` : `Salaire standard ${statusLabel}.`)
+                    : `Estimation sur base mensuelle (${statusLabel}).`,
             };
 
             salary = `${fmt(isAnnual ? annualBrut : annualBrut / 12)} ${isAnnual ? 'Annuel' : 'Mensuel'} Brut`;

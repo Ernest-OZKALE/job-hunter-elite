@@ -314,7 +314,7 @@ Mon Nom`;
                         </div>
                         <div>
                             <h2 className="text-2xl font-black text-slate-800 tracking-tight">
-                                {isEditing ? "Modifier l'Opportunité" : "Nouvelle Candidature"} <span className="text-xs text-slate-400 font-normal">v2.0</span>
+                                {isEditing ? "Modifier l'Opportunité" : "Nouvelle Candidature"} <span className="text-xs text-slate-400 font-normal">v2.1</span>
                             </h2>
                             <p className="text-slate-500 font-medium">Capturez chaque détail pour décrocher le job.</p>
                         </div>
@@ -478,8 +478,8 @@ Mon Nom`;
                                                                     <thead className="text-xs text-slate-500 uppercase bg-slate-50 border-b border-slate-100">
                                                                         <tr>
                                                                             <th className="px-4 py-3 font-semibold">Période</th>
-                                                                            <th className="px-4 py-3 font-semibold">Brut <span className="text-[10px] text-slate-400 font-normal ml-1">(Est.)</span></th>
-                                                                            <th className="px-4 py-3 font-semibold text-emerald-600">Net <span className="text-[10px] text-emerald-400 font-normal ml-1">(~23% char.)</span></th>
+                                                                            <th className="px-4 py-3 font-semibold">Brut</th>
+                                                                            <th className="px-4 py-3 font-semibold text-emerald-600">Net <span className="text-[10px] text-emerald-400 font-normal ml-1"> (Avant impôt)</span></th>
                                                                         </tr>
                                                                     </thead>
                                                                     <tbody className="divide-y divide-slate-100">
