@@ -118,6 +118,7 @@ export const extractJobDetailsFromText = async (text: string): Promise<any> => {
                 - Pour "Missions", "Mots clés" (tags), "Compétences", fais une synthèse intelligente.
                 - Si tu trouves "Secteur d'activité" ou "Domaine", mets-le dans "industry".
                 - Si tu trouves "Taille" ou "Effectif", mets-le dans "companySize".
+                - Analyse le lien (si trouvé) ou le texte pour déduire la "source" (ex: linkedin.com -> LinkedIn, francetravail.fr -> France Travail).
 
                 RETOURNE UNIQUEMENT UN OBJET JSON (sans markdown) avec ce format exact :
                 {
@@ -140,6 +141,7 @@ export const extractJobDetailsFromText = async (text: string): Promise<any> => {
                     "contactPhone": "Téléphone contact",
                     "link": "URL détectée",
                     "tags": ["MotClé1", "MotClé2", "MotClé3"],
+                    "source": "Plateforme source (ex: LinkedIn, France Travail, Indeed, Site Entreprise...)",
                     "qualification": "Niveau (ex: Cadre, Employé qualifié)",
                     "industry": "Secteur (ex: Informatique, BTP)",
                     "companySize": "Taille (ex: 50-99 salariés)",
@@ -457,6 +459,15 @@ export const extractJobDetailsFromText = async (text: string): Promise<any> => {
         const sizeMatch = text.match(/(\d+\s*(?:à|to|-)\s*\d+\s*salariés?)/i);
         if (sizeMatch) companySize = sizeMatch[1].trim();
 
+        // Extract Source from Text/Link Heuristic
+        let source = "Site Entreprise"; // Default
+        if (lowerText.includes('linkedin.com') || lowerText.includes('linkedin')) source = "LinkedIn";
+        else if (lowerText.includes('indeed')) source = "Indeed";
+        else if (lowerText.includes('francetravail') || lowerText.includes('pole-emploi')) source = "France Travail";
+        else if (lowerText.includes('welcometothejungle')) source = "Welcome to the Jungle";
+        else if (lowerText.includes('hellowork')) source = "HelloWork";
+        else if (lowerText.includes('apec')) source = "APEC";
+
         return {
             company: company || "",
             position: position || "Poste à définir",
@@ -466,14 +477,15 @@ export const extractJobDetailsFromText = async (text: string): Promise<any> => {
             salary: salary,
             salaryDetails: salaryDetails,
             missions: missions,
-            detectedSkills: detectedSkills, // NEW FIELD
-            redFlags: redFlags,             // NEW FIELD
+            detectedSkills: detectedSkills,
+            redFlags: redFlags,
             jobDescription: text.substring(0, 500) + "...\n\n(Texte complet sauvegardé)",
             contactName: "",
             contactEmail: emailMatch ? emailMatch[0] : "",
             contactPhone: "",
             link: "",
             tags: tags,
+            source: source, // NEW FIELD
             // New Fields
             experience: expMatch ? `${expMatch[1]} ans` : (
                 lowerText.includes('junior') ? 'Junior' :

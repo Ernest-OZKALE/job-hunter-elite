@@ -131,7 +131,7 @@ export const ApplicationForm = ({
                 contactPhone: extracted.contactPhone || prev.contactPhone,
                 link: extracted.link || prev.link,
                 tags: [...(prev.tags || []), ...(extracted.tags || [])].filter((x, i, a) => a.indexOf(x) === i),
-                source: extracted.company ? 'Site Entreprise' : prev.source,
+                source: extracted.source || (extracted.company ? 'Site Entreprise' : prev.source),
                 // New Fields Mapping
                 qualification: extracted.qualification || prev.qualification,
                 industry: extracted.industry || prev.industry,
@@ -343,7 +343,7 @@ export const ApplicationForm = ({
                         </div>
                         <div>
                             <h2 className="text-2xl font-black text-slate-800 tracking-tight">
-                                {isEditing ? "Modifier l'Opportunité" : "Nouvelle Candidature"} <span className="text-xs text-slate-400 font-normal">v2.11 (Fix Salaire)</span>
+                                {isEditing ? "Modifier l'Opportunité" : "Nouvelle Candidature"} <span className="text-xs text-slate-400 font-normal">v2.12 (Smart Source)</span>
                             </h2>
                             <p className="text-slate-500 font-medium">Capturez chaque détail pour décrocher le job.</p>
                         </div>
