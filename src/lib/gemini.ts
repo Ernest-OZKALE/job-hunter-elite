@@ -275,14 +275,20 @@ export const extractJobDetailsFromText = async (text: string): Promise<any> => {
         // --- Missions Extraction ---
         // Look for block starts like "Missions", "Responsabilités", "Tasks"
         const missions: string[] = [];
-        const missionBlockRegex = /(?:Missions?|Responsabilit(?:é|e)s?|Tâches?|Rôle)(?:\s*:?)([\s\S]{0,800}?)(?=\n\n|\n[A-Z]|$)/i;
+        const missionBlockRegex = /(?:Missions?|Responsabilit(?:é|e)s?|Tâches?|Rôle)(?:\s*:?)([\s\S]{0,1000}?)(?=\n\n|\n[A-Z]|$)/i;
         const missionMatch = text.match(missionBlockRegex);
 
         if (missionMatch) {
             const missionText = missionMatch[1];
             // Split by hyphens or bullets
-            const items = missionText.split(/\n\s*[-•*]\s*/).map(s => s.trim()).filter(s => s.length > 5);
-            missions.push(...items.slice(0, 8)); // Top 8 missions
+            const items = missionText.split(/\n/).map(s => s.trim())
+                .filter(s => s.length > 5) // Skip empty/very short
+                .filter(s => !s.endsWith(':')) // Skip headers/intros like "Les missions sont :"
+                .map(s => s.replace(/^[-•*]\s*/, '')); // Remove bullet chars
+
+            // Pick the best lines (likely those that started with bullet points or look like sentences)
+            const cleanItems = items.filter(s => s.length > 10 && s.length < 150).slice(0, 6);
+            missions.push(...cleanItems);
         }
 
 

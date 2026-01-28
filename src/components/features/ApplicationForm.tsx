@@ -314,7 +314,7 @@ Mon Nom`;
                         </div>
                         <div>
                             <h2 className="text-2xl font-black text-slate-800 tracking-tight">
-                                {isEditing ? "Modifier l'Opportunité" : "Nouvelle Candidature"} <span className="text-xs text-slate-400 font-normal">v1.8</span>
+                                {isEditing ? "Modifier l'Opportunité" : "Nouvelle Candidature"} <span className="text-xs text-slate-400 font-normal">v1.9</span>
                             </h2>
                             <p className="text-slate-500 font-medium">Capturez chaque détail pour décrocher le job.</p>
                         </div>
@@ -473,27 +473,31 @@ Mon Nom`;
                                                             <h4 className="flex items-center gap-2 text-sm font-bold text-slate-700 mb-3">
                                                                 <Euro size={16} className="text-emerald-500" /> Analyse Rémunération
                                                             </h4>
-                                                            <div className="grid grid-cols-2 md:grid-cols-4 gap-2 text-xs">
-                                                                <div className="p-2 bg-white rounded-lg border border-slate-100 shadow-sm">
-                                                                    <div className="text-slate-400 font-semibold mb-1">Brut Annuel</div>
-                                                                    <div className="font-bold text-slate-800">{formData.salaryDetails.brutYear}</div>
+                                                            <div className="grid grid-cols-2 gap-3 text-xs mb-4">
+                                                                <div className="p-3 bg-white rounded-xl border border-slate-100 shadow-sm flex flex-col justify-center text-center">
+                                                                    <div className="text-slate-400 font-medium mb-0.5">Brut Annuel</div>
+                                                                    <div className="font-bold text-slate-800 text-sm">{formData.salaryDetails.brutYear}</div>
                                                                 </div>
-                                                                <div className="p-2 bg-white rounded-lg border border-slate-100 shadow-sm">
-                                                                    <div className="text-slate-400 font-semibold mb-1">Brut Mensuel</div>
-                                                                    <div className="font-bold text-slate-800">{formData.salaryDetails.brutMonth}</div>
+                                                                <div className="p-3 bg-white rounded-xl border border-slate-100 shadow-sm flex flex-col justify-center text-center">
+                                                                    <div className="text-slate-400 font-medium mb-0.5">Brut Mensuel</div>
+                                                                    <div className="font-bold text-slate-800 text-sm">{formData.salaryDetails.brutMonth}</div>
                                                                 </div>
-                                                                <div className="p-2 bg-emerald-50 rounded-lg border border-emerald-100 shadow-sm">
-                                                                    <div className="text-emerald-600 font-semibold mb-1">Net Annuel (Est.)</div>
-                                                                    <div className="font-bold text-emerald-900">{formData.salaryDetails.netYear}</div>
+                                                                <div className="p-3 bg-emerald-50 rounded-xl border border-emerald-100 shadow-sm flex flex-col justify-center text-center">
+                                                                    <div className="text-emerald-600 font-medium mb-0.5">Net Annuel (Est.)</div>
+                                                                    <div className="font-bold text-emerald-900 text-sm">{formData.salaryDetails.netYear}</div>
                                                                 </div>
-                                                                <div className="p-2 bg-emerald-50 rounded-lg border border-emerald-100 shadow-sm">
-                                                                    <div className="text-emerald-600 font-semibold mb-1">Net Mensuel (Est.)</div>
-                                                                    <div className="font-bold text-emerald-900">{formData.salaryDetails.netMonth}</div>
+                                                                <div className="p-3 bg-emerald-50 rounded-xl border border-emerald-100 shadow-sm flex flex-col justify-center text-center">
+                                                                    <div className="text-emerald-600 font-medium mb-0.5">Net Mensuel (Est.)</div>
+                                                                    <div className="font-bold text-emerald-900 text-sm">{formData.salaryDetails.netMonth}</div>
                                                                 </div>
                                                             </div>
                                                             {formData.salaryDetails.analysis && (
-                                                                <div className="mt-2 text-xs text-slate-500 italic bg-white px-3 py-1.5 rounded-full inline-block border border-slate-100">
-                                                                    💡 {formData.salaryDetails.analysis}
+                                                                <div className={`mt-3 text-xs px-4 py-3 rounded-xl border flex gap-3 ${formData.salaryDetails.analysis.includes('Mathématique')
+                                                                    ? 'bg-amber-50 border-amber-100 text-amber-800' // Offline / Warning style
+                                                                    : 'bg-blue-50 border-blue-100 text-blue-800'    // AI Insight style
+                                                                    }`}>
+                                                                    <span className="text-lg">💡</span>
+                                                                    <span className="font-medium leading-relaxed">{formData.salaryDetails.analysis}</span>
                                                                 </div>
                                                             )}
                                                         </div>
