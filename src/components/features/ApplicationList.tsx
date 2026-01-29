@@ -5,9 +5,11 @@ import {
 import { useState, useRef, useCallback } from 'react';
 import { StatusSelector } from '../ui/StatusSelector';
 import { ApplicationDetailModal } from '../ApplicationDetailModal';
+import { SalaryTooltip } from '../ui/SalaryTooltip';
 import type { JobApplication, Attachment } from '../../types';
 import { getRelanceInfo } from '../../lib/relance';
 import { calculateAiScore, getScoreColor } from '../../lib/aiScoring';
+import { calculateSalaryDetails } from '../../lib/salaryCalculator';
 import { useStorage } from '../../hooks/useStorage';
 
 interface ApplicationListProps {
@@ -239,7 +241,38 @@ export const ApplicationList = ({
                                 </div>
                                 <div className="text-sm text-slate-500 dark:text-slate-400 flex flex-wrap items-center gap-3 font-medium">
                                     {app.location && <span className="flex items-center gap-1.5"><div className="w-1.5 h-1.5 rounded-full bg-slate-300"></div> {app.location}</span>}
-                                    {app.salary && <span className="flex items-center gap-1.5"><div className="w-1.5 h-1.5 rounded-full bg-emerald-300"></div> {app.salary}</span>}
+                                    {app.salary && (() => {
+                                        const details = app.salaryDetails || calculateSalaryDetails(app.salary);
+                                        return (
+                                            <SalaryTooltip rawSalary={app.salary} existingDetails={details || undefined}>
+                                                {/* High Visibility Badge */}
+                                                <div className="flex items-center gap-3 cursor-help bg-white dark:bg-slate-800 px-4 py-2 rounded-xl border-2 border-emerald-100 dark:border-emerald-800/50 shadow-sm hover:border-emerald-300 transition-colors">
+
+                                                    {/* Primary: Net Monthly */}
+                                                    <div className="flex flex-col">
+                                                        <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Net / mois</span>
+                                                        <span className="font-black text-emerald-600 dark:text-emerald-400 text-lg leading-tight">
+                                                            {details?.netMonth || app.salary}
+                                                        </span>
+                                                    </div>
+
+                                                    {/* Separator */}
+                                                    {details?.brutYear && <div className="w-px h-8 bg-slate-200 dark:bg-slate-700"></div>}
+
+                                                    {/* Secondary: Brut Annual */}
+                                                    {details?.brutYear && (
+                                                        <div className="flex flex-col">
+                                                            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Brut / an</span>
+                                                            <span className="font-bold text-slate-700 dark:text-slate-300 text-base leading-tight">
+                                                                {details.brutYear}
+                                                            </span>
+                                                        </div>
+                                                    )}
+                                                </div>
+                                            </SalaryTooltip>
+                                        );
+                                    })()}
+                                    {app.source && <span className="flex items-center gap-1.5"><div className="w-1.5 h-1.5 rounded-full bg-blue-300"></div> {app.source}</span>}
                                     {app.remotePolicy && <span className="flex items-center gap-1.5"><div className="w-1.5 h-1.5 rounded-full bg-purple-300"></div> {app.remotePolicy}</span>}
                                 </div>
 

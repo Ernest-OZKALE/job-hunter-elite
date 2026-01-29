@@ -38,6 +38,8 @@ import { calculateSalaryDetails } from '../../lib/salaryCalculator';
 import { Wand2, Loader2, CheckCircle2, Settings, Server, Cloud } from 'lucide-react';
 import { useDocuments } from '../../hooks/useDocuments';
 import { useAiConfig } from '../../contexts/AiSettings';
+import { usePreferences } from '../../context/PreferencesContext'; // Correct path
+import MagicFillModal from './MagicFillModal';
 
 interface ApplicationFormProps {
     initialData: Omit<JobApplication, 'id'> | JobApplication;
@@ -62,7 +64,7 @@ export const ApplicationForm = ({
         const { id, ...rest } = initialData as JobApplication;
         return {
             recruiterName: '', recruiterEmail: '', recruiterPhone: '', recruiterLinkedin: '',
-            jobDescription: '', nextStep: '', source: 'LinkedIn',
+            jobDescription: '', nextStep: '', source: '', // CHANGED: No default source
             ...rest
         };
     });
@@ -73,10 +75,51 @@ export const ApplicationForm = ({
         setFormData(prev => ({ ...prev, ...rest }));
     }, [initialData]);
 
+    // Auto-detect source from Link (Smart & Universal Version)
+    useEffect(() => {
+        if (!formData.link) return;
+
+        try {
+            const urlObj = new URL(formData.link.startsWith('http') ? formData.link : `https://${formData.link}`);
+            const hostname = urlObj.hostname.toLowerCase();
+            let detectedSource = '';
+
+            // 1. Known Platforms (Specific overrides)
+            if (hostname.includes('linkedin')) detectedSource = 'LinkedIn';
+            else if (hostname.includes('indeed')) detectedSource = 'Indeed';
+            else if (hostname.includes('wttj') || hostname.includes('welcometothejungle')) detectedSource = 'Welcome to the Jungle';
+            else if (hostname.includes('hellowork')) detectedSource = 'HelloWork';
+            else if (hostname.includes('glassdoor')) detectedSource = 'Glassdoor';
+            else if (hostname.includes('apec.fr')) detectedSource = 'Apec';
+            else if (hostname.includes('free-work')) detectedSource = 'Free-Work';
+            else if (hostname.includes('infojobs')) detectedSource = 'InfoJobs';
+            else if (hostname.includes('monster')) detectedSource = 'Monster';
+            else if (hostname.includes('pole-emploi') || hostname.includes('francetravail')) detectedSource = 'France Travail';
+
+            // 2. Generic "Smart" Extraction (fallback)
+            // e.g. "careers.google.com" -> "Google" (via heuristic)
+            if (!detectedSource) {
+                // Remove www., carriers., jobs. prefix
+                const coreDomain = hostname.replace(/^(www\.|careers?\.|jobs?\.|recrutement\.)/, '').split('.')[0];
+                // Capitalize first letter
+                detectedSource = coreDomain.charAt(0).toUpperCase() + coreDomain.slice(1);
+
+                // If it looks like a generic subdomain, maybe it's "Site Entreprise"
+                if (detectedSource.length < 3) detectedSource = 'Site Entreprise';
+            }
+
+            // Apply prediction if field is empty OR exactly matches our previous guess (allow user override)
+            if (detectedSource && (!formData.source || formData.source === 'LinkedIn')) {
+                setFormData(prev => ({ ...prev, source: detectedSource }));
+            }
+        } catch (e) {
+            // Invalid URL, ignore
+        }
+    }, [formData.link]);
+
     // Live Salary Calculator
     useEffect(() => {
         if (formData.salary && formData.salary.length > 2) {
-            // Debounce or just direct calculation? Direct is fine for now as regex is fast.
             const details = calculateSalaryDetails(formData.salary);
             if (details) {
                 setFormData(prev => ({
@@ -102,61 +145,117 @@ export const ApplicationForm = ({
     const [newFileName, setNewFileName] = useState('');
     const [newFileLink, setNewFileLink] = useState('');
 
+    // --- AI Logic Stubs ---
+    const [aiAnalysis, setAiAnalysis] = useState<string | null>(null);
+    const [generatedEmail, setGeneratedEmail] = useState<string | null>(null);
+    const [isScoringJob, setIsScoringJob] = useState(false);
+    const [isGeneratingEmail, setIsGeneratingEmail] = useState(false);
+    const { userProfile } = usePreferences();
+
+    // Refactored to accept data for auto-trigger
+    const runAnalysis = async (dataToAnalyze: Omit<JobApplication, 'id'>) => {
+        // Validation
+        if (!dataToAnalyze.jobDescription || dataToAnalyze.jobDescription.length < 50) {
+            // Quiet fail for auto-trigger, or alert if manual
+            return;
+        }
+
+        if (!userProfile || userProfile.length < 20) {
+            // Quiet fail for auto-trigger to avoid annoying alerts, or maybe just log
+            console.warn("Auto-analysis skipped: No user profile");
+            return;
+        }
+
+        setIsScoringJob(true);
+        try {
+            const analysis = await analyzeJobOpportunity(
+                dataToAnalyze as JobApplication,
+                config,
+                userProfile || undefined
+            );
+
+            const formattedAnalysis = `
+**Score IA : ${analysis.score}/100**
+
+✅ **Points Forts** :
+${analysis.strengths.map(s => `- ${s}`).join('\n')}
+
+⚠️ **Points d'Attention** :
+${analysis.weaknesses.map(w => `- ${w}`).join('\n')}
+            `;
+
+            setAiAnalysis(formattedAnalysis);
+            // Update formData directly here? No, we shouldn't update the state inside an async process triggered by another state update potentially
+            // But since this is called from MagicHandler, we can assume we want to update the view.
+            setFormData(prev => ({ ...prev, aiScore: analysis.score }));
+
+        } catch (error: any) {
+            console.error("Analysis failed", error);
+        } finally {
+            setIsScoringJob(false);
+        }
+    }
+
+    const runEmailGen = async (dataToAnalyze: Omit<JobApplication, 'id'>) => {
+        if (!dataToAnalyze.company || !dataToAnalyze.position) return;
+
+        setIsGeneratingEmail(true);
+        try {
+            const email = await generateEmail(dataToAnalyze as JobApplication, 'cover', config);
+            setGeneratedEmail(email);
+        } catch (error: any) {
+            console.error("Email generation failed", error);
+        } finally {
+            setIsGeneratingEmail(false);
+        }
+    }
+
     // --- Magic Fill Logic ---
     const [showMagicModal, setShowMagicModal] = useState(false);
-    const [magicText, setMagicText] = useState('');
-    const [isMagicLoading, setIsMagicLoading] = useState(false);
+
+    const handleMagicApply = (extracted: any, rawText: string) => {
+        // Construct the new state
+        const newData = {
+            ...formData,
+            // Core
+            company: extracted.company || formData.company,
+            position: extracted.position || formData.position,
+            location: extracted.location || formData.location,
+            salary: extracted.salary || formData.salary,
+            contractType: extracted.contractType || formData.contractType,
+
+            // New Extended Fields
+            remotePolicy: extracted.remotePolicy || formData.remotePolicy,
+            experience: extracted.experience || formData.experience,
+            industry: extracted.industry || formData.industry,
+            jobDescription: rawText || extracted.description || formData.jobDescription, // PRIORITIZE RAW TEXT
+
+            // Arrays (Merge & Dedup)
+            missions: extracted.missions?.length ? extracted.missions : formData.missions,
+            detectedSkills: extracted.hardSkills?.length ? [...(formData.detectedSkills || []), ...extracted.hardSkills] : (formData.detectedSkills || []), // Focus on hard skills
+            benefits: extracted.benefits?.length ? extracted.benefits : formData.benefits,
+
+            // Contact
+            contactName: extracted.contactName || formData.contactName,
+            contactEmail: extracted.contactEmail || formData.contactEmail,
+            contactPhone: extracted.contactPhone || formData.contactPhone,
+
+            // Source: Use extracted, or keep existing, or fall back to 'Candidature Spontanée' if nothing found (better than LinkedIn default)
+            source: formData.source || extracted.source || ''
+        };
+
+        setFormData(newData);
+
+        // AUTO-TRIGGER AI & EMAIL
+        // We pass the NEW data object directly because setFormData is async
+        runAnalysis(newData);
+        runEmailGen(newData);
+    };
+
+    // ------------------------
 
     const { config, updateConfig } = useAiConfig();
     const [showSettingsModal, setShowSettingsModal] = useState(false);
-
-    const handleMagicFill = async () => {
-        if (!magicText.trim()) return;
-        setIsMagicLoading(true);
-        try {
-            const extracted = await extractJobDetails(magicText, config);
-
-            if (!extracted || Object.keys(extracted).length === 0) {
-                throw new Error("L'IA n'a retourné aucune donnée. Essayez avec plus de texte.");
-            }
-
-            // Merge with existing data, prioritized extracted data but keep non-empty existing data if extraction is null
-            setFormData(prev => ({
-                ...prev,
-                company: extracted.company || prev.company,
-                position: extracted.position || prev.position,
-                location: extracted.location || prev.location,
-                contractType: extracted.contractType || prev.contractType,
-                remotePolicy: extracted.remotePolicy || prev.remotePolicy,
-                salary: extracted.salary || prev.salary,
-                salaryDetails: extracted.salaryDetails || prev.salaryDetails,
-                missions: extracted.missions || prev.missions,
-                detectedSkills: extracted.detectedSkills || prev.detectedSkills,
-                redFlags: extracted.redFlags || prev.redFlags,
-                jobDescription: extracted.jobDescription || prev.jobDescription,
-                contactName: extracted.contactName || prev.contactName,
-                contactEmail: extracted.contactEmail || prev.contactEmail,
-                contactPhone: extracted.contactPhone || prev.contactPhone,
-                link: extracted.link || prev.link,
-                tags: [...(prev.tags || []), ...(extracted.tags || [])].filter((x, i, a) => a.indexOf(x) === i),
-                source: extracted.source || (extracted.company ? 'Site Entreprise' : prev.source),
-                qualification: extracted.qualification || prev.qualification,
-                industry: extracted.industry || prev.industry,
-                companySize: extracted.companySize || prev.companySize,
-                experience: extracted.experience || prev.experience,
-                benefits: extracted.benefits || prev.benefits
-            }));
-
-            // Close modal
-            setShowMagicModal(false);
-            setMagicText('');
-        } catch (err: any) {
-            console.error("Magic Fill Error:", err);
-            alert(err.message || "Une erreur est survenue lors de l'analyse.");
-        } finally {
-            setIsMagicLoading(false);
-        }
-    };
     // ------------------------
 
     // --- Drag & Drop / Manual Upload Logic ---
@@ -219,57 +318,8 @@ export const ApplicationForm = ({
         );
     };
 
-    // --- AI Logic Stubs ---
-    const [aiAnalysis, setAiAnalysis] = useState<string | null>(null);
-    const [generatedEmail, setGeneratedEmail] = useState<string | null>(null);
-    const [isAnalyzing, setIsAnalyzing] = useState(false);
-
-    const handleAnalyzeJob = async () => {
-        setIsAnalyzing(true);
-        try {
-            // Use Real AI with config
-            const analysis = await analyzeJobOpportunity(formData as JobApplication, config);
-
-            // Format the analysis for display (convert object to markdown string if needed, or update specific UI state)
-            // The existing UI expects a string for aiAnalysis.
-            // analyzeJobOpportunity returns { score, strengths, weaknesses }
-            // Let's format it nicely:
-
-            const formattedAnalysis = `
-                **Score IA : ${analysis.score}/100**
-                
-                ✅ **Points Forts** :
-                ${analysis.strengths.map(s => `- ${s}`).join('\n')}
-                
-                ⚠️ **Points d'Attention** :
-                ${analysis.weaknesses.map(w => `- ${w}`).join('\n')}
-            `;
-
-            setAiAnalysis(formattedAnalysis);
-            // Also update the score in the form data
-            setFormData(prev => ({ ...prev, aiScore: analysis.score }));
-
-        } catch (error) {
-            console.error("Analysis failed", error);
-            alert("Erreur lors de l'analyse IA. Vérifiez votre connexion.");
-        } finally {
-            setIsAnalyzing(false);
-        }
-    };
-
-    const handleGenerateEmail = async () => {
-        setIsAnalyzing(true);
-        try {
-            // Use Real AI with config
-            const email = await generateEmail(formData as JobApplication, 'cover', config); // Default to cover letter
-            setGeneratedEmail(email);
-        } catch (error) {
-            console.error("Email generation failed", error);
-            alert("Erreur lors de la génération de l'email.");
-        } finally {
-            setIsAnalyzing(false);
-        }
-    };
+    const handleAnalyzeJob = () => runAnalysis(formData);
+    const handleGenerateEmail = () => runEmailGen(formData);
     // ----------------------
 
     const handleDrivePick = () => {
@@ -321,8 +371,21 @@ export const ApplicationForm = ({
         setFormData({ ...formData, attachments: newAtts });
     };
 
+    const [showLinkWarning, setShowLinkWarning] = useState(false);
+
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+
+        // Validation: Check for link
+        if (!formData.link && !showLinkWarning) {
+            setShowLinkWarning(true);
+            return;
+        }
+
+        performSubmit(e);
+    };
+
+    const performSubmit = async (e: React.FormEvent) => {
         setIsScoring(true);
         try {
             // Calculate Real AI Score using Gemini
@@ -335,6 +398,7 @@ export const ApplicationForm = ({
             await onSubmit(e, { ...formData, aiScore: fallbackScore });
         } finally {
             setIsScoring(false);
+            setShowLinkWarning(false);
         }
     };
 
@@ -916,10 +980,10 @@ export const ApplicationForm = ({
                                                 <button
                                                     type="button"
                                                     onClick={handleAnalyzeJob}
-                                                    disabled={isAnalyzing}
+                                                    disabled={isScoringJob}
                                                     className="px-3 py-1.5 bg-white text-purple-600 font-bold text-sm rounded-lg shadow-sm border border-purple-100 hover:bg-purple-50 disabled:opacity-50"
                                                 >
-                                                    {isAnalyzing ? '...' : 'Analyser'}
+                                                    {isScoringJob ? '...' : 'Analyser'}
                                                 </button>
                                             </div>
                                             {aiAnalysis && (
@@ -948,10 +1012,10 @@ export const ApplicationForm = ({
                                                 <button
                                                     type="button"
                                                     onClick={handleGenerateEmail}
-                                                    disabled={isAnalyzing}
+                                                    disabled={isGeneratingEmail}
                                                     className="px-3 py-1.5 bg-white text-blue-600 font-bold text-sm rounded-lg shadow-sm border border-blue-100 hover:bg-blue-50 disabled:opacity-50"
                                                 >
-                                                    {isAnalyzing ? '...' : 'Générer'}
+                                                    {isGeneratingEmail ? '...' : 'Générer'}
                                                 </button>
                                             </div>
                                             {generatedEmail && (
@@ -1096,6 +1160,42 @@ export const ApplicationForm = ({
                     </div>
                 </div>
             )}
+
+            {/* Missing Link Warning Modal */}
+            {showLinkWarning && (
+                <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[200] flex items-center justify-center p-4 animate-in fade-in duration-200">
+                    <div className="bg-white rounded-xl shadow-2xl max-w-sm w-full overflow-hidden animate-in zoom-in-95 duration-200 border border-slate-100">
+                        <div className="p-6 text-center space-y-4">
+                            <div className="w-12 h-12 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center mx-auto mb-2">
+                                <Globe size={24} />
+                            </div>
+                            <h3 className="text-xl font-bold text-slate-800">Lien de l'offre manquant</h3>
+                            <p className="text-slate-500 text-sm leading-relaxed">
+                                Vous n'avez pas renseigné le lien de l'offre. C'est utile pour y revenir plus tard !
+                            </p>
+                            <p className="text-slate-800 font-medium text-sm">
+                                Voulez-vous continuer sans lien ?
+                            </p>
+                        </div>
+                        <div className="p-4 bg-slate-50 border-t border-slate-100 flex gap-3 justify-center">
+                            <button
+                                type="button"
+                                onClick={() => setShowLinkWarning(false)}
+                                className="px-5 py-2.5 bg-white border border-slate-200 text-slate-700 font-bold rounded-xl hover:bg-slate-50 transition-colors"
+                            >
+                                Ajouter un lien
+                            </button>
+                            <button
+                                type="button"
+                                onClick={(e) => performSubmit(e as any)}
+                                className="px-5 py-2.5 bg-slate-800 text-white font-bold rounded-xl hover:bg-slate-900 transition-colors shadow-lg shadow-slate-200"
+                            >
+                                Créer sans lien
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 
@@ -1104,50 +1204,12 @@ export const ApplicationForm = ({
             {modalContent}
 
             {/* Magic Modal Overlay */}
-            {showMagicModal && (
-                <div className="fixed inset-0 z-[110] flex items-center justify-center p-6 bg-slate-900/60 backdrop-blur-md animate-in fade-in duration-300">
-                    <div className="bg-white dark:bg-slate-800 rounded-3xl shadow-2xl w-full max-w-2xl overflow-hidden animate-in zoom-in-95 duration-200 border border-white/20">
-                        <div className="p-6 border-b border-slate-100 flex justify-between items-center bg-gradient-to-r from-indigo-50 to-purple-50">
-                            <h3 className="text-xl font-black text-indigo-900 flex items-center gap-2">
-                                <Wand2 className="text-indigo-600" /> Remplissage Magique
-                            </h3>
-                            <button onClick={() => setShowMagicModal(false)} className="p-2 hover:bg-white/50 rounded-full text-indigo-300 hover:text-indigo-600 transition-colors">
-                                <X size={24} />
-                            </button>
-                        </div>
-                        <div className="p-6 space-y-4">
-                            <p className="text-slate-600 text-sm leading-relaxed">
-                                Collez ici le texte de l'offre d'emploi (depuis LinkedIn, Indeed, etc.). <br />
-                                <strong className="text-indigo-600">L'IA va analyser le texte et pré-remplir le formulaire pour vous !</strong>
-                            </p>
-                            <textarea
-                                value={magicText}
-                                onChange={(e) => setMagicText(e.target.value)}
-                                className="w-full h-64 p-4 bg-slate-50 border-2 border-slate-100 rounded-xl focus:border-indigo-500 focus:ring-0 transition-all text-sm font-medium text-slate-700 placeholder:text-slate-300 resize-none"
-                                placeholder="Collez le texte de l'offre ici..."
-                                autoFocus
-                            />
-                            <div className="flex justify-end pt-2">
-                                <button
-                                    onClick={handleMagicFill}
-                                    disabled={!magicText.trim() || isMagicLoading}
-                                    className="px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-bold shadow-lg shadow-indigo-500/30 flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
-                                >
-                                    {isMagicLoading ? (
-                                        <>
-                                            <Loader2 size={18} className="animate-spin" /> Analyse en cours...
-                                        </>
-                                    ) : (
-                                        <>
-                                            <Wand2 size={18} /> Lancer la Magie
-                                        </>
-                                    )}
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            )}
+            {/* Magic Fill Modal */}
+            <MagicFillModal
+                isOpen={showMagicModal}
+                onClose={() => setShowMagicModal(false)}
+                onApply={handleMagicApply}
+            />
         </>,
         document.body
     );

@@ -11,7 +11,7 @@ export interface LocalAIConfig {
 export const DEFAULT_OLLAMA_CONFIG: LocalAIConfig = {
     provider: 'ollama',
     baseUrl: "http://localhost:11434/v1", // Correct standard port
-    model: "qwen2.5:32b"
+    model: "llama3.1:8b"
 };
 
 const DEFAULT_PROFILE = "Développeur Fullstack avec expérience en React, TypeScript, Node.js et Firebase.";
@@ -28,68 +28,151 @@ interface OpenAIResponse {
  * Generic fetch wrapper for OpenAI-compatible API
  */
 async function callLocalAI(messages: { role: string; content: string }[], config: LocalAIConfig, jsonMode: boolean = true): Promise<string> {
+    // Mixed Content Check
+    if (typeof window !== 'undefined' && window.location.protocol === 'https:' && config.baseUrl.startsWith('http:')) {
+        throw new Error(
+            "🔒 Blocage Sécurité Navigateur (Mixed Content) :\n" +
+            "Impossible d'appeler une IA Locale (http) depuis un site sécurisé (https).\n\n" +
+            "👉 SOLUTION : Lancez le site en local avec `npm run dev` pour utiliser Ollama."
+        );
+    }
+
     try {
         // Ensure no trailing slash
         const cleanUrl = config.baseUrl.replace(/\/$/, "");
         const endpoint = `${cleanUrl}/chat/completions`;
 
-        const response = await fetch(endpoint, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": config.apiKey ? `Bearer ${config.apiKey}` : "Bearer ollama"
-            },
-            body: JSON.stringify({
-                model: config.model,
-                messages: messages,
-                temperature: 0.1,
-                response_format: jsonMode ? { type: "json_object" } : undefined,
-                stream: false
-            })
-        });
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 90000); // 90s timeout (Local AI can be slow)
 
-        if (!response.ok) {
-            const errorText = await response.text();
-            throw new Error(`AI API Error (${response.status}): ${errorText}`);
+        try {
+            const response = await fetch(endpoint, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": config.apiKey ? `Bearer ${config.apiKey}` : "Bearer ollama"
+                },
+                body: JSON.stringify({
+                    model: config.model,
+                    messages: messages,
+                    temperature: 0.7,
+                    response_format: jsonMode ? { type: "json_object" } : undefined,
+                    stream: false
+                }),
+                signal: controller.signal
+            });
+
+            clearTimeout(timeoutId);
+
+            if (!response.ok) {
+                const errorText = await response.text();
+                throw new Error(`Erreur API (${response.status}): ${errorText || response.statusText}`);
+            }
+
+            const data: OpenAIResponse = await response.json();
+            return data.choices[0].message.content;
+
+        } catch (error: any) {
+            clearTimeout(timeoutId);
+            if (error.name === 'AbortError') {
+                throw new Error("⏳ Timeout (90s): L'IA met trop de temps à répondre. Essayez un modèle plus petit (ex: llama3.1:8b) ou vérifiez votre PC.");
+            }
+            throw error;
         }
-
-        const data: OpenAIResponse = await response.json();
-        return data.choices[0]?.message?.content || "";
-    } catch (error) {
+    } catch (error: any) {
         console.error("AI Connection Error:", error);
+        if (error.message.includes('Failed to fetch')) {
+            throw new Error(
+                "❌ Impossible de joindre l'IA Locale.\n" +
+                "Vérifiez que :\n" +
+                "1. Ollama tourne (essayez `http://localhost:11434` dans le navigateur)\n" +
+                "2. L'URL est correcte (Port 11434 ou 3000)\n" +
+                "3. Si vous êtes sur Vercel : passez en local (`npm run dev`) !"
+            );
+        }
         throw error;
     }
 }
 
-export const analyzeJobOpportunityOllama = async (app: JobApplication, config: LocalAIConfig = DEFAULT_OLLAMA_CONFIG, userProfile: string = DEFAULT_PROFILE): Promise<{ score: number; strengths: string[]; weaknesses: string[] }> => {
-    const prompt = `
-      Analyse cette offre d'emploi par rapport au profil suivant.
-      
-      PROFIL CANDIDAT :
-      ${userProfile}
+// Helper for robust JSON cleaning
+function cleanAndParseJson(content: string): any {
+    let clean = content;
 
-      OFFRE :
-      Entreprise: ${app.company}
-      Poste: ${app.position}
-      Localisation: ${app.location}
-      Description: ${app.jobDescription || "Non fournie"}
-      Salaire: ${app.salary || "Non spécifié"}
-      Remote: ${app.remotePolicy || "Non spécifié"}
+    // 1. Remove Markdown Code Blocks
+    clean = clean.replace(/```json/g, "").replace(/```/g, "").trim();
+
+    // 2. Extract JSON Block (First { to Last })
+    const jsonMatch = clean.match(/\{[\s\S]*\}/);
+    if (jsonMatch) {
+        clean = jsonMatch[0];
+    } else {
+        // Fallback: if no {} found, user might have sent just the content? Unlikely.
+        // But maybe it starts with [ for generic? For this usage we expect object.
+    }
+
+    // 3. Fix Trailing Commas (Common LLM Error: "key": "val", })
+    clean = clean.replace(/,\s*([}\]])/g, '$1');
+
+    try {
+        return JSON.parse(clean);
+    } catch (e) {
+        console.error("JSON Parse Debug:", e);
+        console.log("Raw Content that failed:", content);
+        console.log("Cleaned Content that failed:", clean);
+
+        // Final desperate attempt: aggressive escape fix? 
+        // Sometimes LLM puts unescaped quotes in strings. Hard to fix reliably with regex.
+        throw new Error("Echec parcing JSON: " + (e as Error).message);
+    }
+}
+
+export const analyzeJobOpportunityOllama = async (app: JobApplication, config: LocalAIConfig = DEFAULT_OLLAMA_CONFIG, userProfile: string = DEFAULT_PROFILE): Promise<{ score: number; strengths: string[]; weaknesses: string[] }> => {
+    const systemPrompt = `Tu es un recruteur expert et un coach carrière de haut niveau. Ton but est d'évaluer la compatibilité entre un candidat et une offre d'emploi.
+    
+    CRITÈRES D'ANALYSE :
+    1. Score strict (0-100) : Sois sévère. 100 = Match parfait. 50 = Match moyen. <30 = Ne postule pas.
+    2. Analyse sémantique : Ne cherche pas juste les mots-clés exacts. Si l'offre dit "Laravel" et le profil "PHP", c'est un match partiel.
+    3. Contexte : Si le profil est senior et l'offre junior, c'est un point faible (sauf si salaire élevé).
+    
+    FORMAT DE RÉPONSE ATTENDU :
+    Uniquement un JSON valide. Pas de texte avant ni après.`;
+
+    const prompt = `
+      ANALYSE CETTE OPPORTUNITÉ DE MANIÈRE CRITIQUE.
+
+      --- PROFIL DU CANDIDAT ---
+      ${userProfile}
+      ---------------------------
+
+      --- OFFRE D'EMPLOI ---
+      ENTREPRISE : ${app.company || 'Non spécifiée'}
+      POSTE : ${app.position || 'Non spécifié'}
+      DESCRIPTION : 
+      ${app.jobDescription || "Pas de description fournie."}
+      ----------------------
       
-      Réponds UNIQUEMENT avec un JSON valide :
+      TÂCHES :
+      1. Calcule un SCORE de compatibilité (0 à 100) basé sur les compétences techniques (Hard Skills) et le niveau d'expérience.
+      2. Liste 3 à 5 POINTS FORTS (pourquoi le candidat est bon pour ce poste).
+      3. Liste 3 à 5 POINTS D'ATTENTION (ce qui manque ou pourrait poser problème).
+
+      Format JSON à retourner :
       {
-        "score": (nombre 0-100),
-        "strengths": ["point fort 1", "point fort 2"],
-        "weaknesses": ["point faible 1", "point faible 2"]
+        "score": (nombre),
+        "strengths": ["Analyse 1", "Analyse 2", ...],
+        "weaknesses": ["Manque X", "Expérience Y insuffisante", ...]
       }
     `;
 
     try {
-        const content = await callLocalAI([{ role: "user", content: prompt }], config, true);
-        return JSON.parse(content.replace(/```json|```/g, "").trim());
+        const content = await callLocalAI([
+            { role: "system", content: systemPrompt },
+            { role: "user", content: prompt }
+        ], config, false);
+        return cleanAndParseJson(content);
     } catch (e) {
         console.error("Ollama Analysis Failed", e);
-        return { score: -1, strengths: [], weaknesses: [] };
+        throw e;
     }
 };
 
@@ -175,8 +258,7 @@ export const extractJobDetailsOllama = async (text: string, config: LocalAIConfi
             { role: "user", content: userPrompt }
         ], config, true);
 
-        const jsonStr = content.replace(/```json|```/g, "").trim();
-        return JSON.parse(jsonStr);
+        return cleanAndParseJson(content);
     } catch (e) {
         console.error("Ollama Extraction Failed", e);
         throw e; // Let the caller handle the fallback logic if needed
