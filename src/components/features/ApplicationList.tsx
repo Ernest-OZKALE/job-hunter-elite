@@ -192,7 +192,7 @@ export const ApplicationList = ({
                             }`}
                     >
                         {/* Selection Checkbox */}
-                        <div className={`absolute left-4 top-1/2 -translate-y-1/2 z-20 transition-opacity ${isSelected ? 'opacity-100' : 'opacity-40 group-hover:opacity-100'}`}>
+                        <div className={`absolute left-3 top-3 lg:top-1/2 lg:-translate-y-1/2 z-20 transition-opacity ${isSelected ? 'opacity-100' : 'opacity-100 lg:opacity-40 lg:group-hover:opacity-100'}`}>
                             <input
                                 type="checkbox"
                                 checked={isSelected}
@@ -201,17 +201,17 @@ export const ApplicationList = ({
                                     onToggleSelect?.(app.id, e.shiftKey);
                                 }}
                                 onChange={() => { }} // Controlled by onClick
-                                className="w-5 h-5 rounded border-2 border-slate-300 dark:border-slate-600 bg-white/80 dark:bg-slate-800/80 text-blue-500 focus:ring-blue-500 cursor-pointer backdrop-blur-sm"
+                                className="w-6 h-6 lg:w-5 lg:h-5 rounded-lg border-2 border-slate-300 dark:border-slate-600 bg-white/80 dark:bg-slate-800/80 text-blue-500 focus:ring-blue-500 cursor-pointer backdrop-blur-sm"
                             />
                         </div>
 
                         {/* Status Stripe */}
-                        <div className={`absolute left-0 top-0 bottom-0 w-1.5 transition-colors duration-300 ${app.status.includes('Offre') ? 'bg-emerald-500' :
+                        <div className={`absolute left-0 top-0 bottom-0 w-2 lg:w-1.5 transition-colors duration-300 ${app.status.includes('Offre') ? 'bg-emerald-500' :
                             app.status.includes('Refus') || app.status === 'Ghosting' ? 'bg-red-400' :
                                 app.status.includes('Entretien') ? 'bg-purple-500' : 'bg-blue-500'
                             }`}></div>
 
-                        <div className="card-content flex flex-col lg:flex-row gap-6 justify-between items-start lg:items-center pl-14 py-6 pr-6">
+                        <div className="card-content flex flex-col lg:flex-row gap-4 lg:gap-6 justify-between items-start lg:items-center p-5 pt-12 lg:pl-14 lg:py-6 lg:pr-6">
 
                             {/* Main Info */}
                             <div className="flex-1 space-y-2">

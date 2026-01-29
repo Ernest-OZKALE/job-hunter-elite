@@ -15,7 +15,7 @@ interface DashboardStatsProps {
 
 export const DashboardStats = ({ stats }: DashboardStatsProps) => {
     return (
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 h-full">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 h-full">
             <div className="bg-white dark:bg-slate-800 p-6 rounded-3xl border border-slate-200 dark:border-slate-700 shadow-sm hover:shadow-lg transition-all group flex flex-col justify-between">
                 <div className="flex items-center gap-4 mb-4">
                     <div className="p-3 bg-blue-50 dark:bg-blue-900/20 rounded-2xl group-hover:scale-110 transition-transform">

@@ -14,7 +14,7 @@ export const Sidebar = ({ user, activeView, onLogout, onOpenPrefs, onViewChange 
     const { theme, toggleTheme } = useTheme();
 
     return (
-        <aside className="fixed left-0 top-0 h-screen w-20 lg:w-64 bg-slate-900 dark:bg-slate-950 text-white flex flex-col justify-between z-40 transition-all duration-300 shadow-2xl">
+        <aside className="hidden lg:flex fixed left-0 top-0 h-screen w-20 lg:w-64 bg-slate-900 dark:bg-slate-950 text-white flex-col justify-between z-40 transition-all duration-300 shadow-2xl">
 
             {/* Logo */}
             <div className="p-6 flex items-center justify-center lg:justify-start gap-4">

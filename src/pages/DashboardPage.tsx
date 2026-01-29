@@ -38,6 +38,7 @@ import { DuplicateWarningModal } from '../components/ui/DuplicateWarningModal';
 import { CommandPalette, createCommands } from '../components/ui/CommandPalette';
 import { detectDuplicates, type DuplicateMatch } from '../lib/duplicateDetection';
 import { useKeyboardShortcuts } from '../hooks/useKeyboardShortcuts';
+import { MobileNavbar } from '../components/layout/MobileNavbar';
 
 // Lazy load modals
 const HelpModal = lazy(() => import('../components/HelpModal'));
@@ -358,6 +359,8 @@ export const DashboardPage = ({ user, onLogout }: DashboardPageProps) => {
     return (
         <div className="min-h-screen bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-slate-100 font-sans selection:bg-indigo-100 selection:text-indigo-900 transition-colors duration-300 flex">
 
+
+
             {/* Sidebar Navigation */}
             <Sidebar
                 user={user}
@@ -367,10 +370,17 @@ export const DashboardPage = ({ user, onLogout }: DashboardPageProps) => {
                 onViewChange={setActiveView}
             />
 
+            <MobileNavbar
+                activeView={activeView}
+                onViewChange={setActiveView}
+                onOpenPrefs={() => setShowPrefs(true)}
+            />
+
             {/* Main Content Area */}
-            <main className="flex-1 ml-20 lg:ml-64 p-6 lg:p-12 space-y-12 transition-all duration-300">
+            <main className="flex-1 ml-0 lg:ml-64 p-4 lg:p-12 space-y-8 lg:space-y-12 transition-all duration-300 pb-24 lg:pb-12">
 
                 {activeView === 'contacts' && <ContactsPage />}
+
                 {activeView === 'documents' && <DocumentLibrary />}
 
                 {activeView === 'dashboard' && (
