@@ -144,7 +144,7 @@ export const FilterPanel = ({
                                     type="date"
                                     value={filters.dateRange?.start || ''}
                                     onChange={e => onUpdateFilter('dateRange', { ...filters.dateRange, start: e.target.value } as any)}
-                                    className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-sm"
+                                    className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-sm text-slate-900 dark:text-slate-100"
                                 />
                             </div>
                             <div>
@@ -153,7 +153,7 @@ export const FilterPanel = ({
                                     type="date"
                                     value={filters.dateRange?.end || ''}
                                     onChange={e => onUpdateFilter('dateRange', { ...filters.dateRange, end: e.target.value } as any)}
-                                    className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-sm"
+                                    className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-sm text-slate-900 dark:text-slate-100"
                                 />
                             </div>
                         </div>

@@ -473,7 +473,7 @@ ${analysis.weaknesses.map(w => `- ${w}`).join('\n')}
                                                     required
                                                     value={formData.company}
                                                     onChange={e => setFormData({ ...formData, company: e.target.value })}
-                                                    className="w-full pl-10 pr-4 py-3 bg-slate-50 border-0 rounded-xl focus:ring-2 focus:ring-blue-100 focus:bg-white transition-all font-semibold text-slate-700 placeholder:text-slate-300"
+                                                    className="w-full pl-10 pr-4 py-3 bg-slate-50 dark:bg-slate-900 border-0 rounded-xl focus:ring-2 focus:ring-blue-100 dark:focus:ring-blue-900/30 focus:bg-white dark:focus:bg-slate-800 transition-all font-semibold text-slate-700 dark:text-slate-200 placeholder:text-slate-300 dark:placeholder:text-slate-600"
                                                     placeholder="Google, Thales..."
                                                 />
                                             </div>
@@ -488,7 +488,7 @@ ${analysis.weaknesses.map(w => `- ${w}`).join('\n')}
                                                     required
                                                     value={formData.position}
                                                     onChange={e => setFormData({ ...formData, position: e.target.value })}
-                                                    className="w-full pl-10 pr-4 py-3 bg-slate-50 border-0 rounded-xl focus:ring-2 focus:ring-blue-100 focus:bg-white transition-all font-semibold text-slate-700 placeholder:text-slate-300"
+                                                    className="w-full pl-10 pr-4 py-3 bg-slate-50 dark:bg-slate-900 border-0 rounded-xl focus:ring-2 focus:ring-blue-100 dark:focus:ring-blue-900/30 focus:bg-white dark:focus:bg-slate-800 transition-all font-semibold text-slate-700 dark:text-slate-200 placeholder:text-slate-300 dark:placeholder:text-slate-600"
                                                     placeholder="Frontend Developer..."
                                                 />
                                             </div>
@@ -502,7 +502,7 @@ ${analysis.weaknesses.map(w => `- ${w}`).join('\n')}
                                                     type="text"
                                                     value={formData.location}
                                                     onChange={e => setFormData({ ...formData, location: e.target.value })}
-                                                    className="w-full pl-10 pr-4 py-3 bg-slate-50 border-0 rounded-xl focus:ring-2 focus:ring-blue-100 focus:bg-white transition-all font-semibold text-slate-700 placeholder:text-slate-300"
+                                                    className="w-full pl-10 pr-4 py-3 bg-slate-50 dark:bg-slate-900 border-0 rounded-xl focus:ring-2 focus:ring-blue-100 dark:focus:ring-blue-900/30 focus:bg-white dark:focus:bg-slate-800 transition-all font-semibold text-slate-700 dark:text-slate-200 placeholder:text-slate-300 dark:placeholder:text-slate-600"
                                                     placeholder="Paris, Bordeaux..."
                                                 />
                                             </div>
@@ -517,7 +517,7 @@ ${analysis.weaknesses.map(w => `- ${w}`).join('\n')}
                                                     list="sources"
                                                     value={formData.source}
                                                     onChange={e => setFormData({ ...formData, source: e.target.value })}
-                                                    className="w-full pl-10 pr-4 py-3 bg-slate-50 border-0 rounded-xl focus:ring-2 focus:ring-blue-100 focus:bg-white transition-all font-semibold text-slate-700 placeholder:text-slate-300"
+                                                    className="w-full pl-10 pr-4 py-3 bg-slate-50 dark:bg-slate-900 border-0 rounded-xl focus:ring-2 focus:ring-blue-100 dark:focus:ring-blue-900/30 focus:bg-white dark:focus:bg-slate-800 transition-all font-semibold text-slate-700 dark:text-slate-200 placeholder:text-slate-300 dark:placeholder:text-slate-600"
                                                     placeholder="LinkedIn, Indeed..."
                                                 />
                                                 <datalist id="sources">
@@ -541,7 +541,7 @@ ${analysis.weaknesses.map(w => `- ${w}`).join('\n')}
                                                     type="text"
                                                     value={formData.contractType || ''}
                                                     onChange={e => setFormData({ ...formData, contractType: e.target.value })}
-                                                    className="w-full pl-10 pr-4 py-3 bg-slate-50 border-0 rounded-xl focus:ring-2 focus:ring-blue-100 focus:bg-white transition-all font-semibold text-slate-700 placeholder:text-slate-300"
+                                                    className="w-full pl-10 pr-4 py-3 bg-slate-50 dark:bg-slate-900 border-0 rounded-xl focus:ring-2 focus:ring-blue-100 dark:focus:ring-blue-900/30 focus:bg-white dark:focus:bg-slate-800 transition-all font-semibold text-slate-700 dark:text-slate-200 placeholder:text-slate-300 dark:placeholder:text-slate-600"
                                                     placeholder="CDI, Freelance..."
                                                 />
                                             </div>
@@ -554,7 +554,7 @@ ${analysis.weaknesses.map(w => `- ${w}`).join('\n')}
                                                     type="text"
                                                     value={formData.remotePolicy || ''}
                                                     onChange={e => setFormData({ ...formData, remotePolicy: e.target.value })}
-                                                    className="w-full pl-10 pr-4 py-3 bg-slate-50 border-0 rounded-xl focus:ring-2 focus:ring-blue-100 focus:bg-white transition-all font-semibold text-slate-700 placeholder:text-slate-300"
+                                                    className="w-full pl-10 pr-4 py-3 bg-slate-50 dark:bg-slate-900 border-0 rounded-xl focus:ring-2 focus:ring-blue-100 dark:focus:ring-blue-900/30 focus:bg-white dark:focus:bg-slate-800 transition-all font-semibold text-slate-700 dark:text-slate-200 placeholder:text-slate-300 dark:placeholder:text-slate-600"
                                                     placeholder="Hybride 2j/sem..."
                                                 />
                                             </div>
@@ -567,7 +567,7 @@ ${analysis.weaknesses.map(w => `- ${w}`).join('\n')}
                                                     type="text"
                                                     value={formData.salary}
                                                     onChange={e => setFormData({ ...formData, salary: e.target.value })}
-                                                    className="w-full pl-10 pr-4 py-3 bg-slate-50 border-0 rounded-xl focus:ring-2 focus:ring-blue-100 focus:bg-white transition-all font-semibold text-slate-700 placeholder:text-slate-300"
+                                                    className="w-full pl-10 pr-4 py-3 bg-slate-50 dark:bg-slate-900 border-0 rounded-xl focus:ring-2 focus:ring-blue-100 dark:focus:ring-blue-900/30 focus:bg-white dark:focus:bg-slate-800 transition-all font-semibold text-slate-700 dark:text-slate-200 placeholder:text-slate-300 dark:placeholder:text-slate-600"
                                                     placeholder="45-55k..."
                                                 />
                                             </div>
@@ -582,7 +582,7 @@ ${analysis.weaknesses.map(w => `- ${w}`).join('\n')}
                                                     type="text"
                                                     value={formData.experience || ''}
                                                     onChange={e => setFormData({ ...formData, experience: e.target.value })}
-                                                    className="w-full pl-10 pr-4 py-3 bg-slate-50 border-0 rounded-xl focus:ring-2 focus:ring-blue-100 focus:bg-white transition-all font-semibold text-slate-700 placeholder:text-slate-300"
+                                                    className="w-full pl-10 pr-4 py-3 bg-slate-50 dark:bg-slate-900 border-0 rounded-xl focus:ring-2 focus:ring-blue-100 dark:focus:ring-blue-900/30 focus:bg-white dark:focus:bg-slate-800 transition-all font-semibold text-slate-700 dark:text-slate-200 placeholder:text-slate-300 dark:placeholder:text-slate-600"
                                                     placeholder="ex: 2 ans"
                                                 />
                                             </div>
@@ -596,7 +596,7 @@ ${analysis.weaknesses.map(w => `- ${w}`).join('\n')}
                                                     type="text"
                                                     value={formData.benefits?.join(', ') || ''}
                                                     onChange={e => setFormData({ ...formData, benefits: e.target.value.split(',').map(s => s.trim()) })}
-                                                    className="w-full px-4 py-3 bg-slate-50 border-0 rounded-xl focus:ring-2 focus:ring-blue-100 focus:bg-white transition-all font-semibold text-slate-700 placeholder:text-slate-300"
+                                                    className="w-full px-4 py-3 bg-slate-50 dark:bg-slate-900 border-0 rounded-xl focus:ring-2 focus:ring-blue-100 dark:focus:ring-blue-900/30 focus:bg-white dark:focus:bg-slate-800 transition-all font-semibold text-slate-700 dark:text-slate-200 placeholder:text-slate-300 dark:placeholder:text-slate-600"
                                                     placeholder="Tickets resto, Mutuelle, Transport..."
                                                 />
                                             </div>
@@ -719,7 +719,7 @@ ${analysis.weaknesses.map(w => `- ${w}`).join('\n')}
                                                 type="url"
                                                 value={formData.link}
                                                 onChange={e => setFormData({ ...formData, link: e.target.value })}
-                                                className="w-full pl-10 pr-4 py-3 bg-slate-50 border-0 rounded-xl focus:ring-2 focus:ring-blue-100 focus:bg-white transition-all font-semibold text-blue-600 placeholder:text-slate-300"
+                                                className="w-full pl-10 pr-4 py-3 bg-slate-50 dark:bg-slate-900 border-0 rounded-xl focus:ring-2 focus:ring-purple-100 dark:focus:ring-purple-900/30 focus:bg-white dark:focus:bg-slate-800 transition-all font-semibold text-slate-700 dark:text-slate-200 placeholder:text-slate-300 dark:placeholder:text-slate-600"
                                                 placeholder="https://..."
                                             />
                                         </div>
@@ -744,7 +744,7 @@ ${analysis.weaknesses.map(w => `- ${w}`).join('\n')}
                                                     type="text"
                                                     value={formData.contactName}
                                                     onChange={e => setFormData({ ...formData, contactName: e.target.value })}
-                                                    className="w-full pl-10 pr-4 py-3 bg-slate-50 border-0 rounded-xl focus:ring-2 focus:ring-purple-100 focus:bg-white transition-all font-semibold text-slate-700 placeholder:text-slate-300"
+                                                    className="w-full pl-10 pr-4 py-3 bg-slate-50 dark:bg-slate-900 border-0 rounded-xl focus:ring-2 focus:ring-purple-100 dark:focus:ring-purple-900/30 focus:bg-white dark:focus:bg-slate-800 transition-all font-semibold text-slate-700 dark:text-slate-200 placeholder:text-slate-300 dark:placeholder:text-slate-600"
                                                     placeholder="Sarah Connor..."
                                                 />
                                             </div>
@@ -758,7 +758,7 @@ ${analysis.weaknesses.map(w => `- ${w}`).join('\n')}
                                                     type="email"
                                                     value={formData.contactEmail}
                                                     onChange={e => setFormData({ ...formData, contactEmail: e.target.value })}
-                                                    className="w-full pl-10 pr-4 py-3 bg-slate-50 border-0 rounded-xl focus:ring-2 focus:ring-purple-100 focus:bg-white transition-all font-semibold text-slate-700 placeholder:text-slate-300"
+                                                    className="w-full pl-10 pr-4 py-3 bg-slate-50 dark:bg-slate-900 border-0 rounded-xl focus:ring-2 focus:ring-purple-100 dark:focus:ring-purple-900/30 focus:bg-white dark:focus:bg-slate-800 transition-all font-semibold text-slate-700 dark:text-slate-200 placeholder:text-slate-300 dark:placeholder:text-slate-600"
                                                     placeholder="s.connor@skynet.com..."
                                                 />
                                             </div>
@@ -772,7 +772,7 @@ ${analysis.weaknesses.map(w => `- ${w}`).join('\n')}
                                                     type="tel"
                                                     value={formData.contactPhone}
                                                     onChange={e => setFormData({ ...formData, contactPhone: e.target.value })}
-                                                    className="w-full pl-10 pr-4 py-3 bg-slate-50 border-0 rounded-xl focus:ring-2 focus:ring-purple-100 focus:bg-white transition-all font-semibold text-slate-700 placeholder:text-slate-300"
+                                                    className="w-full pl-10 pr-4 py-3 bg-slate-50 dark:bg-slate-900 border-0 rounded-xl focus:ring-2 focus:ring-purple-100 dark:focus:ring-purple-900/30 focus:bg-white dark:focus:bg-slate-800 transition-all font-semibold text-slate-700 dark:text-slate-200 placeholder:text-slate-300 dark:placeholder:text-slate-600"
                                                     placeholder="06 12 34 56 78..."
                                                 />
                                             </div>
@@ -786,7 +786,7 @@ ${analysis.weaknesses.map(w => `- ${w}`).join('\n')}
                                                     type="url"
                                                     value={formData.contactLinkedin}
                                                     onChange={e => setFormData({ ...formData, contactLinkedin: e.target.value })}
-                                                    className="w-full pl-10 pr-4 py-3 bg-slate-50 border-0 rounded-xl focus:ring-2 focus:ring-blue-100 focus:bg-white transition-all font-semibold text-slate-700 placeholder:text-slate-300"
+                                                    className="w-full pl-10 pr-4 py-3 bg-slate-50 dark:bg-slate-900 border-0 rounded-xl focus:ring-2 focus:ring-blue-100 dark:focus:ring-blue-900/30 focus:bg-white dark:focus:bg-slate-800 transition-all font-semibold text-slate-700 dark:text-slate-200 placeholder:text-slate-300 dark:placeholder:text-slate-600"
                                                     placeholder="linkedin.com/in/sarah..."
                                                 />
                                             </div>
@@ -837,7 +837,7 @@ ${analysis.weaknesses.map(w => `- ${w}`).join('\n')}
                                                     type="text"
                                                     value={formData.nextStep}
                                                     onChange={e => setFormData({ ...formData, nextStep: e.target.value })}
-                                                    className="w-full pl-10 pr-4 py-3 bg-orange-50/50 border-0 rounded-xl focus:ring-2 focus:ring-orange-100 focus:bg-white transition-all font-semibold text-slate-700 placeholder:text-slate-300"
+                                                    className="w-full pl-10 pr-4 py-3 bg-slate-50 dark:bg-slate-900 border-0 rounded-xl focus:ring-2 focus:ring-purple-100 dark:focus:ring-purple-900/30 focus:bg-white dark:focus:bg-slate-800 transition-all font-semibold text-slate-700 dark:text-slate-200 placeholder:text-slate-300 dark:placeholder:text-slate-600"
                                                     placeholder="Relancer mardi prochain..."
                                                 />
                                             </div>
@@ -966,7 +966,7 @@ ${analysis.weaknesses.map(w => `- ${w}`).join('\n')}
                                         <textarea
                                             value={formData.jobDescription}
                                             onChange={e => setFormData({ ...formData, jobDescription: e.target.value })}
-                                            className="w-full h-48 p-4 bg-slate-50 border-0 rounded-xl focus:ring-2 focus:ring-blue-100 focus:bg-white transition-all text-slate-700 placeholder:text-slate-300 resize-none font-medium leading-relaxed"
+                                            className="w-full pl-10 pr-4 py-3 bg-slate-50 dark:bg-slate-900 border-0 rounded-xl focus:ring-2 focus:ring-blue-100 dark:focus:ring-blue-900/30 focus:bg-white dark:focus:bg-slate-800 transition-all font-semibold text-slate-700 dark:text-slate-200 placeholder:text-slate-300 dark:placeholder:text-slate-600 resize-none font-medium leading-relaxed"
                                             placeholder="Copiez-collez ici la description de l'offre pour l'avoir toujours sous la main..."
                                         />
 
@@ -998,7 +998,7 @@ ${analysis.weaknesses.map(w => `- ${w}`).join('\n')}
                                         <textarea
                                             value={formData.notes}
                                             onChange={e => setFormData({ ...formData, notes: e.target.value })}
-                                            className="w-full h-32 p-4 bg-yellow-50/50 border-0 rounded-xl focus:ring-2 focus:ring-yellow-100 focus:bg-white transition-all text-slate-700 placeholder:text-slate-300 resize-none font-medium leading-relaxed"
+                                            className="w-full pl-10 pr-4 py-3 bg-slate-50 dark:bg-slate-900 border-0 rounded-xl focus:ring-2 focus:ring-blue-100 dark:focus:ring-blue-900/30 focus:bg-white dark:focus:bg-slate-800 transition-all font-semibold text-blue-600 dark:text-blue-400 placeholder:text-slate-300 dark:placeholder:text-slate-600 resize-none font-medium leading-relaxed"
                                             placeholder="Questions à poser, impressions, stack technique..."
                                         />
 
