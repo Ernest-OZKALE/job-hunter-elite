@@ -4,7 +4,7 @@ import type { JobApplication } from '../types';
  * Calculates a score from 0 to 100 based on job application relevance.
  * This is a heuristic model that can be later replaced/supplemented by a LLM.
  */
-import { analyzeJobOpportunity } from './gemini';
+import { analyzeJobOpportunityOllama } from './ollama';
 
 /**
  * Calculates a score from 0 to 100 based on job application relevance.
@@ -36,15 +36,16 @@ export const calculateAiScore = (app: JobApplication): number => {
 };
 
 /**
- * Uses Gemini AI to perform a deeper analysis of the job opportunity.
+ * Uses Custom AI (formerly Gemini) to perform a deeper analysis of the job opportunity.
  */
 export const calculateRealAiScore = async (app: JobApplication, userProfile?: string): Promise<number> => {
-    const analysis = await analyzeJobOpportunity(app, userProfile);
-    if (analysis.score === -1) {
-        // Fallback to heuristic if AI fails or key is missing
+    try {
+        const analysis = await analyzeJobOpportunityOllama(app, undefined, userProfile);
+        return analysis.score;
+    } catch (error) {
+        console.warn("AI Scoring failed, falling back to heuristic:", error);
         return calculateAiScore(app);
     }
-    return analysis.score;
 };
 
 export const getScoreColor = (score: number): string => {

@@ -10,8 +10,8 @@ export interface LocalAIConfig {
 // Default config for fallback (Standard Ollama defaults)
 export const DEFAULT_OLLAMA_CONFIG: LocalAIConfig = {
     provider: 'ollama',
-    baseUrl: "http://localhost:11434/v1", // Correct standard port
-    model: "llama3.1:8b"
+    baseUrl: "https://ai.nodecore.dev/v1", // User custom endpoint
+    model: "llama3.1:8b" // Default model, user can change in settings
 };
 
 const DEFAULT_PROFILE = "Développeur Fullstack avec expérience en React, TypeScript, Node.js et Firebase.";

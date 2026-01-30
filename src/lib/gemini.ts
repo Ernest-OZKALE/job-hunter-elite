@@ -2,7 +2,7 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 import type { JobApplication } from "../types";
 
 // Note: In a production app, the API key should be in VITE_GEMINI_API_KEY
-const API_KEY = "AIzaSyCygxxOYkJZOctGOQZnf79GF6OkC4v5MI4";
+const API_KEY = import.meta.env.VITE_GEMINI_API_KEY;
 const genAI = new GoogleGenerativeAI(API_KEY);
 
 const DEFAULT_PROFILE = "Développeur Fullstack avec expérience en React, TypeScript, Node.js et Firebase.";
@@ -14,7 +14,11 @@ export const analyzeJobOpportunity = async (app: JobApplication, userProfile: st
     }
 
     try {
-        const model = genAI.getGenerativeModel({ model: "gemini-1.5-pro-latest" });
+        console.log("[Gemini] Starting analysis...");
+        console.log("[Gemini] Key available:", !!API_KEY);
+
+        // Use flash model which is faster and often included in free tier
+        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
         const prompt = `
       Analyse cette offre d'emploi par rapport au profil suivant.
@@ -42,11 +46,13 @@ export const analyzeJobOpportunity = async (app: JobApplication, userProfile: st
         const response = await result.response;
         const text = response.text();
 
+        console.log("[Gemini] Raw response:", text);
+
         // Clean potential markdown around JSON
         const jsonStr = text.replace(/```json|```/g, "").trim();
         return JSON.parse(jsonStr);
     } catch (error) {
-        console.error("Gemini Analysis Error:", error);
+        console.error("Gemini Analysis Error Full:", error);
         return { score: -1, strengths: [], weaknesses: [] };
     }
 };

@@ -31,7 +31,7 @@ export function PreferencesProvider({ children }: { children: React.ReactNode })
     });
 
     const [userProfile, setUserProfileState] = useState(() => {
-        return localStorage.getItem('userProfile') || '';
+        return localStorage.getItem('userProfile') || "Développeur Fullstack Passionné (Profil par défaut)";
     });
 
     const setColorTheme = (theme: ThemeName) => {

@@ -34,6 +34,18 @@ export const AiConfigProvider: React.FC<{ children: React.ReactNode }> = ({ chil
         localStorage.setItem('ai_settings', JSON.stringify(config));
     }, [config]);
 
+    // AUTO-MIGRATION: Detect old localhost default and switch to NodeCore
+    useEffect(() => {
+        if (config.baseUrl.includes("localhost:11434")) {
+            console.log("[Auto-Migration] Switching from Localhost to NodeCore...");
+            setConfig(prev => ({
+                ...prev,
+                baseUrl: "https://ai.nodecore.dev/v1",
+                model: "llama3.1:8b"
+            }));
+        }
+    }, []);
+
     const updateConfig = (newConfig: Partial<AiSettings>) => {
         setConfig(prev => ({ ...prev, ...newConfig }));
     };
