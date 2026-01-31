@@ -388,7 +388,7 @@ ${analysis.weaknesses.map(w => `- ${w}`).join('\n')}
     const performSubmit = async (e: React.FormEvent) => {
         setIsScoring(true);
         try {
-            // Calculate Real AI Score using Gemini
+            // Calculate Real AI Score using Custom AI (NodeCore)
             const score = await calculateRealAiScore(formData as JobApplication);
             await onSubmit(e, { ...formData, aiScore: score });
         } catch (error) {
@@ -1099,24 +1099,12 @@ ${analysis.weaknesses.map(w => `- ${w}`).join('\n')}
                         </div>
 
                         <div className="p-6 space-y-6">
-                            {/* Provider Switch */}
-                            <div className="grid grid-cols-2 gap-4">
-                                <button
-                                    type="button"
-                                    onClick={() => updateConfig({ provider: 'ollama' })}
-                                    className={`p-4 rounded-xl border-2 flex flex-col items-center gap-2 transition-all ${config.provider === 'ollama' ? 'border-indigo-600 bg-indigo-50 text-indigo-700 ring-2 ring-indigo-100' : 'border-slate-200 hover:border-slate-300 text-slate-600 hover:bg-slate-50'}`}
-                                >
-                                    <Server className="w-6 h-6" />
-                                    <span className="font-bold text-sm">Local (Ollama)</span>
-                                </button>
-                                <button
-                                    type="button"
-                                    onClick={() => updateConfig({ provider: 'gemini' })}
-                                    className={`p-4 rounded-xl border-2 flex flex-col items-center gap-2 transition-all ${config.provider === 'gemini' ? 'border-indigo-600 bg-indigo-50 text-indigo-700 ring-2 ring-indigo-100' : 'border-slate-200 hover:border-slate-300 text-slate-600 hover:bg-slate-50'}`}
-                                >
-                                    <Cloud className="w-6 h-6" />
-                                    <span className="font-bold text-sm">Cloud (Gemini)</span>
-                                </button>
+                            <div className="space-y-6">
+                                {/* Header */}
+                                <div className="text-center pb-2 border-b border-slate-100">
+                                    <h3 className="font-bold text-slate-800">Configuration IA Personnalisée</h3>
+                                    <p className="text-xs text-slate-500">Connecté à votre instance NodeCore (ou autre compatible OpenAI)</p>
+                                </div>
                             </div>
 
                             {/* Settings Form */}
@@ -1131,7 +1119,7 @@ ${analysis.weaknesses.map(w => `- ${w}`).join('\n')}
                                         placeholder="http://localhost:11434/v1"
                                     />
                                     <p className="text-xs text-slate-400">
-                                        {config.provider === 'ollama' ? 'Standard: http://localhost:11434/v1 ou :3000/v1' : 'Non modifiable pour Gemini'}
+                                        URL standard : https://ai.nodecore.dev/v1/
                                     </p>
                                 </div>
 
