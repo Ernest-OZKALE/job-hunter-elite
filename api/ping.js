@@ -1,1 +1,8 @@
-curl.exe - i "https://job-hunter-elite.vercel.app/api/magic-fill"
+export const config = { runtime: "edge" };
+
+export default function handler() {
+    return new Response(JSON.stringify({ ok: true, from: "ping-edge" }), {
+        status: 200,
+        headers: { "content-type": "application/json" },
+    });
+}
