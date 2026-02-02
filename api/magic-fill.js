@@ -1,12 +1,8 @@
 export const config = { runtime: "edge" };
 
 export default async function handler(req) {
-    // Preflight CORS
     if (req.method === "OPTIONS") {
-        return new Response(null, {
-            status: 200,
-            headers: corsHeaders(),
-        });
+        return new Response(null, { status: 200, headers: corsHeaders() });
     }
 
     if (req.method !== "POST") {
@@ -16,11 +12,33 @@ export default async function handler(req) {
         });
     }
 
+    // ✅ Lecture brute
+    const raw = await req.text();
+
+    // 🔎 DEBUG si vide
+    if (!raw || raw.trim().length === 0) {
+        return new Response(JSON.stringify({
+            error: "empty_body",
+            hint: "Le body n'arrive pas jusqu'à la fonction (ou est vidé)",
+        }), {
+            status: 400,
+            headers: { ...corsHeaders(), "content-type": "application/json" },
+        });
+    }
+
+    // ✅ JSON parse manuel (plus tolérant, et on peut montrer la cause)
     let payload;
     try {
-        payload = await req.json();
+        // Protection BOM (très courant sous Windows)
+        const cleaned = raw.replace(/^\uFEFF/, "");
+        payload = JSON.parse(cleaned);
     } catch (e) {
-        return new Response(JSON.stringify({ error: "invalid_json" }), {
+        return new Response(JSON.stringify({
+            error: "invalid_json",
+            message: String(e?.message || e),
+            rawSample: raw.slice(0, 200),
+            rawLen: raw.length,
+        }), {
             status: 400,
             headers: { ...corsHeaders(), "content-type": "application/json" },
         });
@@ -41,14 +59,18 @@ export default async function handler(req) {
         });
 
         const text = await r.text();
-
-        // Renvoie tel quel (JSON ou non)
         return new Response(text, {
             status: r.status,
-            headers: { ...corsHeaders(), "content-type": r.headers.get("content-type") || "text/plain" },
+            headers: {
+                ...corsHeaders(),
+                "content-type": r.headers.get("content-type") || "text/plain",
+            },
         });
     } catch (e) {
-        return new Response(JSON.stringify({ error: "proxy_failed", details: String(e?.message || e) }), {
+        return new Response(JSON.stringify({
+            error: "proxy_failed",
+            details: String(e?.message || e),
+        }), {
             status: 502,
             headers: { ...corsHeaders(), "content-type": "application/json" },
         });
