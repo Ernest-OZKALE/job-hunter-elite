@@ -1,76 +1,60 @@
 export default async function handler(req, res) {
-    // CORS setup for Vercel managed functions (optional but good practice)
-    res.setHeader('Access-Control-Allow-Credentials', true);
-    res.setHeader('Access-Control-Allow-Origin', '*');
-    res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS,PATCH,DELETE,POST,PUT');
-    res.setHeader(
-        'Access-Control-Allow-Headers',
-        'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version'
-    );
+    // CORS (optionnel mais ok)
+    res.setHeader("Access-Control-Allow-Origin", "*");
+    res.setHeader("Access-Control-Allow-Methods", "POST,OPTIONS");
+    res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
 
-    if (req.method === 'OPTIONS') {
-        res.status(200).end();
-        return;
-    }
-
-    if (req.method !== "POST") {
-        return res.status(405).json({ error: "Method not allowed" });
-    }
-
-    // The upstream backend (Cloudflare Tunnel)
-    const upstream = "https://api.nodecore.dev/v1/magic-fill";
+    if (req.method === "OPTIONS") return res.status(200).end();
+    if (req.method !== "POST") return res.status(405).json({ error: "method_not_allowed" });
 
     try {
-        const { text, source_url } = req.body;
+        // ✅ Next/Vercel parse souvent déjà le JSON
+        // - si req.body est un objet -> OK
+        // - si req.body est une string -> on parse
+        const payload =
+            typeof req.body === "string" ? JSON.parse(req.body) : req.body;
 
-        // Validate input
-        if (!text) {
-            return res.status(400).json({ error: "Missing 'text' in request body" });
-        }
-
-        const outputResponse = await fetch(upstream, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                // Inject secrets server-side
-                "Authorization": `Bearer ${process.env.MAGICFILL_BEARER || ""}`,
-                "CF-Access-Client-Id": process.env.CF_ACCESS_CLIENT_ID || "",
-                "CF-Access-Client-Secret": process.env.CF_ACCESS_CLIENT_SECRET || "",
-            },
-            body: JSON.stringify({
-                text,
-                source_url: source_url || "https://job-hunter-elite.vercel.app"
-            }),
-        });
-
-        // Handle upstream errors
-        // Handle upstream errors
-        if (!outputResponse.ok) {
-            const errorText = await outputResponse.text();
-            console.error(`Upstream Error (${outputResponse.status}):`, errorText);
-
-            let errorDetails = errorText;
-            try {
-                const jsonError = JSON.parse(errorText);
-                errorDetails = jsonError;
-            } catch (e) {
-                // Not JSON, keep text
-            }
-
-            return res.status(outputResponse.status).json({
-                error: "Upstream Service Error",
-                statusCode: outputResponse.status,
-                details: errorDetails,
-                upstreamUrl: upstream
+        if (!payload || typeof payload !== "object") {
+            return res.status(400).json({
+                error: "invalid_payload",
+                details: "body must be JSON object",
+                receivedType: typeof payload,
             });
         }
 
-        // Forward the response
-        const data = await outputResponse.json();
-        return res.status(200).json(data);
+        const upstreamUrl = "https://api.nodecore.dev/v1/magic-fill";
 
-    } catch (e) {
-        console.error("Proxy Error:", e);
-        return res.status(500).json({ error: "proxy_failed", details: String(e) });
+        const r = await fetch(upstreamUrl, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                // 🔥 les 3 secrets viennent de Vercel env vars
+                "Authorization": `Bearer ${process.env.MAGICFILL_BEARER}`,
+                "CF-Access-Client-Id": process.env.CF_ACCESS_CLIENT_ID,
+                "CF-Access-Client-Secret": process.env.CF_ACCESS_CLIENT_SECRET,
+            },
+            body: JSON.stringify(payload),
+        });
+
+        const text = await r.text(); // on lit en texte pour éviter crash JSON
+        let data;
+        try {
+            data = JSON.parse(text);
+        } catch {
+            // si jamais Cloudflare renvoie HTML (502), on le renvoie tel quel
+            return res.status(502).json({
+                error: "upstream_not_json",
+                status: r.status,
+                upstreamUrl,
+                sample: text.slice(0, 300),
+            });
+        }
+
+        return res.status(r.status).json(data);
+    } catch (err) {
+        return res.status(500).json({
+            error: "proxy_failed",
+            details: String(err?.message || err),
+        });
     }
 }
