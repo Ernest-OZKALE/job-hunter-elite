@@ -44,12 +44,24 @@ export default async function handler(req, res) {
         });
 
         // Handle upstream errors
+        // Handle upstream errors
         if (!outputResponse.ok) {
             const errorText = await outputResponse.text();
             console.error(`Upstream Error (${outputResponse.status}):`, errorText);
+
+            let errorDetails = errorText;
+            try {
+                const jsonError = JSON.parse(errorText);
+                errorDetails = jsonError;
+            } catch (e) {
+                // Not JSON, keep text
+            }
+
             return res.status(outputResponse.status).json({
                 error: "Upstream Service Error",
-                details: `Backend returned ${outputResponse.status}`
+                statusCode: outputResponse.status,
+                details: errorDetails,
+                upstreamUrl: upstream
             });
         }
 
