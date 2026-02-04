@@ -26,6 +26,16 @@ class MagicFillService {
     static async extractFromText(rawText: string): Promise<JobOffer | null> {
         try {
             console.log("🚀 Magic Fill: Sending to Proxy...");
+            console.log("MF payload keys:", Object.keys(payload || {}));
+            console.log("MF text len:", payload?.text?.length);
+            console.log("MF source_url:", payload?.source_url);
+            console.log("MF sourceUrl:", payload?.sourceUrl);
+            const payload = {
+                text: String(text ?? ""),
+                source_url: String(sourceUrl ?? source_url ?? ""),
+            };
+
+
 
             const response = await fetch(this.API_URL, {
                 method: 'POST',
