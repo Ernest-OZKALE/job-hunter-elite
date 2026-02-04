@@ -10,6 +10,14 @@ export default async function handler(req, res) {
 
     if (req.method === "OPTIONS") return res.status(200).end();
     if (req.method !== "POST") return res.status(405).json({ error: "method_not_allowed" });
+    return res.status(200).json({
+        env: {
+            CF_ACCESS_CLIENT_ID_len: (process.env.CF_ACCESS_CLIENT_ID || "").length,
+            CF_ACCESS_CLIENT_SECRET_len: (process.env.CF_ACCESS_CLIENT_SECRET || "").length,
+            MAGICFILL_BEARER_len: (process.env.MAGICFILL_BEARER || "").length,
+        }
+    });
+
 
     const upstreamUrl = "https://api.nodecore.dev/v1/magic-fill";
 
