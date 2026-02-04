@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import type { JobApplication } from '../../types';
 import { MessageSquare, Copy, Check, Sparkles, RefreshCw } from 'lucide-react';
 
@@ -15,7 +15,7 @@ export const AiMessageGenerator = ({ application }: AiMessageGeneratorProps) => 
         setIsGenerating(true);
         // Simulated AI Generation (Heuristic based)
         setTimeout(() => {
-            const template = `Bonjour,\n\nJe suis très intéressé par le poste de ${application.position} chez ${application.company} que j'ai vu sur ${application.source || 'votre site'}.\n\nMon profil semble correspondre à vos attentes, notamment sur les aspects techniques évoqués dans l'offre. ${application.location ? `Étant basé à ${application.location}, je` : 'Je'} serais ravi d'échanger avec vous sur cette opportunité.\n\nBien cordialement,`;
+            const template = `Bonjour,\n\nJe suis trÃ¨s intÃ©ressÃ© par le poste de ${application.position} chez ${application.company} que j'ai vu sur ${application.source || 'votre site'}.\n\nMon profil semble correspondre Ã  vos attentes, notamment sur les aspects techniques Ã©voquÃ©s dans l'offre. ${application.location ? `Ã‰tant basÃ© Ã  ${application.location}, je` : 'Je'} serais ravi d'Ã©changer avec vous sur cette opportunitÃ©.\n\nBien cordialement,`;
             setMessage(template);
             setIsGenerating(false);
         }, 1200);
@@ -36,7 +36,7 @@ export const AiMessageGenerator = ({ application }: AiMessageGeneratorProps) => 
                     </div>
                     <div>
                         <h4 className="font-bold text-slate-800 dark:text-white">Assistant de Contact IA</h4>
-                        <p className="text-xs text-slate-500">Génère une accroche personnalisée</p>
+                        <p className="text-xs text-slate-500">GÃ©nÃ¨re une accroche personnalisÃ©e</p>
                     </div>
                 </div>
                 {!message ? (
@@ -46,14 +46,14 @@ export const AiMessageGenerator = ({ application }: AiMessageGeneratorProps) => 
                         className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-xl text-sm font-bold transition-all disabled:opacity-50"
                     >
                         {isGenerating ? <RefreshCw className="animate-spin" size={16} /> : <MessageSquare size={16} />}
-                        Générer
+                        GÃ©nÃ©rer
                     </button>
                 ) : (
                     <div className="flex gap-2">
                         <button
                             onClick={generateMessage}
                             className="p-2 text-slate-400 hover:text-blue-600 transition-colors"
-                            title="Régénérer"
+                            title="RÃ©gÃ©nÃ©rer"
                         >
                             <RefreshCw size={18} />
                         </button>
@@ -62,7 +62,7 @@ export const AiMessageGenerator = ({ application }: AiMessageGeneratorProps) => 
                             className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-bold transition-all ${copied ? 'bg-emerald-100 text-emerald-600' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}`}
                         >
                             {copied ? <Check size={16} /> : <Copy size={16} />}
-                            {copied ? 'Copié !' : 'Copier'}
+                            {copied ? 'CopiÃ© !' : 'Copier'}
                         </button>
                     </div>
                 )}
@@ -77,7 +77,7 @@ export const AiMessageGenerator = ({ application }: AiMessageGeneratorProps) => 
                     />
                     <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
                         <div className="text-[10px] text-blue-500 bg-blue-50 px-2 py-0.5 rounded-md font-bold uppercase tracking-widest border border-blue-100/50">
-                            Prêt à l'emploi
+                            PrÃªt Ã  l'emploi
                         </div>
                     </div>
                 </div>
@@ -85,7 +85,7 @@ export const AiMessageGenerator = ({ application }: AiMessageGeneratorProps) => 
 
             {!message && !isGenerating && (
                 <div className="py-8 text-center border-2 border-dashed border-slate-200 dark:border-slate-800 rounded-2xl">
-                    <p className="text-sm text-slate-400">Clique sur générer pour créer un message basé sur l'offre de {application.company}.</p>
+                    <p className="text-sm text-slate-400">Clique sur gÃ©nÃ©rer pour crÃ©er un message basÃ© sur l'offre de {application.company}.</p>
                 </div>
             )}
         </div>

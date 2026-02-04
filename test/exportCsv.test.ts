@@ -1,10 +1,10 @@
-import { describe, it, expect } from 'vitest';
+﻿import { describe, it, expect } from 'vitest';
 import { applicationsToCsv } from '../src/lib/exportCsv';
 
 describe('applicationsToCsv', () => {
   it('generates CSV with headers and rows', () => {
     const apps = [
-      { date: '2025-12-01', company: 'Acme', position: 'Dev', status: 'Envoyé', salary: '50000', link: 'https://acme.example', attachments: [{name:'CV.pdf'}], notes: 'Note' }
+      { date: '2025-12-01', company: 'Acme', position: 'Dev', status: 'EnvoyÃ©', salary: '50000', link: 'https://acme.example', attachments: [{name:'CV.pdf'}], notes: 'Note' }
     ];
     const csv = applicationsToCsv(apps);
     const lines = csv.split('\n');

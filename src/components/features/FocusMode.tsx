@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+﻿import { useState, useEffect, useCallback } from 'react';
 import { X, ChevronLeft, ChevronRight, Target, Calendar, MapPin, DollarSign, ExternalLink, FileText } from 'lucide-react';
 import type { JobApplication } from '../../types';
 import { StatusSelector } from '../ui/StatusSelector';
@@ -144,7 +144,7 @@ export const FocusMode = ({ applications, onClose, onUpdate }: FocusModeProps) =
                                     ? 'bg-red-50 text-red-700 border border-red-100 dark:bg-red-900/30 dark:text-red-300 dark:border-red-800'
                                     : 'bg-orange-50 text-orange-700 border border-orange-100 dark:bg-orange-900/30 dark:text-orange-300 dark:border-orange-800'
                                 }`}>
-                                ⚠️ {relance.message}
+                                âš ï¸ {relance.message}
                             </div>
                         )}
 
@@ -156,7 +156,7 @@ export const FocusMode = ({ applications, onClose, onUpdate }: FocusModeProps) =
                             </div>
                             <div className="bg-slate-50 dark:bg-slate-900/50 p-4 rounded-xl flex items-center gap-3">
                                 <DollarSign className="text-slate-400" size={20} />
-                                <span className="font-medium text-slate-700 dark:text-slate-300">{currentApp.salary || 'Non spécifié'}</span>
+                                <span className="font-medium text-slate-700 dark:text-slate-300">{currentApp.salary || 'Non spÃ©cifiÃ©'}</span>
                             </div>
                             <div className="bg-slate-50 dark:bg-slate-900/50 p-4 rounded-xl flex items-center gap-3">
                                 <Calendar className="text-slate-400" size={20} />
@@ -193,7 +193,7 @@ export const FocusMode = ({ applications, onClose, onUpdate }: FocusModeProps) =
                         </div>
 
                         <div className="mt-6 text-center text-xs text-slate-400 font-medium">
-                            Utilisez les flèches ⬅️ ➡️ pour naviguer • Echap pour quitter
+                            Utilisez les flÃ¨ches â¬…ï¸ âž¡ï¸ pour naviguer â€¢ Echap pour quitter
                         </div>
                     </div>
                 </div>

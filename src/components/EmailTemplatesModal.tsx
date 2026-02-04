@@ -1,4 +1,4 @@
-import { useState } from 'react';
+﻿import { useState } from 'react';
 import { X, Mail, Send, Copy, Sparkles } from 'lucide-react';
 
 interface EmailTemplate {
@@ -12,20 +12,20 @@ interface EmailTemplate {
 const defaultTemplates: EmailTemplate[] = [
     {
         id: '1',
-        name: 'Candidature Spontanée',
+        name: 'Candidature SpontanÃ©e',
         subject: 'Candidature pour le poste de {position}',
         body: `Bonjour {contactName},
 
 Je me permets de vous contacter concernant le poste de {position} au sein de {company}.
 
-Fort(e) de mon expérience en développement et de ma passion pour les technologies modernes, je suis convaincu(e) que mon profil correspond parfaitement aux besoins de votre équipe.
+Fort(e) de mon expÃ©rience en dÃ©veloppement et de ma passion pour les technologies modernes, je suis convaincu(e) que mon profil correspond parfaitement aux besoins de votre Ã©quipe.
 
-Mes compétences incluent :
-- Développement Full-Stack (React, TypeScript, Node.js)
+Mes compÃ©tences incluent :
+- DÃ©veloppement Full-Stack (React, TypeScript, Node.js)
 - Gestion de projets agiles
-- Collaboration en équipe
+- Collaboration en Ã©quipe
 
-Je serais ravi(e) de discuter de la manière dont je peux contribuer au succès de {company}.
+Je serais ravi(e) de discuter de la maniÃ¨re dont je peux contribuer au succÃ¨s de {company}.
 
 Cordialement,
 [Votre Nom]`,
@@ -33,13 +33,13 @@ Cordialement,
     },
     {
         id: '2',
-        name: 'Relance Après Candidature',
+        name: 'Relance AprÃ¨s Candidature',
         subject: 'Suivi de ma candidature - {position}',
         body: `Bonjour {contactName},
 
-Je me permets de revenir vers vous concernant ma candidature pour le poste de {position}, envoyée le [date].
+Je me permets de revenir vers vous concernant ma candidature pour le poste de {position}, envoyÃ©e le [date].
 
-Je reste très intéressé(e) par cette opportunité et serais ravi(e) d'échanger avec vous sur mon profil et mes motivations.
+Je reste trÃ¨s intÃ©ressÃ©(e) par cette opportunitÃ© et serais ravi(e) d'Ã©changer avec vous sur mon profil et mes motivations.
 
 Seriez-vous disponible pour un entretien dans les prochains jours ?
 
@@ -54,11 +54,11 @@ Cordialement,
         subject: 'Merci pour l\'entretien - {position}',
         body: `Bonjour {contactName},
 
-Je tenais à vous remercier pour le temps que vous m'avez accordé lors de notre entretien concernant le poste de {position}.
+Je tenais Ã  vous remercier pour le temps que vous m'avez accordÃ© lors de notre entretien concernant le poste de {position}.
 
-Notre échange a renforcé mon intérêt pour {company} et je suis encore plus motivé(e) à rejoindre votre équipe.
+Notre Ã©change a renforcÃ© mon intÃ©rÃªt pour {company} et je suis encore plus motivÃ©(e) Ã  rejoindre votre Ã©quipe.
 
-N'hésitez pas si vous avez besoin d'informations complémentaires.
+N'hÃ©sitez pas si vous avez besoin d'informations complÃ©mentaires.
 
 Cordialement,
 [Votre Nom]`,
@@ -106,7 +106,7 @@ export const EmailTemplatesModal = ({ onClose, onSelectTemplate }: EmailTemplate
                         </div>
                         <div>
                             <h2 className="text-2xl font-black text-slate-900 dark:text-white">Templates d'Emails</h2>
-                            <p className="text-sm text-slate-600 dark:text-slate-400">Gagnez du temps avec nos modèles pré-écrits</p>
+                            <p className="text-sm text-slate-600 dark:text-slate-400">Gagnez du temps avec nos modÃ¨les prÃ©-Ã©crits</p>
                         </div>
                     </div>
                     <button onClick={onClose} className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition-colors p-2 hover:bg-white/50 dark:hover:bg-slate-700/50 rounded-lg">
@@ -151,7 +151,7 @@ export const EmailTemplatesModal = ({ onClose, onSelectTemplate }: EmailTemplate
                                         title="Copier"
                                     >
                                         {copiedId === template.id ? (
-                                            <span className="text-emerald-600 dark:text-emerald-400 text-xs font-bold">✓ Copié</span>
+                                            <span className="text-emerald-600 dark:text-emerald-400 text-xs font-bold">âœ“ CopiÃ©</span>
                                         ) : (
                                             <Copy size={18} />
                                         )}

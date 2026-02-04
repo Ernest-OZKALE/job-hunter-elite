@@ -1,4 +1,4 @@
-import { useState } from 'react';
+﻿import { useState } from 'react';
 import { CheckCircle2, Circle, Plus, Trash2, ListTodo } from 'lucide-react';
 
 export interface Task {
@@ -31,9 +31,9 @@ export const TaskManager = ({ tasks, onAddTask, onToggleTask, onDeleteTask }: Ta
 
     // Preset quick tasks
     const quickTasks = [
-        'Préparer test technique',
+        'PrÃ©parer test technique',
         'Relire offre',
-        'Préparer entretien',
+        'PrÃ©parer entretien',
         'Envoyer lettre motivation',
         'Rechercher l\'entreprise'
     ];
@@ -45,7 +45,7 @@ export const TaskManager = ({ tasks, onAddTask, onToggleTask, onDeleteTask }: Ta
                 <div className="flex items-center gap-2">
                     <ListTodo size={16} className="text-slate-500" />
                     <span className="text-sm font-medium text-slate-700 dark:text-slate-300">
-                        Tâches ({completedCount}/{tasks.length})
+                        TÃ¢ches ({completedCount}/{tasks.length})
                     </span>
                 </div>
                 {tasks.length > 0 && (
@@ -102,7 +102,7 @@ export const TaskManager = ({ tasks, onAddTask, onToggleTask, onDeleteTask }: Ta
                         value={newTask}
                         onChange={e => setNewTask(e.target.value)}
                         onKeyDown={e => e.key === 'Enter' && handleAdd()}
-                        placeholder="Nouvelle tâche..."
+                        placeholder="Nouvelle tÃ¢che..."
                         className="flex-1 px-3 py-2 text-sm bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
                         autoFocus
                     />
@@ -126,7 +126,7 @@ export const TaskManager = ({ tasks, onAddTask, onToggleTask, onDeleteTask }: Ta
                         className="w-full px-3 py-2 border-2 border-dashed border-slate-200 dark:border-slate-600 rounded-lg text-sm text-slate-500 hover:border-indigo-400 hover:text-indigo-500 transition-colors flex items-center justify-center gap-2"
                     >
                         <Plus size={16} />
-                        Ajouter une tâche
+                        Ajouter une tÃ¢che
                     </button>
 
                     {/* Quick add buttons */}

@@ -1,4 +1,4 @@
-import { AlertTriangle, X } from 'lucide-react';
+﻿import { AlertTriangle, X } from 'lucide-react';
 import type { DuplicateMatch } from '../../lib/duplicateDetection';
 
 interface DuplicateWarningModalProps {
@@ -24,9 +24,9 @@ export const DuplicateWarningModal = ({
                     <div className="flex items-center gap-3">
                         <AlertTriangle size={28} />
                         <div>
-                            <h2 className="text-2xl font-black">Candidature Similaire Détectée</h2>
+                            <h2 className="text-2xl font-black">Candidature Similaire DÃ©tectÃ©e</h2>
                             <p className="text-sm text-orange-100">
-                                {matches.length} candidature{matches.length > 1 ? 's' : ''} similaire{matches.length > 1 ? 's' : ''} trouvée{matches.length > 1 ? 's' : ''}
+                                {matches.length} candidature{matches.length > 1 ? 's' : ''} similaire{matches.length > 1 ? 's' : ''} trouvÃ©e{matches.length > 1 ? 's' : ''}
                             </p>
                         </div>
                     </div>
@@ -38,7 +38,7 @@ export const DuplicateWarningModal = ({
                 {/* Content */}
                 <div className="p-6 max-h-96 overflow-y-auto">
                     <p className="text-slate-700 dark:text-slate-300 mb-4">
-                        Une ou plusieurs candidatures existantes ressemblent fortement à celle que vous essayez d'ajouter.
+                        Une ou plusieurs candidatures existantes ressemblent fortement Ã  celle que vous essayez d'ajouter.
                         Voulez-vous vraiment continuer ?
                     </p>
 
@@ -62,10 +62,10 @@ export const DuplicateWarningModal = ({
                                     </span>
                                 </div>
                                 <p className="text-xs text-orange-700 dark:text-orange-300 font-medium">
-                                    ⚠️ {match.reason}
+                                    âš ï¸ {match.reason}
                                 </p>
                                 <p className="text-xs text-slate-500 dark:text-slate-400 mt-2">
-                                    Créée le {new Date(match.application.date).toLocaleDateString('fr-FR')} •
+                                    CrÃ©Ã©e le {new Date(match.application.date).toLocaleDateString('fr-FR')} â€¢
                                     Statut: {match.application.status}
                                 </p>
                             </div>
@@ -85,7 +85,7 @@ export const DuplicateWarningModal = ({
                         onClick={onProceed}
                         className="flex-1 px-6 py-3 bg-gradient-to-r from-orange-500 to-red-500 text-white rounded-xl font-bold hover:from-orange-600 hover:to-red-600 transition-all shadow-lg shadow-orange-200 dark:shadow-orange-900/50"
                     >
-                        Continuer quand même
+                        Continuer quand mÃªme
                     </button>
                 </div>
             </div>

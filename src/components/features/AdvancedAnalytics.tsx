@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+﻿import { useMemo, useState } from 'react';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, LineChart, Line } from 'recharts';
 import { TrendingUp, Calendar, Target, X } from 'lucide-react';
 import type { JobApplication } from '../../types';
@@ -9,12 +9,12 @@ interface AdvancedAnalyticsProps {
 }
 
 const INTERVIEW_STATUSES = [
-    'Entretien RH Programmé', 'Entretien RH Passé',
-    'Entretien Technique Programmé', 'Entretien Technique Passé',
-    'Entretien Final Programmé', 'Entretien Final Passé',
-    'Offre Reçue', 'Offre Acceptée'
+    'Entretien RH ProgrammÃ©', 'Entretien RH PassÃ©',
+    'Entretien Technique ProgrammÃ©', 'Entretien Technique PassÃ©',
+    'Entretien Final ProgrammÃ©', 'Entretien Final PassÃ©',
+    'Offre ReÃ§ue', 'Offre AcceptÃ©e'
 ];
-const OFFER_STATUSES = ['Offre Reçue', 'Offre Acceptée'];
+const OFFER_STATUSES = ['Offre ReÃ§ue', 'Offre AcceptÃ©e'];
 
 export const AdvancedAnalytics = ({ applications, onClose }: AdvancedAnalyticsProps) => {
     const [activeTab, setActiveTab] = useState<'sources' | 'timeline' | 'calendar'>('sources');
@@ -160,8 +160,8 @@ export const AdvancedAnalytics = ({ applications, onClose }: AdvancedAnalyticsPr
                     <div className="flex items-center gap-3">
                         <TrendingUp size={28} />
                         <div>
-                            <h2 className="text-2xl font-black">Analytics Avancés</h2>
-                            <p className="text-sm text-indigo-100">Insights détaillés sur votre recherche</p>
+                            <h2 className="text-2xl font-black">Analytics AvancÃ©s</h2>
+                            <p className="text-sm text-indigo-100">Insights dÃ©taillÃ©s sur votre recherche</p>
                         </div>
                     </div>
                     <button onClick={onClose} className="p-2 hover:bg-white/10 rounded-lg transition-colors">
@@ -174,9 +174,9 @@ export const AdvancedAnalytics = ({ applications, onClose }: AdvancedAnalyticsPr
                         <div className="w-20 h-20 bg-slate-100 dark:bg-slate-700 rounded-full flex items-center justify-center mb-6">
                             <TrendingUp className="text-slate-400" size={32} />
                         </div>
-                        <h3 className="text-xl font-bold text-slate-800 dark:text-white mb-2">Aucune donnée pour le moment</h3>
+                        <h3 className="text-xl font-bold text-slate-800 dark:text-white mb-2">Aucune donnÃ©e pour le moment</h3>
                         <p className="text-slate-500 max-w-md">
-                            Ajoutez vos premières candidatures pour voir apparaître vos statistiques détaillées, l'évolution de votre recherche et vos taux de conversion.
+                            Ajoutez vos premiÃ¨res candidatures pour voir apparaÃ®tre vos statistiques dÃ©taillÃ©es, l'Ã©volution de votre recherche et vos taux de conversion.
                         </p>
                     </div>
                 ) : (
@@ -186,7 +186,7 @@ export const AdvancedAnalytics = ({ applications, onClose }: AdvancedAnalyticsPr
                                 <p className="text-sm font-medium text-blue-100">Cette Semaine</p>
                                 <p className="text-3xl font-black">{weeklyStats.thisWeek}</p>
                                 <p className={`text-xs ${weeklyStats.change >= 0 ? 'text-green-200' : 'text-red-200'}`}>
-                                    {weeklyStats.change >= 0 ? '+' : ''}{weeklyStats.change} vs semaine dernière
+                                    {weeklyStats.change >= 0 ? '+' : ''}{weeklyStats.change} vs semaine derniÃ¨re
                                 </p>
                             </div>
                             <div className="bg-gradient-to-br from-emerald-500 to-emerald-600 p-4 rounded-2xl text-white">
@@ -204,7 +204,7 @@ export const AdvancedAnalytics = ({ applications, onClose }: AdvancedAnalyticsPr
                         <div className="px-6 pt-4 flex gap-2">
                             {[
                                 { id: 'sources' as const, label: 'Par Source', icon: Target },
-                                { id: 'timeline' as const, label: 'Évolution', icon: TrendingUp },
+                                { id: 'timeline' as const, label: 'Ã‰volution', icon: TrendingUp },
                                 { id: 'calendar' as const, label: 'Calendrier', icon: Calendar }
                             ].map(tab => (
                                 <button
@@ -264,7 +264,7 @@ export const AdvancedAnalytics = ({ applications, onClose }: AdvancedAnalyticsPr
                             {activeTab === 'calendar' && (
                                 <div className="flex flex-col items-center">
                                     <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-4">
-                                        Activité des 90 derniers jours
+                                        ActivitÃ© des 90 derniers jours
                                     </h3>
                                     {renderHeatmap()}
                                 </div>

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+﻿import { useState } from 'react';
 import { Bell, AlertTriangle, Clock, ChevronDown, ChevronUp, Mail, X } from 'lucide-react';
 import { useAutoRelance } from '../../hooks/useAutoRelance';
 import type { JobApplication } from '../../types';
@@ -39,7 +39,7 @@ export const RelancePanel = ({ applications, onCreateRelance }: RelancePanelProp
                     </div>
                     <div className="text-left">
                         <h3 className="font-bold text-slate-900 dark:text-white">
-                            Relances à Faire
+                            Relances Ã  Faire
                         </h3>
                         <p className="text-sm text-slate-500 dark:text-slate-400">
                             {stats.total} candidature{stats.total > 1 ? 's' : ''} en attente de suivi
@@ -83,7 +83,7 @@ export const RelancePanel = ({ applications, onCreateRelance }: RelancePanelProp
                             </div>
 
                             <p className="text-xs text-slate-600 dark:text-slate-400 mb-3">
-                                ⚠️ {candidate.reason}
+                                âš ï¸ {candidate.reason}
                             </p>
 
                             <div className="flex gap-2">

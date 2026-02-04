@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+﻿import { useMemo } from 'react';
 import type { JobApplication, ApplicationStatus } from '../../types';
 import { MoreVertical, Calendar, DollarSign } from 'lucide-react';
 import { getRelanceInfo } from '../../lib/relance';
@@ -14,52 +14,52 @@ interface KanbanBoardProps {
 const KANBAN_COLUMNS = [
     {
         id: 'preparation',
-        label: '📋 Préparation',
+        label: 'ðŸ“‹ PrÃ©paration',
         color: 'bg-slate-50 border-slate-200 dark:bg-slate-900/50 dark:border-slate-700',
-        statuses: ['Brouillon', 'À Postuler'] as ApplicationStatus[]
+        statuses: ['Brouillon', 'Ã€ Postuler'] as ApplicationStatus[]
     },
     {
         id: 'candidature',
-        label: '📤 Candidature',
+        label: 'ðŸ“¤ Candidature',
         color: 'bg-blue-50 border-blue-100 dark:bg-blue-900/20 dark:border-blue-800',
-        statuses: ['Candidature Envoyée', 'CV Vu', 'En Cours d\'Examen'] as ApplicationStatus[]
+        statuses: ['Candidature EnvoyÃ©e', 'CV Vu', 'En Cours d\'Examen'] as ApplicationStatus[]
     },
     {
         id: 'tests',
-        label: '💻 Tests',
+        label: 'ðŸ’» Tests',
         color: 'bg-purple-50 border-purple-100 dark:bg-purple-900/20 dark:border-purple-800',
-        statuses: ['Test Technique Reçu', 'Test Technique Envoyé'] as ApplicationStatus[]
+        statuses: ['Test Technique ReÃ§u', 'Test Technique EnvoyÃ©'] as ApplicationStatus[]
     },
     {
         id: 'entretiens',
-        label: '🎯 Entretiens',
+        label: 'ðŸŽ¯ Entretiens',
         color: 'bg-indigo-50 border-indigo-100 dark:bg-indigo-900/20 dark:border-indigo-800',
         statuses: [
-            'Entretien RH Programmé',
-            'Entretien RH Passé',
-            'Entretien Technique Programmé',
-            'Entretien Technique Passé',
-            'Entretien Final Programmé',
-            'Entretien Final Passé'
+            'Entretien RH ProgrammÃ©',
+            'Entretien RH PassÃ©',
+            'Entretien Technique ProgrammÃ©',
+            'Entretien Technique PassÃ©',
+            'Entretien Final ProgrammÃ©',
+            'Entretien Final PassÃ©'
         ] as ApplicationStatus[]
     },
     {
         id: 'decision',
-        label: '💡 Décision',
+        label: 'ðŸ’¡ DÃ©cision',
         color: 'bg-amber-50 border-amber-100 dark:bg-amber-900/20 dark:border-amber-800',
-        statuses: ['En Attente de Retour', 'Négociation Salaire', 'Offre Reçue'] as ApplicationStatus[]
+        statuses: ['En Attente de Retour', 'NÃ©gociation Salaire', 'Offre ReÃ§ue'] as ApplicationStatus[]
     },
     {
         id: 'succes',
-        label: '🎉 Succès',
+        label: 'ðŸŽ‰ SuccÃ¨s',
         color: 'bg-emerald-50 border-emerald-100 dark:bg-emerald-900/20 dark:border-emerald-800',
-        statuses: ['Offre Acceptée'] as ApplicationStatus[]
+        statuses: ['Offre AcceptÃ©e'] as ApplicationStatus[]
     },
     {
         id: 'cloture',
-        label: '🏁 Clôture',
+        label: 'ðŸ ClÃ´ture',
         color: 'bg-red-50 border-red-100 dark:bg-red-900/20 dark:border-red-800',
-        statuses: ['Refus Candidat', 'Refus Entreprise', 'Ghosting', 'Archivé'] as ApplicationStatus[]
+        statuses: ['Refus Candidat', 'Refus Entreprise', 'Ghosting', 'ArchivÃ©'] as ApplicationStatus[]
     },
 ];
 
@@ -162,7 +162,7 @@ export const KanbanBoard = ({ applications, onStatusChange, onEdit }: KanbanBoar
                                         )}
                                         {relanceInfo.shouldRelance && (
                                             <div className={`text-xs font-bold ${relanceInfo.isUrgent ? 'text-red-600 dark:text-red-400' : 'text-orange-600 dark:text-orange-400'}`}>
-                                                ⚠️ {relanceInfo.message}
+                                                âš ï¸ {relanceInfo.message}
                                             </div>
                                         )}
                                     </div>

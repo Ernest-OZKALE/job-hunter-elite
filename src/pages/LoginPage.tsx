@@ -1,4 +1,4 @@
-import { Briefcase } from 'lucide-react';
+﻿import { Briefcase } from 'lucide-react';
 
 interface LoginPageProps {
     onLogin: () => void;

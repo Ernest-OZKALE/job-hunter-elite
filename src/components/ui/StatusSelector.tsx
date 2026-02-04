@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+﻿import { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { ChevronDown } from 'lucide-react';
 import type { ApplicationStatus } from '../../types';
@@ -20,11 +20,11 @@ export const StatusSelector = ({ value, onChange, className = '' }: StatusSelect
     const categories = getStatusesByCategory();
 
     const categoryLabels = {
-        preparation: '📋 Préparation',
-        candidature: '📤 Candidature',
-        entretien: '🎯 Entretiens & Tests',
-        decision: '💡 Décision',
-        cloture: '🏁 Clôture',
+        preparation: 'ðŸ“‹ PrÃ©paration',
+        candidature: 'ðŸ“¤ Candidature',
+        entretien: 'ðŸŽ¯ Entretiens & Tests',
+        decision: 'ðŸ’¡ DÃ©cision',
+        cloture: 'ðŸ ClÃ´ture',
     };
 
     const handleOpen = () => {
@@ -96,7 +96,7 @@ export const StatusSelector = ({ value, onChange, className = '' }: StatusSelect
                             >
                                 <span className="text-lg">{status.icon}</span>
                                 <span className="font-bold text-sm flex-1">{status.label}</span>
-                                {value === status.value && <span className="text-xs">✓</span>}
+                                {value === status.value && <span className="text-xs">âœ“</span>}
                             </button>
                         ))}
                     </div>

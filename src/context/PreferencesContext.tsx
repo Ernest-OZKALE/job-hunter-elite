@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+﻿import React, { createContext, useContext, useState, useEffect } from 'react';
 import { type ThemeName, type ViewMode, THEMES } from '../lib/themes';
 
 interface PreferencesContextType {
@@ -31,7 +31,7 @@ export function PreferencesProvider({ children }: { children: React.ReactNode })
     });
 
     const [userProfile, setUserProfileState] = useState(() => {
-        return localStorage.getItem('userProfile') || "Développeur Fullstack Passionné (Profil par défaut)";
+        return localStorage.getItem('userProfile') || "DÃ©veloppeur Fullstack PassionnÃ© (Profil par dÃ©faut)";
     });
 
     const setColorTheme = (theme: ThemeName) => {

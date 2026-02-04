@@ -1,4 +1,4 @@
-import { useState } from 'react';
+﻿import { useState } from 'react';
 import { Download, ExternalLink, Loader2, Database } from 'lucide-react';
 import { useStorage } from '../../hooks/useStorage';
 
@@ -41,7 +41,7 @@ export const FileLink = ({ file, className = "" }: FileLinkProps) => {
             }
         } catch (error) {
             console.error("Download failed", error);
-            alert("Erreur lors du téléchargement.");
+            alert("Erreur lors du tÃ©lÃ©chargement.");
         } finally {
             setLoading(false);
         }
@@ -64,7 +64,7 @@ export const FileLink = ({ file, className = "" }: FileLinkProps) => {
             onClick={handleDownload}
             disabled={loading}
             className={`flex items-center gap-2 hover:text-blue-600 truncate text-left ${className}`}
-            title="Cliquer pour télécharger depuis la base de données"
+            title="Cliquer pour tÃ©lÃ©charger depuis la base de donnÃ©es"
         >
             <span className="truncate flex items-center gap-1.5">
                 {file.name}

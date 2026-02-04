@@ -1,11 +1,11 @@
-import { useState } from 'react';
+﻿import { useState } from 'react';
 import { Smile, Frown, Meh, Laugh, Angry, MessageSquare, History } from 'lucide-react';
 import { useMoodLogs } from '../../hooks/useMoodLogs';
 import { useAuth } from '../../hooks/useAuth';
 
 const MOODS = [
-    { level: 1, icon: <Angry className="text-red-500" />, label: 'En colère/Frustré' },
-    { level: 2, icon: <Frown className="text-orange-500" />, label: 'Déçu/Triste' },
+    { level: 1, icon: <Angry className="text-red-500" />, label: 'En colÃ¨re/FrustrÃ©' },
+    { level: 2, icon: <Frown className="text-orange-500" />, label: 'DÃ©Ã§u/Triste' },
     { level: 3, icon: <Meh className="text-amber-500" />, label: 'Moyen' },
     { level: 4, icon: <Smile className="text-blue-500" />, label: 'Bien' },
     { level: 5, icon: <Laugh className="text-emerald-500" />, label: 'Excellent !' },
@@ -47,7 +47,7 @@ export const MoodTracker = () => {
                     <div className="flex justify-center mb-2 text-3xl">
                         {MOODS.find(m => m.level === todayLog.level)?.icon}
                     </div>
-                    <p className="text-emerald-700 dark:text-emerald-400 font-bold text-sm">Humeur enregistrée !</p>
+                    <p className="text-emerald-700 dark:text-emerald-400 font-bold text-sm">Humeur enregistrÃ©e !</p>
                     {todayLog.note && <p className="text-xs text-emerald-600/70 mt-1 italic">"{todayLog.note}"</p>}
                 </div>
             ) : showHistory ? (

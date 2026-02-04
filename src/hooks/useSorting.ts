@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react';
+﻿import { useState, useEffect, useMemo } from 'react';
 import type { JobApplication } from '../types';
 
 export type SortField = 'date' | 'priority' | 'salary' | 'company' | 'position' | 'lastActivity';
@@ -23,7 +23,7 @@ export const useSorting = (applications: JobApplication[]) => {
         let score = 0;
         score += (app.interestLevel || 0) * 20;
         if (app.status.includes('Entretien')) score += 30;
-        if (app.status === 'Offre Reçue') score += 50;
+        if (app.status === 'Offre ReÃ§ue') score += 50;
         if (app.expectedResponseDate) {
             const daysUntil = Math.floor(
                 (new Date(app.expectedResponseDate).getTime() - Date.now()) / (1000 * 60 * 60 * 24)

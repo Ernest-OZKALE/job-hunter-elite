@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+﻿import React, { useMemo } from 'react';
 import type { JobApplication } from '../../types';
 import { Calendar, Info } from 'lucide-react';
 
@@ -50,8 +50,8 @@ export const ActivityHeatmap = ({ applications }: ActivityHeatmapProps) => {
                         <Calendar className="text-blue-500" size={20} />
                     </div>
                     <div>
-                        <h3 className="font-bold text-slate-800 dark:text-white">Intensité de Recherche</h3>
-                        <p className="text-xs text-slate-500 dark:text-slate-400">Activité sur les 12 dernières semaines</p>
+                        <h3 className="font-bold text-slate-800 dark:text-white">IntensitÃ© de Recherche</h3>
+                        <p className="text-xs text-slate-500 dark:text-slate-400">ActivitÃ© sur les 12 derniÃ¨res semaines</p>
                     </div>
                 </div>
                 <div className="flex items-center gap-2 text-[10px] text-slate-400 font-medium">
@@ -79,7 +79,7 @@ export const ActivityHeatmap = ({ applications }: ActivityHeatmapProps) => {
             <div className="mt-6 flex items-start gap-3 p-3 bg-blue-50/50 dark:bg-blue-900/10 rounded-xl border border-blue-100/50 dark:border-blue-800/50">
                 <Info size={16} className="text-blue-400 shrink-0 mt-0.5" />
                 <p className="text-xs text-blue-600/80 dark:text-blue-400/80 leading-relaxed font-medium">
-                    Régularité payante ! Postuler régulièrement à raison de 1 à 2 offres par jour augmente tes chances de succès de 40%.
+                    RÃ©gularitÃ© payante ! Postuler rÃ©guliÃ¨rement Ã  raison de 1 Ã  2 offres par jour augmente tes chances de succÃ¨s de 40%.
                 </p>
             </div>
         </div>

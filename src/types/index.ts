@@ -1,4 +1,4 @@
-export interface Attachment {
+﻿export interface Attachment {
     name: string;
     url: string;
     type: 'cv' | 'lm' | 'autre';
@@ -25,26 +25,26 @@ export interface Reminder {
 
 export type ApplicationStatus =
     | 'Brouillon'
-    | 'À Postuler'
-    | 'Candidature Envoyée'
+    | 'Ã€ Postuler'
+    | 'Candidature EnvoyÃ©e'
     | 'CV Vu'
     | 'En Cours d\'Examen'
-    | 'Test Technique Reçu'
-    | 'Test Technique Envoyé'
-    | 'Entretien RH Programmé'
-    | 'Entretien RH Passé'
-    | 'Entretien Technique Programmé'
-    | 'Entretien Technique Passé'
-    | 'Entretien Final Programmé'
-    | 'Entretien Final Passé'
+    | 'Test Technique ReÃ§u'
+    | 'Test Technique EnvoyÃ©'
+    | 'Entretien RH ProgrammÃ©'
+    | 'Entretien RH PassÃ©'
+    | 'Entretien Technique ProgrammÃ©'
+    | 'Entretien Technique PassÃ©'
+    | 'Entretien Final ProgrammÃ©'
+    | 'Entretien Final PassÃ©'
     | 'En Attente de Retour'
-    | 'Négociation Salaire'
-    | 'Offre Reçue'
-    | 'Offre Acceptée'
+    | 'NÃ©gociation Salaire'
+    | 'Offre ReÃ§ue'
+    | 'Offre AcceptÃ©e'
     | 'Refus Candidat'
     | 'Refus Entreprise'
     | 'Ghosting'
-    | 'Archivé';
+    | 'ArchivÃ©';
 
 export interface JobApplication {
     id: string;
@@ -85,7 +85,7 @@ export interface JobApplication {
     salaryMax?: number;
     benefits?: string[];
     companySize?: string;
-    qualification?: string; // e.g. "Employé qualifié", "Cadre"
+    qualification?: string; // e.g. "EmployÃ© qualifiÃ©", "Cadre"
     industry?: string;      // e.g. "Informatique", "Commerce"
     techStack?: string[];
     applicationMethod?: 'Site Entreprise' | 'LinkedIn' | 'Indeed' | 'Email Direct' | 'Recommandation' | 'Autre';

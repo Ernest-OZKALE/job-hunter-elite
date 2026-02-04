@@ -1,4 +1,4 @@
-import { Trash2, CheckCircle, Clock, X } from 'lucide-react';
+﻿import { Trash2, CheckCircle, Clock, X } from 'lucide-react';
 import { STATUS_OPTIONS } from '../../lib/statusConfig';
 
 interface BulkActionsBarProps {
@@ -18,13 +18,13 @@ export const BulkActionsBar = ({ count, onClear, onStatusChange, onDelete }: Bul
                     <div className="bg-blue-500 text-white w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm shadow-lg shadow-blue-500/40">
                         {count}
                     </div>
-                    <span className="font-bold text-sm whitespace-nowrap">sélectionnés</span>
+                    <span className="font-bold text-sm whitespace-nowrap">sÃ©lectionnÃ©s</span>
                 </div>
 
                 <div className="flex items-center gap-2">
                     <p className="text-[10px] font-black uppercase text-slate-500 mr-2">Status</p>
                     <div className="flex gap-1">
-                        {['À Postuler', 'Candidature Envoyée', 'Entretien RH Passé', 'Offre Reçue', 'Archivé'].map(status => {
+                        {['Ã€ Postuler', 'Candidature EnvoyÃ©e', 'Entretien RH PassÃ©', 'Offre ReÃ§ue', 'ArchivÃ©'].map(status => {
                             const config = STATUS_OPTIONS.find(s => s.value === status);
                             return (
                                 <button
@@ -33,7 +33,7 @@ export const BulkActionsBar = ({ count, onClear, onStatusChange, onDelete }: Bul
                                     title={status}
                                     className="p-2 hover:bg-white/10 rounded-xl transition-all group"
                                 >
-                                    <span className="text-xl group-hover:scale-125 transition-transform block">{config?.icon || '✏️'}</span>
+                                    <span className="text-xl group-hover:scale-125 transition-transform block">{config?.icon || 'âœï¸'}</span>
                                 </button>
                             );
                         })}
@@ -52,7 +52,7 @@ export const BulkActionsBar = ({ count, onClear, onStatusChange, onDelete }: Bul
                     <button
                         onClick={onClear}
                         className="p-3 hover:bg-white/10 text-slate-400 hover:text-white rounded-2xl transition-all"
-                        title="Désélectionner tout"
+                        title="DÃ©sÃ©lectionner tout"
                     >
                         <X size={20} />
                     </button>

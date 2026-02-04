@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+﻿import { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { X, User, Building, Mail, Phone, Linkedin, Briefcase, FileText, Save, Loader2 } from 'lucide-react';
 import type { Contact } from '../../hooks/useContacts';
@@ -116,7 +116,7 @@ export const ContactFormModal = ({ isOpen, onClose, onSubmit, initialData }: Con
 
                         {/* Role */}
                         <div className="space-y-2 md:col-span-2">
-                            <label className="text-sm font-bold text-slate-700 dark:text-slate-300 ml-1">Rôle / Poste</label>
+                            <label className="text-sm font-bold text-slate-700 dark:text-slate-300 ml-1">RÃ´le / Poste</label>
                             <div className="relative">
                                 <Briefcase className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
                                 <input
@@ -146,7 +146,7 @@ export const ContactFormModal = ({ isOpen, onClose, onSubmit, initialData }: Con
 
                         {/* Phone */}
                         <div className="space-y-2">
-                            <label className="text-sm font-bold text-slate-700 dark:text-slate-300 ml-1">Téléphone</label>
+                            <label className="text-sm font-bold text-slate-700 dark:text-slate-300 ml-1">TÃ©lÃ©phone</label>
                             <div className="relative">
                                 <Phone className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
                                 <input
@@ -181,7 +181,7 @@ export const ContactFormModal = ({ isOpen, onClose, onSubmit, initialData }: Con
                                 <FileText className="absolute left-4 top-4 text-slate-400" size={18} />
                                 <textarea
                                     className="w-full pl-12 pr-4 py-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all font-medium min-h-[100px] text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500"
-                                    placeholder="Notes sur la rencontre, sujets abordés..."
+                                    placeholder="Notes sur la rencontre, sujets abordÃ©s..."
                                     value={formData.notes}
                                     onChange={e => setFormData({ ...formData, notes: e.target.value })}
                                 />
@@ -203,7 +203,7 @@ export const ContactFormModal = ({ isOpen, onClose, onSubmit, initialData }: Con
                             className="flex items-center gap-2 px-8 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold shadow-xl shadow-blue-500/20 transition-all hover:scale-105 disabled:opacity-70 disabled:cursor-not-allowed"
                         >
                             {loading ? <Loader2 className="animate-spin" /> : <Save size={20} />}
-                            {initialData ? 'Mettre à jour' : 'Enregistrer'}
+                            {initialData ? 'Mettre Ã  jour' : 'Enregistrer'}
                         </button>
                     </div>
                 </form>

@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+﻿import React, { useState, useRef } from 'react';
 import {
     FileText, Search, Plus, Filter, Download, Trash2,
     Share2, ExternalLink, Clock, CheckCircle2, AlertCircle, Loader2
@@ -63,7 +63,7 @@ export const DocumentLibrary = () => {
                             {[
                                 { label: 'CV', value: 'CV', icon: FileText },
                                 { label: 'Lettre de Motivation', value: 'LM', icon: FileText },
-                                { label: 'Certificat / Diplôme', value: 'Certificat', icon: CheckCircle2 },
+                                { label: 'Certificat / DiplÃ´me', value: 'Certificat', icon: CheckCircle2 },
                                 { label: 'Autre', value: 'Autre', icon: FileText }
                             ].map((type) => (
                                 <button
@@ -93,10 +93,10 @@ export const DocumentLibrary = () => {
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-12">
                 <div>
                     <h1 className="text-4xl font-black text-slate-900 dark:text-white tracking-tight mb-2">
-                        Bibliothèque <span className="text-indigo-600">Documents</span>
+                        BibliothÃ¨que <span className="text-indigo-600">Documents</span>
                     </h1>
                     <p className="text-slate-500 dark:text-slate-400 font-medium">
-                        Centralise et gère tes CV, lettres et certificats.
+                        Centralise et gÃ¨re tes CV, lettres et certificats.
                     </p>
                 </div>
                 <div>
@@ -113,7 +113,7 @@ export const DocumentLibrary = () => {
                                 fileInputRef.current.click();
                             } else {
                                 console.error("File input ref missing");
-                                alert("Erreur interne : Impossible d'ouvrir le sélecteur. Essayez de rafraîchir la page.");
+                                alert("Erreur interne : Impossible d'ouvrir le sÃ©lecteur. Essayez de rafraÃ®chir la page.");
                             }
                         }}
                         disabled={uploading}
@@ -161,7 +161,7 @@ export const DocumentLibrary = () => {
                     ) : filteredDocuments.length === 0 ? (
                         <div className="flex flex-col items-center justify-center h-64 text-slate-400">
                             <FileText size={48} className="mb-4 opacity-50" />
-                            <p>Aucun document trouvé.</p>
+                            <p>Aucun document trouvÃ©.</p>
                         </div>
                     ) : (
                         <table className="w-full text-left">
@@ -211,7 +211,7 @@ export const DocumentLibrary = () => {
                                                     target="_blank"
                                                     rel="noreferrer"
                                                     className="p-2 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-all flex items-center justify-center"
-                                                    title="Télécharger"
+                                                    title="TÃ©lÃ©charger"
                                                 >
                                                     <Download size={18} />
                                                 </a>
@@ -239,7 +239,7 @@ export const DocumentLibrary = () => {
                         <AlertCircle className="text-indigo-600" size={18} />
                     </div>
                     <div className="text-sm">
-                        <span className="font-bold text-slate-700 dark:text-slate-200">Espace utilisé : {totalSize.toFixed(2)} MB</span>
+                        <span className="font-bold text-slate-700 dark:text-slate-200">Espace utilisÃ© : {totalSize.toFixed(2)} MB</span>
                         <span className="text-slate-400 ml-2">sur 100 MB (Offre Gratuite)</span>
                     </div>
                 </div>

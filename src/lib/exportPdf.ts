@@ -1,4 +1,4 @@
-import jsPDF from 'jspdf';
+﻿import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import type { JobApplication } from '../types';
 
@@ -12,17 +12,17 @@ export const generatePDFReport = (applications: JobApplication[], userName: stri
 
     doc.setFontSize(10);
     doc.setTextColor(100, 116, 139);
-    doc.text(`Généré le ${new Date().toLocaleDateString('fr-FR')} pour ${userName}`, 14, 28);
+    doc.text(`GÃ©nÃ©rÃ© le ${new Date().toLocaleDateString('fr-FR')} pour ${userName}`, 14, 28);
 
     // Stats Summary
     doc.setFontSize(14);
     doc.setTextColor(30, 41, 59);
-    doc.text('📊 Statistiques Globales', 14, 40);
+    doc.text('ðŸ“Š Statistiques Globales', 14, 40);
 
     const stats = {
         total: applications.length,
-        preparation: applications.filter(a => a.status === 'Brouillon' || a.status === 'À Postuler').length,
-        candidature: applications.filter(a => a.status === 'Candidature Envoyée' || a.status === 'CV Vu' || a.status === 'En Cours d\'Examen').length,
+        preparation: applications.filter(a => a.status === 'Brouillon' || a.status === 'Ã€ Postuler').length,
+        candidature: applications.filter(a => a.status === 'Candidature EnvoyÃ©e' || a.status === 'CV Vu' || a.status === 'En Cours d\'Examen').length,
         entretien: applications.filter(a => a.status.includes('Entretien')).length,
         offre: applications.filter(a => a.status.includes('Offre')).length,
         refus: applications.filter(a => a.status === 'Refus Entreprise' || a.status === 'Refus Candidat' || a.status === 'Ghosting').length,
@@ -33,7 +33,7 @@ export const generatePDFReport = (applications: JobApplication[], userName: stri
     let yPos = 48;
     doc.text(`Total de candidatures : ${stats.total}`, 14, yPos);
     yPos += 6;
-    doc.text(`Préparation : ${stats.preparation} | Candidature : ${stats.candidature} | Entretien : ${stats.entretien}`, 14, yPos);
+    doc.text(`PrÃ©paration : ${stats.preparation} | Candidature : ${stats.candidature} | Entretien : ${stats.entretien}`, 14, yPos);
     yPos += 6;
     doc.text(`Offre : ${stats.offre} | Refus : ${stats.refus}`, 14, yPos);
 

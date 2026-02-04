@@ -1,4 +1,4 @@
-import { useState } from 'react';
+﻿import { useState } from 'react';
 import { X, Clock, Calendar, Plus, Check, Trash2, Bell, BellOff, Sparkles, FileText, Briefcase } from 'lucide-react';
 import type { JobApplication, TimelineEvent, Reminder } from '../types';
 import { getStatusOption } from '../lib/statusConfig';
@@ -105,7 +105,7 @@ export const ApplicationDetailModal = ({ application, onClose, onUpdate }: Appli
                         onClick={() => setActiveTab('preparation')}
                         className={`px-6 py-3 text-sm font-bold rounded-t-2xl transition-all ${activeTab === 'preparation' ? 'bg-slate-100 dark:bg-slate-800 text-blue-600 dark:text-blue-400 border-b-2 border-blue-500' : 'text-slate-500 hover:text-slate-700'} flex items-center gap-2`}
                     >
-                        <Briefcase size={16} /> Préparation
+                        <Briefcase size={16} /> PrÃ©paration
                     </button>
                 </div>
 
@@ -125,7 +125,7 @@ export const ApplicationDetailModal = ({ application, onClose, onUpdate }: Appli
                             <div className="space-y-4">
                                 <h4 className="font-bold text-slate-800 dark:text-white pl-2">Historique des changements</h4>
                                 {timeline.length === 0 ? (
-                                    <p className="text-slate-400 italic text-sm pl-2">Aucun événement enregistré.</p>
+                                    <p className="text-slate-400 italic text-sm pl-2">Aucun Ã©vÃ©nement enregistrÃ©.</p>
                                 ) : (
                                     <div className="space-y-4">
                                         {timeline.map((event, i) => (
@@ -203,7 +203,7 @@ export const ApplicationDetailModal = ({ application, onClose, onUpdate }: Appli
                                                         {reminder.message}
                                                     </div>
                                                     <div className="text-[10px] font-black uppercase text-slate-400 tracking-widest flex items-center gap-2 mt-0.5">
-                                                        <Calendar size={10} /> {new Date(reminder.date).toLocaleDateString('fr-FR')} à {reminder.time}
+                                                        <Calendar size={10} /> {new Date(reminder.date).toLocaleDateString('fr-FR')} Ã  {reminder.time}
                                                     </div>
                                                 </div>
                                             </div>
@@ -230,15 +230,15 @@ export const ApplicationDetailModal = ({ application, onClose, onUpdate }: Appli
                                         <div className="font-bold text-emerald-700 dark:text-emerald-400 mb-2">Points Forts</div>
                                         <ul className="text-sm text-emerald-600 dark:text-emerald-500 space-y-1 list-disc pl-4">
                                             <li>Salaire dans ta fourchette cible</li>
-                                            <li>Stack technique maîtrisée (React, Node)</li>
+                                            <li>Stack technique maÃ®trisÃ©e (React, Node)</li>
                                             <li>Politique Remote avantageuse</li>
                                         </ul>
                                     </div>
                                     <div className="p-5 bg-orange-50 dark:bg-orange-900/10 rounded-2xl border border-orange-100 dark:border-orange-800/50">
                                         <div className="font-bold text-orange-700 dark:text-orange-400 mb-2">Points Vigilance</div>
                                         <ul className="text-sm text-orange-600 dark:text-orange-500 space-y-1 list-disc pl-4">
-                                            <li>Secteur d'activité très concurrentiel</li>
-                                            <li>Processus de recrutement long (4 étapes)</li>
+                                            <li>Secteur d'activitÃ© trÃ¨s concurrentiel</li>
+                                            <li>Processus de recrutement long (4 Ã©tapes)</li>
                                         </ul>
                                     </div>
                                 </div>
@@ -257,7 +257,7 @@ export const ApplicationDetailModal = ({ application, onClose, onUpdate }: Appli
                                         Pitch Gagnant
                                     </h4>
                                     <textarea
-                                        placeholder="Ton introduction personnalisée pour ce poste..."
+                                        placeholder="Ton introduction personnalisÃ©e pour ce poste..."
                                         className="w-full h-32 p-4 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl text-sm outline-none focus:ring-2 focus:ring-blue-500/20"
                                     />
                                 </div>
@@ -266,10 +266,10 @@ export const ApplicationDetailModal = ({ application, onClose, onUpdate }: Appli
                                         <div className="w-8 h-8 bg-emerald-100 dark:bg-emerald-900/30 rounded-lg flex items-center justify-center text-emerald-600">
                                             <Plus size={16} />
                                         </div>
-                                        Questions à Poser
+                                        Questions Ã  Poser
                                     </h4>
                                     <textarea
-                                        placeholder="Liste les questions clés pour le recruteur..."
+                                        placeholder="Liste les questions clÃ©s pour le recruteur..."
                                         className="w-full h-32 p-4 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl text-sm outline-none focus:ring-2 focus:ring-blue-500/20"
                                     />
                                 </div>
@@ -277,7 +277,7 @@ export const ApplicationDetailModal = ({ application, onClose, onUpdate }: Appli
 
                             <div className="p-6 bg-indigo-50/50 dark:bg-indigo-900/10 rounded-3xl border border-indigo-100 dark:border-indigo-800/50">
                                 <h4 className="font-bold text-indigo-900 dark:text-indigo-400 mb-4 flex items-center gap-2">
-                                    <Sparkles size={18} /> Points Techniques Clés
+                                    <Sparkles size={18} /> Points Techniques ClÃ©s
                                 </h4>
                                 <div className="flex flex-wrap gap-2">
                                     {['React 19', 'Zustand', 'Web Workers', 'PWA'].map(tech => (

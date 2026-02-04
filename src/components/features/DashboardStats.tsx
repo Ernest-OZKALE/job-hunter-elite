@@ -1,4 +1,4 @@
-import { TrendingUp, Send, Calendar, Award } from 'lucide-react';
+﻿import { TrendingUp, Send, Calendar, Award } from 'lucide-react';
 
 interface Stats {
     total: number;
@@ -31,7 +31,7 @@ export const DashboardStats = ({ stats }: DashboardStatsProps) => {
                     <div className="p-3 bg-indigo-50 dark:bg-indigo-900/20 rounded-2xl group-hover:scale-110 transition-transform">
                         <Send className="text-indigo-600 dark:text-indigo-400" size={24} />
                     </div>
-                    <span className="text-sm font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wide">Envoyées</span>
+                    <span className="text-sm font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wide">EnvoyÃ©es</span>
                 </div>
                 <div className="text-4xl font-black text-slate-900 dark:text-white">{stats.sent}</div>
             </div>

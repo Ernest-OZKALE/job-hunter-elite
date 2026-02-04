@@ -1,4 +1,4 @@
-import { Briefcase, Settings, LogOut, HelpCircle } from 'lucide-react';
+﻿import { Briefcase, Settings, LogOut, HelpCircle } from 'lucide-react';
 import type { User } from '@supabase/supabase-js';
 
 interface NavbarProps {
@@ -20,7 +20,7 @@ export const Navbar = ({ user, onLogout, onOpenHelp, onOpenPrefs }: NavbarProps)
                     </div>
                     <div className="leading-none">
                         <div className="font-extrabold text-2xl tracking-tight text-slate-900">JOB HUNTER <span className="text-xs align-top text-red-500 font-mono">v3</span></div>
-                        <div className="text-xs text-slate-400">Centre de contrôle des candidatures</div>
+                        <div className="text-xs text-slate-400">Centre de contrÃ´le des candidatures</div>
                     </div>
                 </div>
                 <div className="flex items-center gap-4">
@@ -30,16 +30,16 @@ export const Navbar = ({ user, onLogout, onOpenHelp, onOpenPrefs }: NavbarProps)
                         </div>
                         <div className="hidden md:block text-sm font-medium text-slate-600">
                             <div className="font-bold">{user.user_metadata?.full_name || user.email}</div>
-                            <div className="text-xs text-slate-400">Connecté</div>
+                            <div className="text-xs text-slate-400">ConnectÃ©</div>
                         </div>
                     </div>
                     <button onClick={onOpenHelp} title="Aide" className="p-2 text-slate-400 hover:bg-slate-50 rounded-xl transition-colors">
                         <HelpCircle size={20} />
                     </button>
-                    <button onClick={onOpenPrefs} title="Préférences" className="flex items-center gap-2 px-3 py-2 bg-slate-50 hover:bg-slate-100 rounded-xl transition-colors text-sm text-slate-700 border border-slate-200">
-                        <Settings size={16} /> Préférences
+                    <button onClick={onOpenPrefs} title="PrÃ©fÃ©rences" className="flex items-center gap-2 px-3 py-2 bg-slate-50 hover:bg-slate-100 rounded-xl transition-colors text-sm text-slate-700 border border-slate-200">
+                        <Settings size={16} /> PrÃ©fÃ©rences
                     </button>
-                    <button onClick={onLogout} title="Déconnexion" className="p-2 text-slate-400 hover:bg-red-50 hover:text-red-600 rounded-xl transition-colors">
+                    <button onClick={onLogout} title="DÃ©connexion" className="p-2 text-slate-400 hover:bg-red-50 hover:text-red-600 rounded-xl transition-colors">
                         <LogOut size={20} />
                     </button>
                 </div>

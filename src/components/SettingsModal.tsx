@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import { X, User, Moon, Shield, LogOut, Sun } from 'lucide-react';
 import type { User as SupabaseUser } from '@supabase/supabase-js';
 import { useTheme } from '../context/ThemeContext';
@@ -43,7 +43,7 @@ export default function SettingsModal({ user, onClose, onLogout }: SettingsModal
 
                     {/* Preferences List */}
                     <div className="space-y-3">
-                        <h3 className="text-xs font-black text-slate-400 uppercase tracking-widest ml-1">Préférences</h3>
+                        <h3 className="text-xs font-black text-slate-400 uppercase tracking-widest ml-1">PrÃ©fÃ©rences</h3>
 
                         <div onClick={toggleTheme} className="flex items-center justify-between p-3 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors border border-transparent hover:border-slate-100 dark:hover:border-slate-700 cursor-pointer group">
                             <div className="flex items-center gap-3">
@@ -53,7 +53,7 @@ export default function SettingsModal({ user, onClose, onLogout }: SettingsModal
                                 <span className="font-medium text-slate-700 dark:text-slate-200">Mode Sombre</span>
                             </div>
                             <span className={`text-xs font-medium px-2 py-1 rounded transition-colors ${theme === 'dark' ? 'bg-purple-100 text-purple-600' : 'bg-slate-100 text-slate-400'}`}>
-                                {theme === 'dark' ? 'Activé' : 'Désactivé'}
+                                {theme === 'dark' ? 'ActivÃ©' : 'DÃ©sactivÃ©'}
                             </span>
                         </div>
 
@@ -68,10 +68,10 @@ export default function SettingsModal({ user, onClose, onLogout }: SettingsModal
                                     <div className="p-2 bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 rounded-lg">
                                         <Shield size={18} />
                                     </div>
-                                    <span className="font-medium text-slate-700 dark:text-slate-200">Sécurité & Données</span>
+                                    <span className="font-medium text-slate-700 dark:text-slate-200">SÃ©curitÃ© & DonnÃ©es</span>
                                 </div>
                                 <span className="text-xs font-medium text-slate-400 bg-slate-100 dark:bg-slate-700 px-2 py-1 rounded">
-                                    {isSecurityOpen ? 'Masquer' : 'Gérer'}
+                                    {isSecurityOpen ? 'Masquer' : 'GÃ©rer'}
                                 </span>
                             </div>
 
@@ -91,7 +91,7 @@ export default function SettingsModal({ user, onClose, onLogout }: SettingsModal
                                             <button
                                                 onClick={() => {
                                                     navigator.clipboard.writeText(user.id);
-                                                    alert('ID copié !');
+                                                    alert('ID copiÃ© !');
                                                 }}
                                                 className="p-1.5 text-blue-600 bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors"
                                                 title="Copier l'ID"
@@ -104,11 +104,11 @@ export default function SettingsModal({ user, onClose, onLogout }: SettingsModal
                                         onClick={async () => {
                                             const { supabase } = await import('../lib/supabase');
                                             await supabase.auth.resetPasswordForEmail(user.email!);
-                                            alert('Email de réinitialisation envoyé !');
+                                            alert('Email de rÃ©initialisation envoyÃ© !');
                                         }}
                                         className="w-full py-2 px-3 bg-slate-800 dark:bg-slate-700 text-white text-sm font-bold rounded-lg hover:bg-slate-700 dark:hover:bg-slate-600 transition-colors"
                                     >
-                                        Réinitialiser le mot de passe
+                                        RÃ©initialiser le mot de passe
                                     </button>
                                 </div>
                             )}
@@ -118,7 +118,7 @@ export default function SettingsModal({ user, onClose, onLogout }: SettingsModal
                     {/* Footer Actions */}
                     <div className="pt-4 border-t border-slate-100">
                         <button onClick={onLogout} className="w-full flex items-center justify-center gap-2 p-3 text-red-600 font-bold hover:bg-red-50 rounded-xl transition-colors">
-                            <LogOut size={18} /> Déconnexion
+                            <LogOut size={18} /> DÃ©connexion
                         </button>
                     </div>
                 </div>

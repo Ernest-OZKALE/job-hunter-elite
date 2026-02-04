@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useMemo } from 'react';
+﻿import { useState, useEffect, useRef, useMemo } from 'react';
 import {
     Search, Plus, BarChart3, FileText, Mail, Settings,
     Target, Zap, Moon, Sun, Filter, ArrowUpDown, X
@@ -137,7 +137,7 @@ export const CommandPalette = ({ isOpen, onClose, commands }: CommandPaletteProp
 
                     {filteredCommands.length === 0 && (
                         <p className="text-center py-8 text-slate-400">
-                            Aucune commande trouvée
+                            Aucune commande trouvÃ©e
                         </p>
                     )}
                 </div>
@@ -146,15 +146,15 @@ export const CommandPalette = ({ isOpen, onClose, commands }: CommandPaletteProp
                 <div className="p-3 border-t border-slate-200 dark:border-slate-700 flex items-center justify-between text-xs text-slate-400">
                     <div className="flex items-center gap-4">
                         <span className="flex items-center gap-1">
-                            <kbd className="px-1.5 py-0.5 bg-slate-100 dark:bg-slate-700 rounded">↑↓</kbd>
+                            <kbd className="px-1.5 py-0.5 bg-slate-100 dark:bg-slate-700 rounded">â†‘â†“</kbd>
                             naviguer
                         </span>
                         <span className="flex items-center gap-1">
-                            <kbd className="px-1.5 py-0.5 bg-slate-100 dark:bg-slate-700 rounded">↵</kbd>
-                            sélectionner
+                            <kbd className="px-1.5 py-0.5 bg-slate-100 dark:bg-slate-700 rounded">â†µ</kbd>
+                            sÃ©lectionner
                         </span>
                     </div>
-                    <span>⌘K pour ouvrir</span>
+                    <span>âŒ˜K pour ouvrir</span>
                 </div>
             </div>
         </div>
@@ -175,11 +175,11 @@ export const createCommands = (actions: {
     isDarkMode: boolean;
 }): CommandItem[] => [
         { id: 'new', icon: <Plus size={18} />, label: 'Nouvelle candidature', shortcut: 'N', action: actions.newApplication, category: 'Actions' },
-        { id: 'analytics', icon: <BarChart3 size={18} />, label: 'Analytics avancés', shortcut: 'A', action: actions.openAnalytics, category: 'Actions' },
+        { id: 'analytics', icon: <BarChart3 size={18} />, label: 'Analytics avancÃ©s', shortcut: 'A', action: actions.openAnalytics, category: 'Actions' },
         { id: 'focus', icon: <Target size={18} />, label: 'Mode Focus', shortcut: 'F', action: actions.openFocusMode, category: 'Actions' },
-        { id: 'pdf', icon: <FileText size={18} />, label: 'Exporter en PDF', shortcut: '⌘P', action: actions.exportPdf, category: 'Export' },
+        { id: 'pdf', icon: <FileText size={18} />, label: 'Exporter en PDF', shortcut: 'âŒ˜P', action: actions.exportPdf, category: 'Export' },
         { id: 'filters', icon: <Filter size={18} />, label: 'Ouvrir les filtres', action: actions.openFilters, category: 'Navigation' },
         { id: 'templates', icon: <Mail size={18} />, label: 'Templates email', action: actions.openEmailTemplates, category: 'Outils' },
-        { id: 'prefs', icon: <Settings size={18} />, label: 'Préférences', action: actions.openPreferences, category: 'Paramètres' },
-        { id: 'theme', icon: actions.isDarkMode ? <Sun size={18} /> : <Moon size={18} />, label: actions.isDarkMode ? 'Mode clair' : 'Mode sombre', action: actions.toggleDarkMode, category: 'Paramètres' },
+        { id: 'prefs', icon: <Settings size={18} />, label: 'PrÃ©fÃ©rences', action: actions.openPreferences, category: 'ParamÃ¨tres' },
+        { id: 'theme', icon: actions.isDarkMode ? <Sun size={18} /> : <Moon size={18} />, label: actions.isDarkMode ? 'Mode clair' : 'Mode sombre', action: actions.toggleDarkMode, category: 'ParamÃ¨tres' },
     ];

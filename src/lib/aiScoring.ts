@@ -1,4 +1,4 @@
-import type { JobApplication } from '../types';
+﻿import type { JobApplication } from '../types';
 
 /**
  * Calculates a score from 0 to 100 based on job application relevance.

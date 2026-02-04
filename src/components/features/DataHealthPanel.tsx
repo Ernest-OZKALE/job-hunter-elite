@@ -1,4 +1,4 @@
-import { AlertCircle, CheckCircle } from 'lucide-react';
+﻿import { AlertCircle, CheckCircle } from 'lucide-react';
 import type { JobApplication } from '../../types';
 import { checkDataCompleteness } from '../../lib/duplicateDetection';
 
@@ -27,10 +27,10 @@ export const DataHealthPanel = ({ applications }: DataHealthPanelProps) => {
                 </div>
                 <div>
                     <h3 className="text-lg font-black text-slate-900 dark:text-white">
-                        Santé des Données
+                        SantÃ© des DonnÃ©es
                     </h3>
                     <p className="text-sm text-slate-500 dark:text-slate-400">
-                        {averageCompleteness}% de complétude moyenne
+                        {averageCompleteness}% de complÃ©tude moyenne
                     </p>
                 </div>
             </div>
@@ -40,7 +40,7 @@ export const DataHealthPanel = ({ applications }: DataHealthPanelProps) => {
                     <div className="flex items-center gap-2 mb-3">
                         <AlertCircle className="text-orange-600 dark:text-orange-400" size={18} />
                         <span className="font-bold text-orange-900 dark:text-orange-300">
-                            {incompleteApps.length} candidature{incompleteApps.length > 1 ? 's' : ''} incomplète{incompleteApps.length > 1 ? 's' : ''}
+                            {incompleteApps.length} candidature{incompleteApps.length > 1 ? 's' : ''} incomplÃ¨te{incompleteApps.length > 1 ? 's' : ''}
                         </span>
                     </div>
 
@@ -90,7 +90,7 @@ export const DataHealthPanel = ({ applications }: DataHealthPanelProps) => {
                 <div className="bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-800 rounded-2xl p-4 text-center">
                     <CheckCircle className="mx-auto mb-2 text-emerald-600 dark:text-emerald-400" size={32} />
                     <p className="font-bold text-emerald-900 dark:text-emerald-300">
-                        ✨ Toutes vos candidatures sont complètes !
+                        âœ¨ Toutes vos candidatures sont complÃ¨tes !
                     </p>
                 </div>
             )}

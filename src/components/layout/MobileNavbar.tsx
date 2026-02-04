@@ -1,4 +1,4 @@
-import { TrendingUp, Users, FileText, Settings, Menu } from 'lucide-react';
+﻿import { TrendingUp, Users, FileText, Settings, Menu } from 'lucide-react';
 import type { User } from '@supabase/supabase-js';
 
 interface MobileNavbarProps {
@@ -25,7 +25,7 @@ export const MobileNavbar = ({ activeView, onViewChange, onOpenPrefs, onOpenMenu
                     className={`flex flex-col items-center gap-1 p-2 rounded-xl transition-all ${activeView === 'contacts' ? 'text-blue-600 dark:text-blue-400' : 'text-slate-400 hover:text-slate-600 dark:hover:text-slate-300'}`}
                 >
                     <Users size={24} strokeWidth={activeView === 'contacts' ? 2.5 : 2} />
-                    <span className="text-[10px] font-bold">Réseau</span>
+                    <span className="text-[10px] font-bold">RÃ©seau</span>
                 </button>
 
                 <button

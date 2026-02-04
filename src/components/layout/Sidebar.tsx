@@ -1,4 +1,4 @@
-import { Briefcase, Settings, LogOut, Moon, Sun, TrendingUp, Users, FileText } from 'lucide-react';
+﻿import { Briefcase, Settings, LogOut, Moon, Sun, TrendingUp, Users, FileText } from 'lucide-react';
 import type { User } from '@supabase/supabase-js';
 import { useTheme } from '../../context/ThemeContext';
 
@@ -50,7 +50,7 @@ export const Sidebar = ({ user, activeView, onLogout, onOpenPrefs, onViewChange 
                     className={`w-full flex items-center gap-4 p-3 rounded-xl transition-all duration-200 ${activeView === 'contacts' ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/20' : 'text-slate-400 hover:bg-white/5 hover:text-white'}`}
                 >
                     <Users size={22} />
-                    <span className="hidden lg:block font-bold">Réseau</span>
+                    <span className="hidden lg:block font-bold">RÃ©seau</span>
                 </button>
 
                 <button
@@ -67,7 +67,7 @@ export const Sidebar = ({ user, activeView, onLogout, onOpenPrefs, onViewChange 
                         className="w-full flex items-center gap-4 p-3 rounded-xl text-slate-400 hover:bg-white/5 hover:text-white transition-all duration-200"
                     >
                         <Settings size={22} />
-                        <span className="hidden lg:block font-bold">Préférences</span>
+                        <span className="hidden lg:block font-bold">PrÃ©fÃ©rences</span>
                     </button>
 
                     <button

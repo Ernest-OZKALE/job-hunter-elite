@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+﻿import { useMemo } from 'react';
 import { Award, Star, Zap, Trophy, Target, Briefcase, Medal, Crown } from 'lucide-react';
 import type { JobApplication } from '../../types';
 
@@ -20,39 +20,39 @@ export const AchievementsPanel = ({ applications }: AchievementsPanelProps) => {
         const totalApps = applications.length;
 
         const INTERVIEW_STATUSES = [
-            'Entretien RH Programmé', 'Entretien RH Passé',
-            'Entretien Technique Programmé', 'Entretien Technique Passé',
-            'Entretien Final Programmé', 'Entretien Final Passé',
-            'Offre Reçue', 'Offre Acceptée'
+            'Entretien RH ProgrammÃ©', 'Entretien RH PassÃ©',
+            'Entretien Technique ProgrammÃ©', 'Entretien Technique PassÃ©',
+            'Entretien Final ProgrammÃ©', 'Entretien Final PassÃ©',
+            'Offre ReÃ§ue', 'Offre AcceptÃ©e'
         ];
-        const OFFER_STATUSES = ['Offre Reçue', 'Offre Acceptée'];
+        const OFFER_STATUSES = ['Offre ReÃ§ue', 'Offre AcceptÃ©e'];
 
         const interviews = applications.filter(a => INTERVIEW_STATUSES.includes(a.status)).length;
         const offers = applications.filter(a => OFFER_STATUSES.includes(a.status)).length;
-        const accepted = applications.filter(a => a.status === 'Offre Acceptée').length;
+        const accepted = applications.filter(a => a.status === 'Offre AcceptÃ©e').length;
 
         return [
             {
                 id: 'first',
                 icon: <Star className="text-amber-400" size={20} />,
                 title: 'Premier Pas',
-                description: 'Créer votre première candidature',
+                description: 'CrÃ©er votre premiÃ¨re candidature',
                 unlocked: totalApps >= 1,
                 progress: { current: Math.min(1, totalApps), target: 1 }
             },
             {
                 id: 'ten',
                 icon: <Zap className="text-blue-400" size={20} />,
-                title: 'Lancé',
-                description: '10 candidatures créées',
+                title: 'LancÃ©',
+                description: '10 candidatures crÃ©Ã©es',
                 unlocked: totalApps >= 10,
                 progress: { current: Math.min(10, totalApps), target: 10 }
             },
             {
                 id: 'fifty',
                 icon: <Target className="text-purple-400" size={20} />,
-                title: 'Persévérant',
-                description: '50 candidatures envoyées',
+                title: 'PersÃ©vÃ©rant',
+                description: '50 candidatures envoyÃ©es',
                 unlocked: totalApps >= 50,
                 progress: { current: Math.min(50, totalApps), target: 50 }
             },
@@ -67,23 +67,23 @@ export const AchievementsPanel = ({ applications }: AchievementsPanelProps) => {
             {
                 id: 'interview',
                 icon: <Briefcase className="text-emerald-400" size={20} />,
-                title: 'Première Rencontre',
-                description: 'Décrocher un premier entretien',
+                title: 'PremiÃ¨re Rencontre',
+                description: 'DÃ©crocher un premier entretien',
                 unlocked: interviews >= 1,
                 progress: { current: Math.min(1, interviews), target: 1 }
             },
             {
                 id: 'five_interviews',
                 icon: <Medal className="text-indigo-400" size={20} />,
-                title: 'Séducteur',
-                description: '5 entretiens décrochés',
+                title: 'SÃ©ducteur',
+                description: '5 entretiens dÃ©crochÃ©s',
                 unlocked: interviews >= 5,
                 progress: { current: Math.min(5, interviews), target: 5 }
             },
             {
                 id: 'offer',
                 icon: <Trophy className="text-amber-400" size={20} />,
-                title: 'Offre Reçue',
+                title: 'Offre ReÃ§ue',
                 description: 'Recevoir une proposition',
                 unlocked: offers >= 1,
                 progress: { current: Math.min(1, offers), target: 1 }
@@ -106,10 +106,10 @@ export const AchievementsPanel = ({ applications }: AchievementsPanelProps) => {
             <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-2">
                     <Award className="text-amber-500" size={20} />
-                    <h3 className="font-bold text-slate-900 dark:text-white">Succès</h3>
+                    <h3 className="font-bold text-slate-900 dark:text-white">SuccÃ¨s</h3>
                 </div>
                 <span className="text-sm font-bold text-amber-500">
-                    {unlockedCount}/{achievements.length} 🏆
+                    {unlockedCount}/{achievements.length} ðŸ†
                 </span>
             </div>
 

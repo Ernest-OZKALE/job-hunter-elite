@@ -1,4 +1,4 @@
-import { Line, Doughnut, Bar } from 'react-chartjs-2';
+﻿import { Line, Doughnut, Bar } from 'react-chartjs-2';
 import {
     Chart as ChartJS,
     CategoryScale,
@@ -60,7 +60,7 @@ export const AnalyticsDashboard = ({ applications }: AnalyticsDashboardProps) =>
     // 2. Conversion Funnel (Bar - Phase 3)
     const funnelStages = [
         { label: 'Candidatures', count: applications.length, color: 'rgba(59, 130, 246, 0.8)' },
-        { label: 'CV Lus', count: applications.filter(a => ['CV Vu', 'En Cours d\'Examen', 'Test Technique Reçu', 'Entretien RH Programmé', 'Entretien RH Passé', 'Entretien Technique Programmé', 'Entretien Technique Passé', 'Entretien Final Programmé', 'Entretien Final Passé', 'Négociation Salaire', 'Offre Reçue', 'Offre Acceptée'].includes(a.status)).length, color: 'rgba(99, 102, 241, 0.8)' },
+        { label: 'CV Lus', count: applications.filter(a => ['CV Vu', 'En Cours d\'Examen', 'Test Technique ReÃ§u', 'Entretien RH ProgrammÃ©', 'Entretien RH PassÃ©', 'Entretien Technique ProgrammÃ©', 'Entretien Technique PassÃ©', 'Entretien Final ProgrammÃ©', 'Entretien Final PassÃ©', 'NÃ©gociation Salaire', 'Offre ReÃ§ue', 'Offre AcceptÃ©e'].includes(a.status)).length, color: 'rgba(99, 102, 241, 0.8)' },
         { label: 'Entretiens', count: applications.filter(a => a.status.includes('Entretien') || a.status.includes('Offre')).length, color: 'rgba(139, 92, 246, 0.8)' },
         { label: 'Offres', count: applications.filter(a => a.status.includes('Offre')).length, color: 'rgba(16, 185, 129, 0.8)' }
     ];
@@ -155,8 +155,8 @@ export const AnalyticsDashboard = ({ applications }: AnalyticsDashboardProps) =>
                             <PieChart className="text-blue-600 dark:text-blue-400" size={24} />
                         </div>
                         <div>
-                            <h3 className="font-bold text-xl text-slate-800 dark:text-white">Répartition</h3>
-                            <p className="text-sm text-slate-500">Aperçu global de tes candidatures</p>
+                            <h3 className="font-bold text-xl text-slate-800 dark:text-white">RÃ©partition</h3>
+                            <p className="text-sm text-slate-500">AperÃ§u global de tes candidatures</p>
                         </div>
                     </div>
                     <div className="h-72">
@@ -171,8 +171,8 @@ export const AnalyticsDashboard = ({ applications }: AnalyticsDashboardProps) =>
                             <Zap className="text-indigo-600 dark:text-indigo-400" size={24} />
                         </div>
                         <div>
-                            <h3 className="font-bold text-xl text-slate-800 dark:text-white">Funnel de Succès</h3>
-                            <p className="text-sm text-slate-500">Ton taux de conversion par étape</p>
+                            <h3 className="font-bold text-xl text-slate-800 dark:text-white">Funnel de SuccÃ¨s</h3>
+                            <p className="text-sm text-slate-500">Ton taux de conversion par Ã©tape</p>
                         </div>
                     </div>
                     <div className="h-72">
@@ -188,7 +188,7 @@ export const AnalyticsDashboard = ({ applications }: AnalyticsDashboardProps) =>
                         </div>
                         <div>
                             <h3 className="font-bold text-xl text-slate-800 dark:text-white">Performance des Sources</h3>
-                            <p className="text-sm text-slate-500">Quelles plateformes t'apportent le plus d'opportunités</p>
+                            <p className="text-sm text-slate-500">Quelles plateformes t'apportent le plus d'opportunitÃ©s</p>
                         </div>
                     </div>
                     <div className="h-80">

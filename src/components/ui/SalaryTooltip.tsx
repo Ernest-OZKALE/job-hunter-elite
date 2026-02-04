@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+﻿import React, { useState, useRef, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { calculateSalaryDetails, type SalaryDetails } from '../../lib/salaryCalculator';
 import { Euro, TrendingUp } from 'lucide-react';
@@ -48,7 +48,7 @@ export const SalaryTooltip = ({ rawSalary, existingDetails, children }: SalaryTo
         >
             <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-700 p-5 w-96 relative">
                 <h4 className="flex items-center gap-2 text-base font-bold text-slate-800 dark:text-white mb-4 border-b border-slate-100 dark:border-slate-700 pb-3">
-                    <Euro size={20} className="text-emerald-500" /> Analyse Rémunération
+                    <Euro size={20} className="text-emerald-500" /> Analyse RÃ©munÃ©ration
                 </h4>
 
                 <div className="space-y-4">
@@ -68,7 +68,7 @@ export const SalaryTooltip = ({ rawSalary, existingDetails, children }: SalaryTo
                     <table className="w-full text-xs text-left">
                         <thead className="text-slate-400 font-bold bg-slate-50 dark:bg-slate-800">
                             <tr>
-                                <th className="p-2 rounded-l">Période</th>
+                                <th className="p-2 rounded-l">PÃ©riode</th>
                                 <th className="p-2">Brut</th>
                                 <th className="p-2 text-emerald-600 dark:text-emerald-400 rounded-r">Net (Est.)</th>
                             </tr>

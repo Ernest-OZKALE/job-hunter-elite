@@ -1,4 +1,4 @@
-import type { ApplicationStatus } from '../../types';
+﻿import type { ApplicationStatus } from '../../types';
 import { getStatusOption } from '../../lib/statusConfig';
 
 interface StatusBadgeProps {

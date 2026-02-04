@@ -1,4 +1,4 @@
-import { useState, useEffect, Suspense, lazy, useCallback, useRef } from 'react';
+﻿import { useState, useEffect, Suspense, lazy, useCallback, useRef } from 'react';
 import { Filter, Zap, Briefcase, Plus, BarChart3, TrendingUp, FileText, Loader2 } from 'lucide-react';
 import type { User } from '@supabase/supabase-js';
 import { Sidebar } from '../components/layout/Sidebar';
@@ -86,7 +86,7 @@ export const DashboardPage = ({ user, onLogout }: DashboardPageProps) => {
     } = useApplications(user.id);
 
     const handleStatusChange = async (id: string, status: string) => {
-        if (status === 'Offre Reçue' || status === 'Offre Acceptée') {
+        if (status === 'Offre ReÃ§ue' || status === 'Offre AcceptÃ©e') {
             confetti({
                 particleCount: 150,
                 spread: 70,
@@ -103,7 +103,7 @@ export const DashboardPage = ({ user, onLogout }: DashboardPageProps) => {
     const [editingId, setEditingId] = useState<string | null>(null);
     const [initialForm, setInitialForm] = useState<Omit<JobApplication, 'id'>>({
         company: '', position: 'Technicien Support', location: 'Paris',
-        salary: '', link: '', status: 'À Postuler', date: new Date().toISOString().split('T')[0],
+        salary: '', link: '', status: 'Ã€ Postuler', date: new Date().toISOString().split('T')[0],
         notes: '', attachments: [], contractType: 'CDI', interestLevel: 3, remotePolicy: 'Hybride'
     });
 
@@ -168,10 +168,10 @@ export const DashboardPage = ({ user, onLogout }: DashboardPageProps) => {
         if (selectedIds.length === 0) return;
         try {
             await Promise.all(selectedIds.map(id => updateApplication(id, { status: status as any })));
-            showToast(`${selectedIds.length} candidatures mises à jour`, 'success');
+            showToast(`${selectedIds.length} candidatures mises Ã  jour`, 'success');
             setSelectedIds([]);
         } catch (e) {
-            showToast("Erreur lors de la mise à jour groupée", 'error');
+            showToast("Erreur lors de la mise Ã  jour groupÃ©e", 'error');
         }
     };
 
@@ -179,10 +179,10 @@ export const DashboardPage = ({ user, onLogout }: DashboardPageProps) => {
         if (selectedIds.length === 0) return;
         openConfirm(
             `Supprimer ${selectedIds.length} candidatures ?`,
-            "Cette action est irréversible pour TOUTES les candidatures sélectionnées.",
+            "Cette action est irrÃ©versible pour TOUTES les candidatures sÃ©lectionnÃ©es.",
             async () => {
                 await Promise.all(selectedIds.map(id => deleteApplication(id)));
-                showToast(`${selectedIds.length} candidatures supprimées`, 'info');
+                showToast(`${selectedIds.length} candidatures supprimÃ©es`, 'info');
                 setSelectedIds([]);
             },
             true
@@ -208,7 +208,7 @@ export const DashboardPage = ({ user, onLogout }: DashboardPageProps) => {
     const handleAddApplication = () => {
         setInitialForm({
             company: '', position: 'Technicien Support', location: 'Paris',
-            salary: '', link: '', status: 'À Postuler', date: new Date().toISOString().split('T')[0],
+            salary: '', link: '', status: 'Ã€ Postuler', date: new Date().toISOString().split('T')[0],
             notes: '', attachments: []
         });
         setEditingId(null);
@@ -246,10 +246,10 @@ export const DashboardPage = ({ user, onLogout }: DashboardPageProps) => {
         try {
             if (editingId) {
                 await updateApplication(editingId, data);
-                showToast('Candidature mise à jour avec succès', 'success');
+                showToast('Candidature mise Ã  jour avec succÃ¨s', 'success');
             } else {
                 await addApplication(data);
-                showToast('Nouvelle candidature ajoutée !', 'success');
+                showToast('Nouvelle candidature ajoutÃ©e !', 'success');
             }
             setShowForm(false);
             setEditingId(null);
@@ -271,7 +271,7 @@ export const DashboardPage = ({ user, onLogout }: DashboardPageProps) => {
             document.body.appendChild(a);
             a.click();
             document.body.removeChild(a);
-            showToast('Export CSV réussi', 'success');
+            showToast('Export CSV rÃ©ussi', 'success');
         } catch (e) {
             console.error('Export CSV failed', e);
             showToast("Impossible d'exporter le CSV", 'error');
@@ -281,10 +281,10 @@ export const DashboardPage = ({ user, onLogout }: DashboardPageProps) => {
     const handleExportPDF = () => {
         try {
             generatePDFReport(applications, user.user_metadata?.full_name || user.email || 'Utilisateur');
-            showToast('Rapport PDF généré avec succès !', 'success');
+            showToast('Rapport PDF gÃ©nÃ©rÃ© avec succÃ¨s !', 'success');
         } catch (e) {
             console.error('PDF Export failed', e);
-            showToast("Erreur lors de la génération du PDF", 'error');
+            showToast("Erreur lors de la gÃ©nÃ©ration du PDF", 'error');
         }
     };
 
@@ -317,7 +317,7 @@ export const DashboardPage = ({ user, onLogout }: DashboardPageProps) => {
         if (app) {
             try {
                 await updateApplication(appId, { attachments: [...app.attachments, attachment] });
-                showToast('Fichier ajouté avec succès', 'success');
+                showToast('Fichier ajoutÃ© avec succÃ¨s', 'success');
             } catch (error) {
                 showToast("Erreur lors de l'ajout du fichier", 'error');
             }
@@ -334,7 +334,7 @@ export const DashboardPage = ({ user, onLogout }: DashboardPageProps) => {
                     const newAtts = [...app.attachments];
                     newAtts.splice(index, 1);
                     await updateApplication(appId, { attachments: newAtts });
-                    showToast('Fichier supprimé', 'info');
+                    showToast('Fichier supprimÃ©', 'info');
                     if (att.url.includes('firebasestorage')) {
                         await deleteFile(att.url);
                     }
@@ -347,10 +347,10 @@ export const DashboardPage = ({ user, onLogout }: DashboardPageProps) => {
     const handleDeleteApp = (id: string) => {
         openConfirm(
             "Supprimer la candidature ?",
-            "Cette action est irréversible. Toutes les données associées seront perdues.",
+            "Cette action est irrÃ©versible. Toutes les donnÃ©es associÃ©es seront perdues.",
             async () => {
                 await deleteApplication(id);
-                showToast('Candidature supprimée', 'info');
+                showToast('Candidature supprimÃ©e', 'info');
             },
             true
         );
@@ -390,16 +390,16 @@ export const DashboardPage = ({ user, onLogout }: DashboardPageProps) => {
                         <div className="flex flex-col md:flex-row md:items-start justify-between gap-6">
                             <div className="space-y-1">
                                 <h1 className="text-3xl lg:text-4xl font-black tracking-tight text-slate-900 dark:text-white">
-                                    Bonjour, <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600">{user.user_metadata?.first_name || 'Champion'}</span> 👋
+                                    Bonjour, <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600">{user.user_metadata?.first_name || 'Champion'}</span> ðŸ‘‹
                                 </h1>
-                                <p className="text-slate-500 dark:text-slate-400 font-medium text-lg">Prêt à décrocher le job de tes rêves ?</p>
+                                <p className="text-slate-500 dark:text-slate-400 font-medium text-lg">PrÃªt Ã  dÃ©crocher le job de tes rÃªves ?</p>
                             </div>
                             <div className="flex gap-3">
                                 <button
                                     onClick={() => setShowFocusMode(true)}
                                     className="px-5 py-3 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 rounded-2xl hover:bg-slate-50 dark:hover:bg-slate-700 transition-all font-bold flex items-center gap-2 shadow-sm"
                                 >
-                                    🎯 <span className="hidden md:inline">Mode Focus</span>
+                                    ðŸŽ¯ <span className="hidden md:inline">Mode Focus</span>
                                 </button>
                                 <button
                                     onClick={handleAddApplication}
@@ -422,9 +422,9 @@ export const DashboardPage = ({ user, onLogout }: DashboardPageProps) => {
                                         <TrendingUp size={100} />
                                     </div>
                                     <div className="relative z-10">
-                                        <p className="font-bold text-indigo-100 mb-1">Taux de réponse</p>
+                                        <p className="font-bold text-indigo-100 mb-1">Taux de rÃ©ponse</p>
                                         <div className="text-4xl font-black mb-2">{stats.conversion}%</div>
-                                        <div className="text-xs font-medium bg-white/20 px-3 py-1 rounded-full inline-block backdrop-blur-sm">Top Performance 🚀</div>
+                                        <div className="text-xs font-medium bg-white/20 px-3 py-1 rounded-full inline-block backdrop-blur-sm">Top Performance ðŸš€</div>
                                     </div>
                                 </div>
                             </div>
@@ -437,7 +437,7 @@ export const DashboardPage = ({ user, onLogout }: DashboardPageProps) => {
                                 onCreateRelance={(appId) => {
                                     const app = applications.find(a => a.id === appId);
                                     if (app) {
-                                        showToast(`Relance prévue pour ${app.company}`, 'info');
+                                        showToast(`Relance prÃ©vue pour ${app.company}`, 'info');
                                         updateApplication(appId, {
                                             lastActivityAt: new Date().toISOString(),
                                             nextStep: 'Relancer le recruteur'
@@ -518,7 +518,7 @@ export const DashboardPage = ({ user, onLogout }: DashboardPageProps) => {
                                     {loading ? (
                                         <div className="py-20 flex flex-col items-center justify-center text-slate-400">
                                             <Loader2 size={40} className="animate-spin mb-4 text-blue-500" />
-                                            <p>Chargement de vos succès...</p>
+                                            <p>Chargement de vos succÃ¨s...</p>
                                         </div>
                                     ) : applications.length === 0 && !showForm ? (
                                         <div className="text-center py-20 px-6">
@@ -526,9 +526,9 @@ export const DashboardPage = ({ user, onLogout }: DashboardPageProps) => {
                                                 <Briefcase size={32} />
                                             </div>
                                             <h3 className="text-xl font-bold text-slate-800 mb-2">Tout commence ici !</h3>
-                                            <p className="text-slate-500 max-w-md mx-auto mb-8">Vous n'avez pas encore de candidature. Ajoutez votre première opportunité pour démarrer le suivi.</p>
+                                            <p className="text-slate-500 max-w-md mx-auto mb-8">Vous n'avez pas encore de candidature. Ajoutez votre premiÃ¨re opportunitÃ© pour dÃ©marrer le suivi.</p>
                                             <button onClick={handleAddApplication} className="px-6 py-3 bg-blue-600 text-white rounded-xl font-bold hover:bg-blue-700 transition-colors shadow-lg shadow-blue-200">
-                                                Ajouter ma première candidature
+                                                Ajouter ma premiÃ¨re candidature
                                             </button>
                                         </div>
                                     ) : (
@@ -561,7 +561,7 @@ export const DashboardPage = ({ user, onLogout }: DashboardPageProps) => {
                             <div className="flex items-center gap-4 mb-6">
                                 <div className="h-px flex-1 bg-slate-200 dark:bg-slate-700"></div>
                                 <span className="text-slate-400 text-sm font-bold uppercase tracking-wider flex items-center gap-2">
-                                    <Zap size={16} /> Mon Développement
+                                    <Zap size={16} /> Mon DÃ©veloppement
                                 </span>
                                 <div className="h-px flex-1 bg-slate-200 dark:bg-slate-700"></div>
                             </div>
@@ -625,7 +625,7 @@ export const DashboardPage = ({ user, onLogout }: DashboardPageProps) => {
                     onClose={() => setShowEmailTemplates(false)}
                     onSelectTemplate={(template) => {
                         navigator.clipboard.writeText(template.body);
-                        showToast('Template copié dans le presse-papier !', 'success');
+                        showToast('Template copiÃ© dans le presse-papier !', 'success');
                         setShowEmailTemplates(false);
                     }}
                 />

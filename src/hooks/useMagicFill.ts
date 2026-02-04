@@ -1,4 +1,4 @@
-import { useState } from 'react';
+﻿import { useState } from 'react';
 import MagicFillService from '../services/magicFillService';
 
 interface UseMagicFillReturn {
@@ -23,7 +23,7 @@ export const useMagicFill = (): UseMagicFillReturn => {
             if (offer) {
                 setResult(offer);
             } else {
-                setError('Aucune information extraite. Vérifiez le texte.');
+                setError('Aucune information extraite. VÃ©rifiez le texte.');
             }
         } catch (err) {
             setError('Erreur technique: ' + (err as Error).message);

@@ -1,80 +1,43 @@
-interface JobOffer {
-    company: string | null;
-    position: string | null;
-    location: string | null;
-    salary: string | null;
-    contractType: string | null;
-    remotePolicy: string | null;
-    experience: string | null;
-    industry: string | null;
-    description: string | null;
-    missions: string[];
-    hardSkills: string[];
-    softSkills: string[];
-    benefits: string[];
-    contactName: string | null;
-    contactEmail: string | null;
-    contactPhone: string | null;
-    confidence?: number;
-    rawText: string;
-}
+﻿// src/services/magicFillService.ts
 
-class MagicFillService {
-    // New Proxy URL (Relative path works automatically with Vercel)
-    private static API_URL = '/api/magic-fill';
+export type MagicFillRequest = {
+    text: string;
+    source_url?: string;
+};
 
-    static async extractFromText(rawText: string): Promise<JobOffer | null> {
-        try {
-            console.log("🚀 Magic Fill: Sending to Proxy...");
-            console.log("MF payload keys:", Object.keys(payload || {}));
-            console.log("MF text len:", payload?.text?.length);
-            console.log("MF source_url:", payload?.source_url);
-            console.log("MF sourceUrl:", payload?.sourceUrl);
-            const payload = {
-                text: String(text ?? ""),
-                source_url: String(sourceUrl ?? source_url ?? ""),
-            };
+export type MagicFillResponse = any;
 
+// ✅ accepte soit une string, soit un objet {text, source_url}
+export type MagicFillInput = string | MagicFillRequest;
 
+async function extractFromText(input: MagicFillInput): Promise<MagicFillResponse> {
+    const payload: MagicFillRequest =
+        typeof input === "string"
+            ? { text: input, source_url: "" }
+            : { text: input.text, source_url: input.source_url ?? "" };
 
-            const response = await fetch(this.API_URL, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    text: rawText,
-                    source_url: window.location.href
-                })
-            });
+    const r = await fetch("/api/magic-fill", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+    });
 
-            if (!response.ok) {
-                // Handle 401/403 specifically
-                if (response.status === 401 || response.status === 403) {
-                    throw new Error("⛔ Accès refusé par le serveur. Vérifiez les credentials Cloudflare/Auth.");
-                }
-                const errText = await response.text();
-                throw new Error(`Erreur Proxy (${response.status}): ${errText}`);
-            }
+    const raw = await r.text().catch(() => "");
 
-            const data = await response.json();
-
-            // The backend is expected to return the structured JSON directly.
-            // But we should validate it looks like a JobOffer or has the right shape.
-            if (!data) {
-                throw new Error("Réponse vide du serveur.");
-            }
-
-            // If the backend wraps it in "result" or "data", adjust here.
-            // Assuming direct return based on user prompt requirements.
-            return data as JobOffer;
-
-        } catch (error) {
-            console.error('❌ Magic Fill Error:', error);
-            // Returning null triggers the UI error state
-            return null;
-        }
+    if (!r.ok) {
+        throw new Error(`MagicFill HTTP ${r.status}: ${raw || "No body"}`);
     }
 
-    // Deprecated local methods removed (OLLAMA_URL, createOptimizedPrompt, callOllama, validateAndParseResponse)
+    try {
+        return JSON.parse(raw);
+    } catch {
+        return raw as any;
+    }
 }
 
+const MagicFillService = {
+    extractFromText,
+};
+
 export default MagicFillService;
+export { extractFromText };

@@ -1,4 +1,4 @@
-import { ArrowUpDown, ArrowUp, ArrowDown } from 'lucide-react';
+﻿import { ArrowUpDown, ArrowUp, ArrowDown } from 'lucide-react';
 import type { SortField, SortState } from '../../hooks/useSorting';
 
 interface SortControlProps {
@@ -7,12 +7,12 @@ interface SortControlProps {
 }
 
 const SORT_OPTIONS: { value: SortField; label: string; icon: string }[] = [
-    { value: 'date', label: 'Date', icon: '📅' },
-    { value: 'priority', label: 'Priorité', icon: '🎯' },
-    { value: 'salary', label: 'Salaire', icon: '💰' },
-    { value: 'company', label: 'Entreprise', icon: '🏢' },
-    { value: 'position', label: 'Poste', icon: '💼' },
-    { value: 'lastActivity', label: 'Dernière Activité', icon: '⏰' }
+    { value: 'date', label: 'Date', icon: 'ðŸ“…' },
+    { value: 'priority', label: 'PrioritÃ©', icon: 'ðŸŽ¯' },
+    { value: 'salary', label: 'Salaire', icon: 'ðŸ’°' },
+    { value: 'company', label: 'Entreprise', icon: 'ðŸ¢' },
+    { value: 'position', label: 'Poste', icon: 'ðŸ’¼' },
+    { value: 'lastActivity', label: 'DerniÃ¨re ActivitÃ©', icon: 'â°' }
 ];
 
 export const SortControl = ({ sortState, onSort }: SortControlProps) => {

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+﻿import { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
 import type { JobApplication } from '../types';
 import { migrateOldStatus } from '../lib/statusMigration';
@@ -68,13 +68,13 @@ export const useApplications = (userId: string | undefined) => {
     const calculateStats = (apps: JobApplication[]) => {
         const total = apps.length;
         const sent = apps.filter(a =>
-            a.status === 'Candidature Envoyée' ||
+            a.status === 'Candidature EnvoyÃ©e' ||
             a.status === 'CV Vu' ||
             a.status === 'En Cours d\'Examen'
         ).length;
         const interview = apps.filter(a => a.status.includes('Entretien') || a.status.includes('Test Technique')).length;
         const offer = apps.filter(a => a.status.includes('Offre')).length;
-        const activeApps = total - apps.filter(a => a.status === 'À Postuler' || a.status === 'Brouillon').length;
+        const activeApps = total - apps.filter(a => a.status === 'Ã€ Postuler' || a.status === 'Brouillon').length;
         const positiveResponses = interview + offer;
         const cvImpact = activeApps > 0 ? Math.round((positiveResponses / activeApps) * 100) : 0;
         const conversion = (interview + offer) > 0 ? Math.round((offer / (interview + offer)) * 100) : 0;

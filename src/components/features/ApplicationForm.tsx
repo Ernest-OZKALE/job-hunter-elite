@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import useDrivePicker from 'react-google-drive-picker';
 import {
@@ -177,10 +177,10 @@ export const ApplicationForm = ({
             const formattedAnalysis = `
 **Score IA : ${analysis.score}/100**
 
-✅ **Points Forts** :
+âœ… **Points Forts** :
 ${analysis.strengths.map(s => `- ${s}`).join('\n')}
 
-⚠️ **Points d'Attention** :
+âš ï¸ **Points d'Attention** :
 ${analysis.weaknesses.map(w => `- ${w}`).join('\n')}
             `;
 
@@ -240,7 +240,7 @@ ${analysis.weaknesses.map(w => `- ${w}`).join('\n')}
             contactEmail: extracted.contactEmail || formData.contactEmail,
             contactPhone: extracted.contactPhone || formData.contactPhone,
 
-            // Source: Use extracted, or keep existing, or fall back to 'Candidature Spontanée' if nothing found (better than LinkedIn default)
+            // Source: Use extracted, or keep existing, or fall back to 'Candidature SpontanÃ©e' if nothing found (better than LinkedIn default)
             source: formData.source || extracted.source || ''
         };
 
@@ -414,9 +414,9 @@ ${analysis.weaknesses.map(w => `- ${w}`).join('\n')}
                         </div>
                         <div>
                             <h2 className="text-2xl font-black text-slate-800 tracking-tight">
-                                {isEditing ? "Modifier l'Opportunité" : "Nouvelle Candidature"} <span className="text-xs text-slate-400 font-normal">v2.17 (Local AI: Ollama)</span>
+                                {isEditing ? "Modifier l'OpportunitÃ©" : "Nouvelle Candidature"} <span className="text-xs text-slate-400 font-normal">v2.17 (Local AI: Ollama)</span>
                             </h2>
-                            <p className="text-slate-500 font-medium">Capturez chaque détail pour décrocher le job.</p>
+                            <p className="text-slate-500 font-medium">Capturez chaque dÃ©tail pour dÃ©crocher le job.</p>
                         </div>
                     </div>
                     <div className="flex items-center gap-3">
@@ -441,7 +441,7 @@ ${analysis.weaknesses.map(w => `- ${w}`).join('\n')}
                         </button>
 
                         <div className="hidden md:flex bg-slate-100 rounded-lg p-1">
-                            <button type="button" onClick={() => setActiveTab('details')} className={`px-4 py-1.5 rounded-md text-sm font-bold transition-all ${activeTab === 'details' ? 'bg-white shadow text-slate-800' : 'text-slate-500 hover:text-slate-700'}`}>Détails</button>
+                            <button type="button" onClick={() => setActiveTab('details')} className={`px-4 py-1.5 rounded-md text-sm font-bold transition-all ${activeTab === 'details' ? 'bg-white shadow text-slate-800' : 'text-slate-500 hover:text-slate-700'}`}>DÃ©tails</button>
                             <button type="button" onClick={() => setActiveTab('description')} className={`px-4 py-1.5 rounded-md text-sm font-bold transition-all ${activeTab === 'description' ? 'bg-white shadow text-slate-800' : 'text-slate-500 hover:text-slate-700'}`}>Description & IA</button>
                             <button type="button" onClick={() => setActiveTab('attachments')} className={`px-4 py-1.5 rounded-md text-sm font-bold transition-all ${activeTab === 'attachments' ? 'bg-white shadow text-slate-800' : 'text-slate-500 hover:text-slate-700'}`}>Fichiers</button>
                         </div>
@@ -547,7 +547,7 @@ ${analysis.weaknesses.map(w => `- ${w}`).join('\n')}
                                             </div>
                                         </div>
                                         <div className="space-y-1.5">
-                                            <label className="text-xs font-bold text-slate-400 uppercase tracking-wider ml-1">Télétravail</label>
+                                            <label className="text-xs font-bold text-slate-400 uppercase tracking-wider ml-1">TÃ©lÃ©travail</label>
                                             <div className="relative group">
                                                 <Globe className="absolute left-3 top-3.5 text-slate-400 group-focus-within:text-blue-500 transition-colors" size={18} />
                                                 <input
@@ -575,7 +575,7 @@ ${analysis.weaknesses.map(w => `- ${w}`).join('\n')}
 
                                         {/* New Field: Experience */}
                                         <div className="space-y-1.5">
-                                            <label className="text-xs font-bold text-slate-400 uppercase tracking-wider ml-1">Expérience</label>
+                                            <label className="text-xs font-bold text-slate-400 uppercase tracking-wider ml-1">ExpÃ©rience</label>
                                             <div className="relative group">
                                                 <Clock className="absolute left-3 top-3.5 text-slate-400 group-focus-within:text-blue-500 transition-colors" size={18} />
                                                 <input
@@ -611,15 +611,15 @@ ${analysis.weaknesses.map(w => `- ${w}`).join('\n')}
                                             {formData.salaryDetails?.brutYear && (
                                                 <div className="mb-6">
                                                     <h4 className="flex items-center gap-2 text-base font-bold text-slate-800 mb-4">
-                                                        <Euro size={20} className="text-emerald-500" /> Analyse Rémunération Détaillée
+                                                        <Euro size={20} className="text-emerald-500" /> Analyse RÃ©munÃ©ration DÃ©taillÃ©e
                                                     </h4>
                                                     <div className="overflow-hidden bg-white rounded-xl border border-slate-200 shadow-sm mb-4">
                                                         <table className="w-full text-sm text-left">
                                                             <thead className="text-xs text-slate-500 uppercase bg-slate-50 border-b border-slate-100">
                                                                 <tr>
-                                                                    <th className="px-6 py-4 font-semibold">Période</th>
+                                                                    <th className="px-6 py-4 font-semibold">PÃ©riode</th>
                                                                     <th className="px-6 py-4 font-semibold">Brut Estimation</th>
-                                                                    <th className="px-6 py-4 font-semibold text-emerald-600">Net <span className="text-[10px] text-emerald-400 font-normal ml-1"> (Avant impôt)</span></th>
+                                                                    <th className="px-6 py-4 font-semibold text-emerald-600">Net <span className="text-[10px] text-emerald-400 font-normal ml-1"> (Avant impÃ´t)</span></th>
                                                                 </tr>
                                                             </thead>
                                                             <tbody className="divide-y divide-slate-100">
@@ -642,11 +642,11 @@ ${analysis.weaknesses.map(w => `- ${w}`).join('\n')}
                                                         </table>
                                                     </div>
                                                     {formData.salaryDetails.analysis && (
-                                                        <div className={`text-sm px-5 py-4 rounded-xl border flex gap-3 items-start ${formData.salaryDetails.analysis.includes('Mathématique')
+                                                        <div className={`text-sm px-5 py-4 rounded-xl border flex gap-3 items-start ${formData.salaryDetails.analysis.includes('MathÃ©matique')
                                                             ? 'bg-amber-50 border-amber-100 text-amber-800'
                                                             : 'bg-blue-50 border-blue-100 text-blue-800'
                                                             }`}>
-                                                            <span className="text-xl">💡</span>
+                                                            <span className="text-xl">ðŸ’¡</span>
                                                             <span className="font-medium leading-relaxed">{formData.salaryDetails.analysis}</span>
                                                         </div>
                                                     )}
@@ -660,7 +660,7 @@ ${analysis.weaknesses.map(w => `- ${w}`).join('\n')}
                                                 {formData.missions && formData.missions.length > 0 && (
                                                     <div>
                                                         <h4 className="flex items-center gap-2 text-sm font-bold text-slate-700 mb-3">
-                                                            <Target size={16} className="text-indigo-500" /> Missions Clés
+                                                            <Target size={16} className="text-indigo-500" /> Missions ClÃ©s
                                                         </h4>
                                                         <ul className="space-y-2">
                                                             {formData.missions.map((mission, idx) => (
@@ -700,7 +700,7 @@ ${analysis.weaknesses.map(w => `- ${w}`).join('\n')}
                                                             <div className="space-y-2">
                                                                 {formData.redFlags.map((flag, idx) => (
                                                                     <div key={idx} className="flex items-center gap-3 text-xs font-bold text-red-700 bg-red-50 px-3 py-2 rounded-lg border border-red-100">
-                                                                        ⚠️ {flag}
+                                                                        âš ï¸ {flag}
                                                                     </div>
                                                                 ))}
                                                             </div>
@@ -765,7 +765,7 @@ ${analysis.weaknesses.map(w => `- ${w}`).join('\n')}
                                         </div>
 
                                         <div className="space-y-1.5">
-                                            <label className="text-xs font-bold text-slate-400 uppercase tracking-wider ml-1">Téléphone</label>
+                                            <label className="text-xs font-bold text-slate-400 uppercase tracking-wider ml-1">TÃ©lÃ©phone</label>
                                             <div className="relative group">
                                                 <Phone className="absolute left-3 top-3.5 text-slate-400 group-focus-within:text-purple-500 transition-colors" size={18} />
                                                 <input
@@ -804,7 +804,7 @@ ${analysis.weaknesses.map(w => `- ${w}`).join('\n')}
 
                                     <div className="space-y-5">
                                         <div className="space-y-1.5">
-                                            <label className="text-xs font-bold text-slate-400 uppercase tracking-wider ml-1">Niveau d'intérêt</label>
+                                            <label className="text-xs font-bold text-slate-400 uppercase tracking-wider ml-1">Niveau d'intÃ©rÃªt</label>
                                             {renderStars()}
                                         </div>
 
@@ -830,7 +830,7 @@ ${analysis.weaknesses.map(w => `- ${w}`).join('\n')}
                                         </div>
 
                                         <div className="space-y-1.5">
-                                            <label className="text-xs font-bold text-slate-400 uppercase tracking-wider ml-1">Prochaine étape</label>
+                                            <label className="text-xs font-bold text-slate-400 uppercase tracking-wider ml-1">Prochaine Ã©tape</label>
                                             <div className="relative group">
                                                 <ListTodo className="absolute left-3 top-3.5 text-slate-400 group-focus-within:text-orange-500 transition-colors" size={18} />
                                                 <input
@@ -847,10 +847,10 @@ ${analysis.weaknesses.map(w => `- ${w}`).join('\n')}
                                 <div className="space-y-6">
                                     <div className="bg-blue-50/50 p-6 rounded-2xl border border-blue-100">
                                         <h3 className="text-lg font-bold text-slate-700 mb-4 flex items-center gap-2">
-                                            <FileText className="text-blue-500" size={20} /> Sélectionner des documents
+                                            <FileText className="text-blue-500" size={20} /> SÃ©lectionner des documents
                                         </h3>
                                         <p className="text-slate-500 text-sm mb-6">
-                                            Choisissez les documents à joindre à cette candidature depuis votre bibliothèque.
+                                            Choisissez les documents Ã  joindre Ã  cette candidature depuis votre bibliothÃ¨que.
                                         </p>
 
                                         {loadingDocs ? (
@@ -859,7 +859,7 @@ ${analysis.weaknesses.map(w => `- ${w}`).join('\n')}
                                             </div>
                                         ) : libraryDocuments.length === 0 ? (
                                             <div className="text-center p-8 bg-white rounded-xl border border-dashed border-slate-300">
-                                                <p className="text-slate-400 font-medium">Aucun document dans la bibliothèque.</p>
+                                                <p className="text-slate-400 font-medium">Aucun document dans la bibliothÃ¨que.</p>
                                             </div>
                                         ) : (
                                             <div className="grid grid-cols-1 gap-3">
@@ -900,7 +900,7 @@ ${analysis.weaknesses.map(w => `- ${w}`).join('\n')}
                                                                     {doc.name}
                                                                 </div>
                                                                 <div className={`text-[10px] ${isSelected ? 'text-blue-100' : 'text-slate-400'}`}>
-                                                                    {doc.type} • {doc.size}
+                                                                    {doc.type} â€¢ {doc.size}
                                                                 </div>
                                                             </div>
                                                             <div className={`absolute right-3 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all ${isSelected ? 'border-white bg-white text-blue-600' : 'border-slate-200 opacity-0 group-hover:opacity-100'}`}>
@@ -933,7 +933,7 @@ ${analysis.weaknesses.map(w => `- ${w}`).join('\n')}
                                             ))}
                                             <input
                                                 type="text"
-                                                placeholder="Ajouter un tag (Entrée)..."
+                                                placeholder="Ajouter un tag (EntrÃ©e)..."
                                                 className="bg-transparent border-none focus:ring-0 text-xs font-bold text-slate-400 placeholder:text-slate-500 min-w-[150px]"
                                                 onKeyDown={(e) => {
                                                     if (e.key === 'Enter') {
@@ -974,8 +974,8 @@ ${analysis.weaknesses.map(w => `- ${w}`).join('\n')}
                                         <div className="mt-4 p-4 bg-gradient-to-r from-indigo-50 to-purple-50 rounded-xl border border-purple-100">
                                             <div className="flex items-center justify-between mb-2">
                                                 <div>
-                                                    <h4 className="font-bold text-purple-700 flex items-center gap-2">✨ Job Score (IA)</h4>
-                                                    <p className="text-xs text-purple-500">Analysez la compatibilité de votre profil avec cette offre.</p>
+                                                    <h4 className="font-bold text-purple-700 flex items-center gap-2">âœ¨ Job Score (IA)</h4>
+                                                    <p className="text-xs text-purple-500">Analysez la compatibilitÃ© de votre profil avec cette offre.</p>
                                                 </div>
                                                 <button
                                                     type="button"
@@ -999,15 +999,15 @@ ${analysis.weaknesses.map(w => `- ${w}`).join('\n')}
                                             value={formData.notes}
                                             onChange={e => setFormData({ ...formData, notes: e.target.value })}
                                             className="w-full pl-10 pr-4 py-3 bg-slate-50 dark:bg-slate-900 border-0 rounded-xl focus:ring-2 focus:ring-blue-100 dark:focus:ring-blue-900/30 focus:bg-white dark:focus:bg-slate-800 transition-all font-semibold text-blue-600 dark:text-blue-400 placeholder:text-slate-300 dark:placeholder:text-slate-600 resize-none font-medium leading-relaxed"
-                                            placeholder="Questions à poser, impressions, stack technique..."
+                                            placeholder="Questions Ã  poser, impressions, stack technique..."
                                         />
 
                                         {/* AI Features Zone (Stub) */}
                                         <div className="mt-4 p-4 bg-gradient-to-r from-blue-50 to-cyan-50 rounded-xl border border-blue-100">
                                             <div className="flex items-center justify-between mb-2">
                                                 <div>
-                                                    <h4 className="font-bold text-blue-700 flex items-center gap-2">📧 Magic Email (IA)</h4>
-                                                    <p className="text-xs text-blue-500">Générez une lettre de motivation ou un mail de relance.</p>
+                                                    <h4 className="font-bold text-blue-700 flex items-center gap-2">ðŸ“§ Magic Email (IA)</h4>
+                                                    <p className="text-xs text-blue-500">GÃ©nÃ©rez une lettre de motivation ou un mail de relance.</p>
                                                 </div>
                                                 <button
                                                     type="button"
@@ -1015,7 +1015,7 @@ ${analysis.weaknesses.map(w => `- ${w}`).join('\n')}
                                                     disabled={isGeneratingEmail}
                                                     className="px-3 py-1.5 bg-white text-blue-600 font-bold text-sm rounded-lg shadow-sm border border-blue-100 hover:bg-blue-50 disabled:opacity-50"
                                                 >
-                                                    {isGeneratingEmail ? '...' : 'Générer'}
+                                                    {isGeneratingEmail ? '...' : 'GÃ©nÃ©rer'}
                                                 </button>
                                             </div>
                                             {generatedEmail && (
@@ -1026,7 +1026,7 @@ ${analysis.weaknesses.map(w => `- ${w}`).join('\n')}
                                                         className="w-full h-40 p-3 bg-white/80 rounded-lg text-sm text-slate-700 border border-blue-100 resize-none focus:outline-none"
                                                     />
                                                     <button
-                                                        onClick={() => { navigator.clipboard.writeText(generatedEmail); alert('Copié !') }}
+                                                        onClick={() => { navigator.clipboard.writeText(generatedEmail); alert('CopiÃ© !') }}
                                                         className="mt-2 text-xs text-blue-600 font-bold hover:underline"
                                                     >
                                                         Copier le texte
@@ -1043,7 +1043,7 @@ ${analysis.weaknesses.map(w => `- ${w}`).join('\n')}
                     {activeTab === 'attachments' && (
                         <div className="space-y-6">
                             <div className="bg-slate-50 p-6 rounded-2xl border border-dashed border-slate-300 text-center">
-                                <p className="text-slate-500">Pour ajouter des fichiers, utilisez la section "Sélectionner des documents" dans l'onglet Détails.</p>
+                                <p className="text-slate-500">Pour ajouter des fichiers, utilisez la section "SÃ©lectionner des documents" dans l'onglet DÃ©tails.</p>
                             </div>
                         </div>
                     )}
@@ -1072,7 +1072,7 @@ ${analysis.weaknesses.map(w => `- ${w}`).join('\n')}
                         ) : (
                             <>
                                 <Save size={20} />
-                                {isEditing ? 'Enregistrer les modifications' : 'Créer la candidature'}
+                                {isEditing ? 'Enregistrer les modifications' : 'CrÃ©er la candidature'}
                             </>
                         )}
                     </button>
@@ -1102,8 +1102,8 @@ ${analysis.weaknesses.map(w => `- ${w}`).join('\n')}
                             <div className="space-y-6">
                                 {/* Header */}
                                 <div className="text-center pb-2 border-b border-slate-100">
-                                    <h3 className="font-bold text-slate-800">Configuration IA Personnalisée</h3>
-                                    <p className="text-xs text-slate-500">Connecté à votre instance NodeCore (ou autre compatible OpenAI)</p>
+                                    <h3 className="font-bold text-slate-800">Configuration IA PersonnalisÃ©e</h3>
+                                    <p className="text-xs text-slate-500">ConnectÃ© Ã  votre instance NodeCore (ou autre compatible OpenAI)</p>
                                 </div>
                             </div>
 
@@ -1124,7 +1124,7 @@ ${analysis.weaknesses.map(w => `- ${w}`).join('\n')}
                                 </div>
 
                                 <div className="space-y-2">
-                                    <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Modèle</label>
+                                    <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">ModÃ¨le</label>
                                     <input
                                         type="text"
                                         value={config.model}
@@ -1159,7 +1159,7 @@ ${analysis.weaknesses.map(w => `- ${w}`).join('\n')}
                             </div>
                             <h3 className="text-xl font-bold text-slate-800">Lien de l'offre manquant</h3>
                             <p className="text-slate-500 text-sm leading-relaxed">
-                                Vous n'avez pas renseigné le lien de l'offre. C'est utile pour y revenir plus tard !
+                                Vous n'avez pas renseignÃ© le lien de l'offre. C'est utile pour y revenir plus tard !
                             </p>
                             <p className="text-slate-800 font-medium text-sm">
                                 Voulez-vous continuer sans lien ?
@@ -1178,7 +1178,7 @@ ${analysis.weaknesses.map(w => `- ${w}`).join('\n')}
                                 onClick={(e) => performSubmit(e as any)}
                                 className="px-5 py-2.5 bg-slate-800 text-white font-bold rounded-xl hover:bg-slate-900 transition-colors shadow-lg shadow-slate-200"
                             >
-                                Créer sans lien
+                                CrÃ©er sans lien
                             </button>
                         </div>
                     </div>

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+﻿import { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
 import { useAuth } from './useAuth';
 import { useToast } from '../context/ToastContext';
@@ -88,7 +88,7 @@ export const useDocuments = () => {
 
             if (dbError) throw dbError;
 
-            showToast('Document importé avec succès', 'success');
+            showToast('Document importÃ© avec succÃ¨s', 'success');
             fetchDocuments(); // Refresh list
             return data;
         } catch (error: any) {
@@ -117,7 +117,7 @@ export const useDocuments = () => {
 
             if (dbError) throw dbError;
 
-            showToast('Document supprimé', 'success');
+            showToast('Document supprimÃ©', 'success');
             setDocuments(prev => prev.filter(d => d.id !== id));
         } catch (error) {
             console.error('Delete Error:', error);

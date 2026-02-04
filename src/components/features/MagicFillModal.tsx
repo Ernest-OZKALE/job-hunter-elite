@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import { useMagicFill } from '../../hooks/useMagicFill';
 import { Wand2, X, Check, RefreshCw } from 'lucide-react'; // Using Lucide icons to match project style
 
@@ -52,7 +52,7 @@ const MagicFillModal: React.FC<Props> = ({ isOpen, onClose, onApply }) => {
                     {!result ? (
                         <div className="space-y-4">
                             <p className="text-slate-600 text-sm">
-                                Collez ci-dessous la description complète de l'offre. L'IA va extraire les détails clés pour vous.
+                                Collez ci-dessous la description complÃ¨te de l'offre. L'IA va extraire les dÃ©tails clÃ©s pour vous.
                             </p>
                             <textarea
                                 value={inputText}
@@ -83,7 +83,7 @@ const MagicFillModal: React.FC<Props> = ({ isOpen, onClose, onApply }) => {
                                         </>
                                     ) : (
                                         <>
-                                            <Wand2 size={18} /> Exécuter la magie
+                                            <Wand2 size={18} /> ExÃ©cuter la magie
                                         </>
                                     )}
                                 </button>
@@ -92,7 +92,7 @@ const MagicFillModal: React.FC<Props> = ({ isOpen, onClose, onApply }) => {
                     ) : (
                         <div className="space-y-6">
                             <div className="flex items-center justify-between">
-                                <h3 className="text-lg font-bold text-slate-800">Résultat extrait</h3>
+                                <h3 className="text-lg font-bold text-slate-800">RÃ©sultat extrait</h3>
                                 {result.confidence && (
                                     <span className={`px-3 py-1 rounded-full text-xs font-bold ${result.confidence > 0.8 ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'}`}>
                                         Confiance: {(result.confidence * 100).toFixed(0)}%
@@ -103,7 +103,7 @@ const MagicFillModal: React.FC<Props> = ({ isOpen, onClose, onApply }) => {
                             <div className="bg-slate-50 p-5 rounded-xl border border-slate-100 space-y-4 max-h-[60vh] overflow-y-auto custom-scrollbar">
                                 {/* Core Info */}
                                 <div className="space-y-3 pb-4 border-b border-slate-200">
-                                    <h4 className="text-xs font-bold text-slate-400 uppercase tracking-wider">Informations Clés</h4>
+                                    <h4 className="text-xs font-bold text-slate-400 uppercase tracking-wider">Informations ClÃ©s</h4>
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                         <div><span className="text-sm text-slate-500 block">Entreprise</span> <span className="font-bold text-slate-800">{result.company || '-'}</span></div>
                                         <div><span className="text-sm text-slate-500 block">Poste</span> <span className="font-bold text-slate-800">{result.position || '-'}</span></div>
@@ -111,7 +111,7 @@ const MagicFillModal: React.FC<Props> = ({ isOpen, onClose, onApply }) => {
                                         <div><span className="text-sm text-slate-500 block">Contrat</span> <span className="font-bold text-blue-600">{result.contractType || '-'}</span></div>
                                         <div className="md:col-span-2">
                                             <span className="text-sm text-slate-500 block">Salaire</span>
-                                            <span className="font-bold text-emerald-600 bg-emerald-50 px-2 py-1 rounded-md">{result.salary || 'Non spécifié'}</span>
+                                            <span className="font-bold text-emerald-600 bg-emerald-50 px-2 py-1 rounded-md">{result.salary || 'Non spÃ©cifiÃ©'}</span>
                                         </div>
                                     </div>
                                 </div>
@@ -122,7 +122,7 @@ const MagicFillModal: React.FC<Props> = ({ isOpen, onClose, onApply }) => {
                                         <h4 className="text-xs font-bold text-slate-400 uppercase tracking-wider">Contenu</h4>
                                         {result.hardSkills?.length > 0 && (
                                             <div>
-                                                <span className="text-xs font-semibold text-slate-500 mb-1 block">Compétences Détectées</span>
+                                                <span className="text-xs font-semibold text-slate-500 mb-1 block">CompÃ©tences DÃ©tectÃ©es</span>
                                                 <div className="flex flex-wrap gap-2">
                                                     {result.hardSkills.map((s: string, i: number) => (
                                                         <span key={i} className="text-xs font-bold bg-white border border-slate-200 px-2 py-1 rounded-md text-slate-700">{s}</span>

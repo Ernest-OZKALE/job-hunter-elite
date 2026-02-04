@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+﻿import { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
 import { useAuth } from './useAuth';
 import { useToast } from '../context/ToastContext';
@@ -56,7 +56,7 @@ export const useGoals = () => {
             if (error) throw error;
 
             setGoals(prev => [...prev, data]);
-            showToast('Objectif ajouté', 'success');
+            showToast('Objectif ajoutÃ©', 'success');
             return data;
         } catch (error: any) {
             console.error('Error adding goal:', error);
@@ -75,7 +75,7 @@ export const useGoals = () => {
             if (error) throw error;
 
             setGoals(prev => prev.filter(g => g.id !== id));
-            showToast('Objectif supprimé', 'success');
+            showToast('Objectif supprimÃ©', 'success');
         } catch (error) {
             console.error('Error deleting goal:', error);
             showToast("Erreur lors de la suppression", 'error');

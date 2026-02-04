@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+﻿import { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
 import { useAuth } from './useAuth';
 import { useToast } from '../context/ToastContext';
@@ -57,7 +57,7 @@ export const useContacts = () => {
             if (error) throw error;
 
             setContacts(prev => [data, ...prev]);
-            showToast('Contact ajouté', 'success');
+            showToast('Contact ajoutÃ©', 'success');
             return data;
         } catch (error: any) {
             console.error('Error adding contact:', error);
@@ -76,10 +76,10 @@ export const useContacts = () => {
             if (error) throw error;
 
             setContacts(prev => prev.map(c => c.id === id ? { ...c, ...updates } : c));
-            showToast('Contact mis à jour', 'success');
+            showToast('Contact mis Ã  jour', 'success');
         } catch (error: any) {
             console.error('Error updating contact:', error);
-            showToast("Erreur lors de la mise à jour", 'error');
+            showToast("Erreur lors de la mise Ã  jour", 'error');
             throw error;
         }
     };
@@ -94,7 +94,7 @@ export const useContacts = () => {
             if (error) throw error;
 
             setContacts(prev => prev.filter(c => c.id !== id));
-            showToast('Contact supprimé', 'success');
+            showToast('Contact supprimÃ©', 'success');
         } catch (error) {
             console.error('Error deleting contact:', error);
             showToast("Erreur lors de la suppression", 'error');

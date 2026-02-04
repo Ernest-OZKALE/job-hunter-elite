@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+﻿import { useEffect } from 'react';
 import { usePreferences } from '../context/PreferencesContext';
 import { getTheme } from '../lib/themes';
 

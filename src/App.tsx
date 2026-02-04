@@ -1,4 +1,4 @@
-import { Component, type ReactNode } from 'react';
+﻿import { Component, type ReactNode } from 'react';
 import { useAuth } from './hooks/useAuth';
 import { LoginPage } from './pages/LoginPage';
 import { DashboardPage } from './pages/DashboardPage';
@@ -26,8 +26,8 @@ class ErrorBoundary extends Component<{ children: ReactNode }, { hasError: boole
 		if (this.state.hasError) {
 			return (
 				<div style={{ padding: '20px', color: 'red' }}>
-					<h2>Quelque chose s'est mal passé.</h2>
-					<p>Veuillez rafraîchir la page.</p>
+					<h2>Quelque chose s'est mal passÃ©.</h2>
+					<p>Veuillez rafraÃ®chir la page.</p>
 				</div>
 			);
 		}

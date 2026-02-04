@@ -1,4 +1,4 @@
-import { X, Filter, RotateCcw } from 'lucide-react';
+﻿import { X, Filter, RotateCcw } from 'lucide-react';
 import type { FilterState } from '../../hooks/useFilters';
 import type { ApplicationStatus } from '../../types';
 import { STATUS_OPTIONS } from '../../lib/statusConfig';
@@ -88,7 +88,7 @@ export const FilterPanel = ({
                     {filterOptions.tags.length > 0 && (
                         <div>
                             <h3 className="text-lg font-black text-slate-900 dark:text-white mb-3 flex items-center gap-2">
-                                🔖 Tags
+                                ðŸ”– Tags
                             </h3>
                             <div className="flex flex-wrap gap-2">
                                 {filterOptions.tags.map(tag => (
@@ -110,7 +110,7 @@ export const FilterPanel = ({
                     {/* Statuts */}
                     <div>
                         <h3 className="text-lg font-black text-slate-900 dark:text-white mb-3 flex items-center gap-2">
-                            📊 Statuts
+                            ðŸ“Š Statuts
                         </h3>
                         <div className="space-y-2 max-h-64 overflow-y-auto">
                             {STATUS_OPTIONS.map(status => (
@@ -135,11 +135,11 @@ export const FilterPanel = ({
                     {/* Date Range */}
                     <div>
                         <h3 className="text-lg font-black text-slate-900 dark:text-white mb-3 flex items-center gap-2">
-                            📅 Période
+                            ðŸ“… PÃ©riode
                         </h3>
                         <div className="grid grid-cols-2 gap-3">
                             <div>
-                                <label className="text-xs font-bold text-slate-500 mb-1 block">Début</label>
+                                <label className="text-xs font-bold text-slate-500 mb-1 block">DÃ©but</label>
                                 <input
                                     type="date"
                                     value={filters.dateRange?.start || ''}
@@ -163,7 +163,7 @@ export const FilterPanel = ({
                     {filterOptions.locations.length > 0 && (
                         <div>
                             <h3 className="text-lg font-black text-slate-900 dark:text-white mb-3 flex items-center gap-2">
-                                📍 Localisation
+                                ðŸ“ Localisation
                             </h3>
                             <div className="space-y-2">
                                 {filterOptions.locations.map(location => (
@@ -187,7 +187,7 @@ export const FilterPanel = ({
                     {/* Remote Policy */}
                     <div>
                         <h3 className="text-lg font-black text-slate-900 dark:text-white mb-3 flex items-center gap-2">
-                            🏠 Télétravail
+                            ðŸ  TÃ©lÃ©travail
                         </h3>
                         <div className="space-y-2">
                             {(['Full Remote', 'Hybride', 'Sur site'] as const).map(policy => (
@@ -211,7 +211,7 @@ export const FilterPanel = ({
                     {filterOptions.sources.length > 0 && (
                         <div>
                             <h3 className="text-lg font-black text-slate-900 dark:text-white mb-3 flex items-center gap-2">
-                                🔗 Source
+                                ðŸ”— Source
                             </h3>
                             <div className="space-y-2">
                                 {filterOptions.sources.map(source => (
@@ -235,7 +235,7 @@ export const FilterPanel = ({
                     {/* Origin */}
                     <div>
                         <h3 className="text-lg font-black text-slate-900 dark:text-white mb-3 flex items-center gap-2">
-                            🤖 Origine
+                            ðŸ¤– Origine
                         </h3>
                         <div className="space-y-2">
                             <label className="flex items-center gap-3 p-2 hover:bg-slate-50 dark:hover:bg-slate-700 rounded-lg cursor-pointer">
@@ -267,7 +267,7 @@ export const FilterPanel = ({
                         className="w-full py-3 bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 font-bold rounded-xl hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors flex items-center justify-center gap-2"
                     >
                         <RotateCcw size={18} />
-                        Réinitialiser les filtres
+                        RÃ©initialiser les filtres
                     </button>
                 </div>
             </div>

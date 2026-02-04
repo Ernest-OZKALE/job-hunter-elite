@@ -1,4 +1,4 @@
-export interface SalaryRange {
+﻿export interface SalaryRange {
     min: number;
     max: number;
     avg: number;

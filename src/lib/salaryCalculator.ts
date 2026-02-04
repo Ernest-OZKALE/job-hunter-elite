@@ -1,4 +1,4 @@
-
+﻿
 export interface SalaryDetails {
     brutYear?: string;
     brutMonth?: string;
@@ -14,7 +14,7 @@ export interface SalaryDetails {
 
 export function calculateSalaryDetails(text: string): SalaryDetails | null {
     // Match: "25k", "25.5k", "25000", "25 000", "25000.0"
-    const salaryRegex = /(?:(\d{1,3}(?:[.,]\d+)?)\s?k)|(?:(\d{1,3}(?:[\s,.]\d{3})*|\d{4,8})(?:[.,]\d+)?\s?(?:€|euros?))/i;
+    const salaryRegex = /(?:(\d{1,3}(?:[.,]\d+)?)\s?k)|(?:(\d{1,3}(?:[\s,.]\d{3})*|\d{4,8})(?:[.,]\d+)?\s?(?:â‚¬|euros?))/i;
     const salaryMatch = text.match(salaryRegex);
 
     if (!salaryMatch) return null;
@@ -26,7 +26,7 @@ export function calculateSalaryDetails(text: string): SalaryDetails | null {
 
     if (salaryMatch[1]) { // Format "35k"
         rawValue = parseFloat(salaryMatch[1].replace(',', '.')) * 1000;
-    } else if (salaryMatch[0]) { // Format "35000 €" or "24 377.00"
+    } else if (salaryMatch[0]) { // Format "35000 â‚¬" or "24 377.00"
         let clean = salaryMatch[0].replace(/[^0-9,.]/g, ''); // "24377.00" or "24.377,00"
 
         // Advanced Parsing Logic for "Intuition"
@@ -139,7 +139,7 @@ export function calculateSalaryDetails(text: string): SalaryDetails | null {
     const annualNet = annualBrut * COEFF_NET;
 
     // 4. Generate All Fields with High Precision
-    const fmt = (n: number) => Math.round(n).toLocaleString('fr-FR') + " €";
+    const fmt = (n: number) => Math.round(n).toLocaleString('fr-FR') + " â‚¬";
 
     return {
         brutYear: fmt(annualBrut),
@@ -152,7 +152,7 @@ export function calculateSalaryDetails(text: string): SalaryDetails | null {
         netDay: fmt(annualNet / DAYS_YEAR_FORFAIT),
         netHour: fmt(annualNet / HOURS_YEAR_LEGAL),
 
-        currency: "€",
+        currency: "â‚¬",
         analysis: isAnnual ?
             (annualBrut > 45000 ? `Salaire ${statusLabel} attractif (Top 30%).` : `Salaire standard ${statusLabel}.`)
             : `Estimation sur base mensuelle (${statusLabel}).`,

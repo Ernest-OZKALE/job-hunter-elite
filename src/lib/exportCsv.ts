@@ -1,4 +1,4 @@
-export function applicationsToCsv(apps: any[]) {
+﻿export function applicationsToCsv(apps: any[]) {
   const headers = ['Date','Entreprise','Poste','Statut','Salaire','Lien','Fichiers','Notes'];
   const rows = apps.map(app => {
     const files = (app.attachments || []).map((a: any) => a.name).join(' | ');

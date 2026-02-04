@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+﻿import React, { useState, useMemo } from 'react';
 import {
     Search, Plus, User, Mail, Phone, Linkedin, Building,
     MoreVertical, Edit2, Trash2, ExternalLink, Filter, X, Loader2
@@ -58,10 +58,10 @@ export const ContactsPage = () => {
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-12">
                 <div>
                     <h1 className="text-4xl font-black text-slate-900 dark:text-white tracking-tight mb-2">
-                        Réseau & <span className="text-blue-600">Contacts</span>
+                        RÃ©seau & <span className="text-blue-600">Contacts</span>
                     </h1>
                     <p className="text-slate-500 dark:text-slate-400 font-medium">
-                        Gère tes relations avec les recruteurs et ingénieurs.
+                        GÃ¨re tes relations avec les recruteurs et ingÃ©nieurs.
                     </p>
                 </div>
                 <button
@@ -134,8 +134,8 @@ export const ContactsPage = () => {
                     <div className="w-20 h-20 bg-slate-50 dark:bg-slate-800/50 rounded-full flex items-center justify-center mx-auto mb-6">
                         <User size={32} className="text-slate-300" />
                     </div>
-                    <h3 className="text-xl font-bold text-slate-700 dark:text-slate-300 mb-2">Aucun contact trouvé</h3>
-                    <p className="text-slate-400">Commence à construire ton réseau en ajoutant ton premier contact.</p>
+                    <h3 className="text-xl font-bold text-slate-700 dark:text-slate-300 mb-2">Aucun contact trouvÃ©</h3>
+                    <p className="text-slate-400">Commence Ã  construire ton rÃ©seau en ajoutant ton premier contact.</p>
                 </div>
             ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -164,7 +164,7 @@ export const ContactsPage = () => {
                             <h3 className="text-xl font-bold text-slate-800 dark:text-white mb-1">{contact.name}</h3>
                             <div className="flex items-center gap-2 text-blue-600 dark:text-blue-400 font-bold text-sm mb-4">
                                 <Building size={14} />
-                                {contact.company || 'Entreprise non spécifiée'}
+                                {contact.company || 'Entreprise non spÃ©cifiÃ©e'}
                             </div>
 
                             {contact.role && (

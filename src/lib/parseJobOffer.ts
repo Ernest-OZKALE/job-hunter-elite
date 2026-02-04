@@ -1,4 +1,4 @@
-export interface ParsedJob {
+﻿export interface ParsedJob {
     company: string;
     position: string;
     location: string;
@@ -17,7 +17,7 @@ export const parseJobOffer = (text: string): ParsedJob => {
     // often the first line is the Title or the Company
     if (lines.length > 0) {
         // Check if first line looks like a title (simple heuristic: generic roles)
-        const commonRoles = ['Développeur', 'Developer', 'Engineer', 'Manager', 'Directeur', 'Lead', 'Consultant', 'Chef', 'Architecte', 'Designer', 'Product', 'Data'];
+        const commonRoles = ['DÃ©veloppeur', 'Developer', 'Engineer', 'Manager', 'Directeur', 'Lead', 'Consultant', 'Chef', 'Architecte', 'Designer', 'Product', 'Data'];
         if (commonRoles.some(r => lines[0].includes(r))) {
             position = lines[0];
             if (lines.length > 1) company = lines[1];
@@ -29,26 +29,26 @@ export const parseJobOffer = (text: string): ParsedJob => {
     }
 
     // Look for keywords
-    const locationKeywords = ['Lieu :', 'Location:', '📍', 'Localisation :'];
-    const companyKeywords = ['Entreprise :', 'Company:', '🏢', 'Société :'];
-    const postKeywords = ['Poste :', 'Job:', '💼', 'Intitulé :'];
+    const locationKeywords = ['Lieu :', 'Location:', 'ðŸ“', 'Localisation :'];
+    const companyKeywords = ['Entreprise :', 'Company:', 'ðŸ¢', 'SociÃ©tÃ© :'];
+    const postKeywords = ['Poste :', 'Job:', 'ðŸ’¼', 'IntitulÃ© :'];
 
     lines.forEach(line => {
         // Location detection
         if (locationKeywords.some(k => line.toLowerCase().includes(k.toLowerCase()))) {
-            const parts = line.split(/:|📍/);
+            const parts = line.split(/:|ðŸ“/);
             if (parts.length > 1) location = parts[1].trim();
         }
 
         // Company detection override
         if (companyKeywords.some(k => line.toLowerCase().includes(k.toLowerCase()))) {
-            const parts = line.split(/:|🏢/);
+            const parts = line.split(/:|ðŸ¢/);
             if (parts.length > 1) company = parts[1].trim();
         }
 
         // Position detection override
         if (postKeywords.some(k => line.toLowerCase().includes(k.toLowerCase()))) {
-            const parts = line.split(/:|💼/);
+            const parts = line.split(/:|ðŸ’¼/);
             if (parts.length > 1) position = parts[1].trim();
         }
     });
@@ -64,7 +64,7 @@ export const parseJobOffer = (text: string): ParsedJob => {
     };
     const industryDictionary: Record<string, string> = {
         'fintech': 'FinTech', 'finance': 'Finance', 'saas': 'SaaS', 'e-commerce': 'E-commerce',
-        'santé': 'HealthTech', 'health': 'HealthTech', 'cyber': 'CyberSecurity', 'ai': 'AI/ML',
+        'santÃ©': 'HealthTech', 'health': 'HealthTech', 'cyber': 'CyberSecurity', 'ai': 'AI/ML',
         'ia': 'AI/ML', 'data': 'Data', 'blockchain': 'Web3', 'crypto': 'Web3'
     };
 
@@ -76,7 +76,7 @@ export const parseJobOffer = (text: string): ParsedJob => {
     });
 
     return {
-        company: company.replace(/[^\w\sàâéèêëîïôöùûüçÀÂÉÈÊËÎÏÔÖÙÛÜÇ&-]/g, '').slice(0, 50).trim(),
+        company: company.replace(/[^\w\sÃ Ã¢Ã©Ã¨ÃªÃ«Ã®Ã¯Ã´Ã¶Ã¹Ã»Ã¼Ã§Ã€Ã‚Ã‰ÃˆÃŠÃ‹ÃŽÃÃ”Ã–Ã™Ã›ÃœÃ‡&-]/g, '').slice(0, 50).trim(),
         position: position.slice(0, 50).trim(),
         location: location.slice(0, 30).trim(),
         description: text,

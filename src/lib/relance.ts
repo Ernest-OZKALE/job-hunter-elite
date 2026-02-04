@@ -1,15 +1,15 @@
-import type { ApplicationStatus } from '../types';
+﻿import type { ApplicationStatus } from '../types';
 
 export const getRelanceInfo = (dateEnvoi: string, status: ApplicationStatus) => {
   // Only show relance for statuses where we're waiting for a response
   const waitingStatuses: ApplicationStatus[] = [
-    'Candidature Envoyée',
+    'Candidature EnvoyÃ©e',
     'CV Vu',
     'En Cours d\'Examen',
-    'Test Technique Envoyé',
-    'Entretien RH Passé',
-    'Entretien Technique Passé',
-    'Entretien Final Passé',
+    'Test Technique EnvoyÃ©',
+    'Entretien RH PassÃ©',
+    'Entretien Technique PassÃ©',
+    'Entretien Final PassÃ©',
     'En Attente de Retour'
   ];
 
@@ -31,7 +31,7 @@ export const getRelanceInfo = (dateEnvoi: string, status: ApplicationStatus) => 
   if (diffDays === 0) {
     return {
       shouldRelance: true,
-      message: "À RELANCER AUJOURD'HUI !",
+      message: "Ã€ RELANCER AUJOURD'HUI !",
       isUrgent: true
     };
   }

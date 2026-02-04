@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+﻿import { useMemo } from 'react';
 import type { JobApplication, ApplicationStatus } from '../types';
 
 interface RelanceCandidate {
@@ -10,25 +10,25 @@ interface RelanceCandidate {
 
 // Statuses that should trigger relance checks
 const RELANCE_ELIGIBLE_STATUSES: ApplicationStatus[] = [
-    'Candidature Envoyée',
+    'Candidature EnvoyÃ©e',
     'CV Vu',
     'En Cours d\'Examen',
-    'Test Technique Envoyé',
-    'Entretien RH Passé',
-    'Entretien Technique Passé',
-    'Entretien Final Passé',
+    'Test Technique EnvoyÃ©',
+    'Entretien RH PassÃ©',
+    'Entretien Technique PassÃ©',
+    'Entretien Final PassÃ©',
     'En Attente de Retour'
 ];
 
 // Days to wait before suggesting relance
 const RELANCE_THRESHOLDS: Record<string, number> = {
-    'Candidature Envoyée': 7,
+    'Candidature EnvoyÃ©e': 7,
     'CV Vu': 5,
     'En Cours d\'Examen': 7,
-    'Test Technique Envoyé': 5,
-    'Entretien RH Passé': 3,
-    'Entretien Technique Passé': 3,
-    'Entretien Final Passé': 2,
+    'Test Technique EnvoyÃ©': 5,
+    'Entretien RH PassÃ©': 3,
+    'Entretien Technique PassÃ©': 3,
+    'Entretien Final PassÃ©': 2,
     'En Attente de Retour': 5
 };
 
@@ -88,14 +88,14 @@ export const useAutoRelance = (applications: JobApplication[]) => {
 
 function getRelanceReason(status: ApplicationStatus, days: number): string {
     const messages: Record<string, string> = {
-        'Candidature Envoyée': `Aucune réponse depuis ${days} jours`,
-        'CV Vu': `CV consulté il y a ${days} jours, pas de suite`,
+        'Candidature EnvoyÃ©e': `Aucune rÃ©ponse depuis ${days} jours`,
+        'CV Vu': `CV consultÃ© il y a ${days} jours, pas de suite`,
         'En Cours d\'Examen': `En examen depuis ${days} jours`,
-        'Test Technique Envoyé': `Test envoyé il y a ${days} jours`,
-        'Entretien RH Passé': `Entretien RH passé il y a ${days} jours`,
-        'Entretien Technique Passé': `Entretien tech passé il y a ${days} jours`,
-        'Entretien Final Passé': `Entretien final passé il y a ${days} jours`,
+        'Test Technique EnvoyÃ©': `Test envoyÃ© il y a ${days} jours`,
+        'Entretien RH PassÃ©': `Entretien RH passÃ© il y a ${days} jours`,
+        'Entretien Technique PassÃ©': `Entretien tech passÃ© il y a ${days} jours`,
+        'Entretien Final PassÃ©': `Entretien final passÃ© il y a ${days} jours`,
         'En Attente de Retour': `Attente depuis ${days} jours`
     };
-    return messages[status] || `Pas d'activité depuis ${days} jours`;
+    return messages[status] || `Pas d'activitÃ© depuis ${days} jours`;
 }

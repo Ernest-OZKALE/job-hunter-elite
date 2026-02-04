@@ -1,4 +1,4 @@
-export type ThemeName = 'ocean' | 'forest' | 'sunset' | 'midnight' | 'monochrome' | 'luxury' | 'cyberpunk' | 'nord' | 'coffee';
+﻿export type ThemeName = 'ocean' | 'forest' | 'sunset' | 'midnight' | 'monochrome' | 'luxury' | 'cyberpunk' | 'nord' | 'coffee';
 export type ViewMode = 'compact' | 'comfort' | 'grid';
 
 export interface Theme {
@@ -19,7 +19,7 @@ export const THEMES: Record<ThemeName, Theme> = {
     // --- CLASSIC ---
     ocean: {
         name: 'ocean',
-        label: '🌊 Océan',
+        label: 'ðŸŒŠ OcÃ©an',
         colors: {
             primary: '#0ea5e9',
             secondary: '#06b6d4',
@@ -32,7 +32,7 @@ export const THEMES: Record<ThemeName, Theme> = {
     },
     forest: {
         name: 'forest',
-        label: '🌲 Forêt',
+        label: 'ðŸŒ² ForÃªt',
         colors: {
             primary: '#10b981',
             secondary: '#059669',
@@ -45,7 +45,7 @@ export const THEMES: Record<ThemeName, Theme> = {
     },
     sunset: {
         name: 'sunset',
-        label: '🌅 Sunset',
+        label: 'ðŸŒ… Sunset',
         colors: {
             primary: '#f97316',
             secondary: '#ea580c',
@@ -60,7 +60,7 @@ export const THEMES: Record<ThemeName, Theme> = {
     // --- PREMIUM ---
     luxury: {
         name: 'luxury',
-        label: '👑 Luxury Gold',
+        label: 'ðŸ‘‘ Luxury Gold',
         colors: {
             primary: '#d4af37', // Gold
             secondary: '#c5a028',
@@ -73,7 +73,7 @@ export const THEMES: Record<ThemeName, Theme> = {
     },
     cyberpunk: {
         name: 'cyberpunk',
-        label: '👾 Cyberpunk',
+        label: 'ðŸ‘¾ Cyberpunk',
         colors: {
             primary: '#d946ef', // Neon Fuchsia
             secondary: '#8b5cf6', // Violet
@@ -86,7 +86,7 @@ export const THEMES: Record<ThemeName, Theme> = {
     },
     nord: {
         name: 'nord',
-        label: '❄️ Nord',
+        label: 'â„ï¸ Nord',
         colors: {
             primary: '#88c0d0',
             secondary: '#81a1c1',
@@ -99,7 +99,7 @@ export const THEMES: Record<ThemeName, Theme> = {
     },
     coffee: {
         name: 'coffee',
-        label: '☕ Coffee',
+        label: 'â˜• Coffee',
         colors: {
             primary: '#8b5e34', // Brown
             secondary: '#6f4e37',
@@ -112,7 +112,7 @@ export const THEMES: Record<ThemeName, Theme> = {
     },
     midnight: {
         name: 'midnight',
-        label: '🌙 Midnight',
+        label: 'ðŸŒ™ Midnight',
         colors: {
             primary: '#8b5cf6',
             secondary: '#7c3aed',
@@ -125,7 +125,7 @@ export const THEMES: Record<ThemeName, Theme> = {
     },
     monochrome: {
         name: 'monochrome',
-        label: '⚫ Monochrome',
+        label: 'âš« Monochrome',
         colors: {
             primary: '#64748b',
             secondary: '#475569',

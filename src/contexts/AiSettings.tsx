@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+﻿import React, { createContext, useContext, useState, useEffect } from 'react';
 import { type LocalAIConfig, DEFAULT_OLLAMA_CONFIG } from '../lib/ollama';
 
 interface AiSettings extends LocalAIConfig {

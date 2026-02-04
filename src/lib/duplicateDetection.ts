@@ -1,4 +1,4 @@
-import type { JobApplication } from '../types';
+﻿import type { JobApplication } from '../types';
 
 export interface DuplicateMatch {
     application: JobApplication;
@@ -42,7 +42,7 @@ export const detectDuplicates = (
                 matches.push({
                     application: app,
                     similarity: 85,
-                    reason: 'Même entreprise, poste très similaire'
+                    reason: 'MÃªme entreprise, poste trÃ¨s similaire'
                 });
             }
         }
@@ -55,7 +55,7 @@ export const detectDuplicates = (
             matches.push({
                 application: app,
                 similarity: Math.round((companySimilarity + positionSimilarity) * 50),
-                reason: 'Entreprise et poste très similaires'
+                reason: 'Entreprise et poste trÃ¨s similaires'
             });
         }
     }
@@ -116,11 +116,11 @@ export const checkDataCompleteness = (app: JobApplication) => {
     if (!app.company) issues.push('Entreprise manquante');
     if (!app.position) issues.push('Poste manquant');
     if (!app.location) issues.push('Localisation manquante');
-    if (!app.salary && !app.salaryMin && !app.salaryMax) issues.push('Salaire non renseigné');
+    if (!app.salary && !app.salaryMin && !app.salaryMax) issues.push('Salaire non renseignÃ©');
     if (!app.date) issues.push('Date manquante');
     if (!app.link) issues.push('Lien offre manquant');
     if (!app.contractType) issues.push('Type de contrat manquant');
-    if (!app.remotePolicy) issues.push('Politique télétravail manquante');
+    if (!app.remotePolicy) issues.push('Politique tÃ©lÃ©travail manquante');
     if (!app.jobDescription || app.jobDescription.length < 50) issues.push('Description trop courte');
 
     return {

@@ -1,4 +1,4 @@
-import useDrivePicker from 'react-google-drive-picker';
+﻿import useDrivePicker from 'react-google-drive-picker';
 import {
     Search, ExternalLink, Edit2, Trash2, FileText, File, XCircle, Paperclip, Bot, X, TrendingUp, CheckSquare, Square
 } from 'lucide-react';
@@ -123,7 +123,7 @@ export const ApplicationList = ({
                     <Search className="text-blue-400" size={36} />
                 </div>
                 <h3 className="text-xl font-bold text-slate-700 mb-2">Aucune candidature</h3>
-                <p className="text-slate-500">Lancez votre recherche et ajoutez votre première opportunité !</p>
+                <p className="text-slate-500">Lancez votre recherche et ajoutez votre premiÃ¨re opportunitÃ© !</p>
             </div>
         );
     }
@@ -145,7 +145,7 @@ export const ApplicationList = ({
                             }`}
                     >
                         {allSelected ? <CheckSquare size={14} /> : <Square size={14} />}
-                        {allSelected ? 'Tout désélectionner' : 'Tout sélectionner'}
+                        {allSelected ? 'Tout dÃ©sÃ©lectionner' : 'Tout sÃ©lectionner'}
                     </button>
                     {someSelected && !allSelected && (
                         <span className="text-xs text-slate-500">
@@ -179,7 +179,7 @@ export const ApplicationList = ({
                 )}
             </div>
 
-            <p className="text-xs text-slate-400 italic">💡 Astuce : Maintenez Shift pour sélectionner une plage</p>
+            <p className="text-xs text-slate-400 italic">ðŸ’¡ Astuce : Maintenez Shift pour sÃ©lectionner une plage</p>
 
             {filteredApplications.map(app => {
                 const relance = getRelanceInfo(app.date, app.status);
@@ -352,7 +352,7 @@ export const ApplicationList = ({
                                     {app.link && (
                                         <a href={app.link} target="_blank" rel="noreferrer" title="Voir l'offre" className="p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded-lg transition-colors"><ExternalLink size={18} /></a>
                                     )}
-                                    <button onClick={() => setSelectedApp(app)} title="Détails" className="p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded-lg transition-colors"><FileText size={18} /></button>
+                                    <button onClick={() => setSelectedApp(app)} title="DÃ©tails" className="p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded-lg transition-colors"><FileText size={18} /></button>
                                     <button onClick={() => onEdit(app)} title="Modifier" className="p-2 text-slate-400 hover:text-purple-600 hover:bg-purple-50 dark:hover:bg-purple-900/30 rounded-lg transition-colors"><Edit2 size={18} /></button>
                                     <button onClick={() => onDelete(app.id)} title="Supprimer" className="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-lg transition-colors"><Trash2 size={18} /></button>
                                 </div>

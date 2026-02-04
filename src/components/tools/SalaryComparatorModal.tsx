@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { X, TrendingUp, AlertTriangle, CheckCircle, MapPin, Briefcase, Calculator } from 'lucide-react';
 import { SALARY_DATA_2026, LOCATION_COEFFS, type RoleData } from '../../data/salaryData';
 
@@ -60,7 +60,7 @@ export const SalaryComparatorModal: React.FC<SalaryComparatorModalProps> = ({ is
                         </div>
                         <div>
                             <h2 className="text-xl font-bold text-white">Comparateur de Salaires 2026</h2>
-                            <p className="text-slate-400 text-sm">Données de marché réelles (Non simulées)</p>
+                            <p className="text-slate-400 text-sm">DonnÃ©es de marchÃ© rÃ©elles (Non simulÃ©es)</p>
                         </div>
                     </div>
                     <button onClick={onClose} className="p-2 hover:bg-slate-700/50 rounded-lg transition-colors text-slate-400 hover:text-white">
@@ -75,7 +75,7 @@ export const SalaryComparatorModal: React.FC<SalaryComparatorModalProps> = ({ is
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div className="space-y-2">
                             <label className="text-sm font-medium text-slate-300 flex items-center gap-2">
-                                <Briefcase className="w-4 h-4 text-indigo-400" /> Rôle
+                                <Briefcase className="w-4 h-4 text-indigo-400" /> RÃ´le
                             </label>
                             <select
                                 value={selectedRole}
@@ -90,7 +90,7 @@ export const SalaryComparatorModal: React.FC<SalaryComparatorModalProps> = ({ is
 
                         <div className="space-y-2">
                             <label className="text-sm font-medium text-slate-300 flex items-center gap-2">
-                                <TrendingUp className="w-4 h-4 text-indigo-400" /> Expérience
+                                <TrendingUp className="w-4 h-4 text-indigo-400" /> ExpÃ©rience
                             </label>
                             <select
                                 value={startExp}
@@ -98,7 +98,7 @@ export const SalaryComparatorModal: React.FC<SalaryComparatorModalProps> = ({ is
                                 className="w-full bg-slate-800 border border-slate-700 rounded-lg p-2.5 text-white focus:ring-2 focus:ring-indigo-500 outline-none"
                             >
                                 <option value="junior">Junior (0-2 ans)</option>
-                                <option value="mid">Confirmé (2-5 ans)</option>
+                                <option value="mid">ConfirmÃ© (2-5 ans)</option>
                                 <option value="senior">Senior (5-8 ans)</option>
                                 <option value="lead">Lead / Expert (+8 ans)</option>
                             </select>
@@ -121,7 +121,7 @@ export const SalaryComparatorModal: React.FC<SalaryComparatorModalProps> = ({ is
 
                         <div className="space-y-2">
                             <label className="text-sm font-medium text-emerald-400 flex items-center gap-2">
-                                💶 Votre Proposition / Actuel
+                                ðŸ’¶ Votre Proposition / Actuel
                             </label>
                             <input
                                 type="number"
@@ -141,15 +141,15 @@ export const SalaryComparatorModal: React.FC<SalaryComparatorModalProps> = ({ is
                             <div className="grid grid-cols-3 gap-4 text-center">
                                 <div className="p-4 bg-slate-800 rounded-lg border border-slate-700">
                                     <div className="text-xs text-slate-400 uppercase tracking-wider mb-1">Minimum</div>
-                                    <div className="text-xl font-bold text-slate-200">{result.min.toLocaleString()} €</div>
+                                    <div className="text-xl font-bold text-slate-200">{result.min.toLocaleString()} â‚¬</div>
                                 </div>
                                 <div className="p-4 bg-indigo-500/10 rounded-lg border border-indigo-500/30">
-                                    <div className="text-xs text-indigo-300 uppercase tracking-wider mb-1">Moyenne Marché</div>
-                                    <div className="text-2xl font-bold text-indigo-400">{result.avg.toLocaleString()} €</div>
+                                    <div className="text-xs text-indigo-300 uppercase tracking-wider mb-1">Moyenne MarchÃ©</div>
+                                    <div className="text-2xl font-bold text-indigo-400">{result.avg.toLocaleString()} â‚¬</div>
                                 </div>
                                 <div className="p-4 bg-slate-800 rounded-lg border border-slate-700">
                                     <div className="text-xs text-slate-400 uppercase tracking-wider mb-1">Top Market</div>
-                                    <div className="text-xl font-bold text-slate-200">{result.max.toLocaleString()} €</div>
+                                    <div className="text-xl font-bold text-slate-200">{result.max.toLocaleString()} â‚¬</div>
                                 </div>
                             </div>
 
@@ -157,8 +157,8 @@ export const SalaryComparatorModal: React.FC<SalaryComparatorModalProps> = ({ is
                             <div className="relative pt-6 pb-2">
                                 {/* Bar Background */}
                                 <div className="h-4 bg-slate-700 rounded-full overflow-hidden flex">
-                                    <div className="h-full bg-red-500/20 flex-1 border-r border-slate-900" title="Sous-payé"></div>
-                                    <div className="h-full bg-emerald-500/20 flex-[2] border-r border-slate-900" title="Marché"></div>
+                                    <div className="h-full bg-red-500/20 flex-1 border-r border-slate-900" title="Sous-payÃ©"></div>
+                                    <div className="h-full bg-emerald-500/20 flex-[2] border-r border-slate-900" title="MarchÃ©"></div>
                                     <div className="h-full bg-purple-500/20 flex-1" title="Top Tier"></div>
                                 </div>
 
@@ -178,10 +178,10 @@ export const SalaryComparatorModal: React.FC<SalaryComparatorModalProps> = ({ is
 
                                 {/* Labels under bar */}
                                 <div className="flex justify-between text-xs text-slate-500 mt-2 font-mono">
-                                    <span>{Math.round(result.min * 0.8).toLocaleString()} €</span>
-                                    {/* <span>{result.min.toLocaleString()} €</span> */}
-                                    {/* <span>{result.max.toLocaleString()} €</span> */}
-                                    <span>{Math.round(result.max * 1.2).toLocaleString()} €</span>
+                                    <span>{Math.round(result.min * 0.8).toLocaleString()} â‚¬</span>
+                                    {/* <span>{result.min.toLocaleString()} â‚¬</span> */}
+                                    {/* <span>{result.max.toLocaleString()} â‚¬</span> */}
+                                    <span>{Math.round(result.max * 1.2).toLocaleString()} â‚¬</span>
                                 </div>
                             </div>
 
@@ -200,16 +200,16 @@ export const SalaryComparatorModal: React.FC<SalaryComparatorModalProps> = ({ is
                                             result.status === 'market' ? 'text-emerald-400' :
                                                 'text-purple-400'
                                             }`}>
-                                            {result.status === 'underpaid' ? 'En dessous du marché' :
-                                                result.status === 'market' ? 'Offre Cohérente' :
+                                            {result.status === 'underpaid' ? 'En dessous du marchÃ©' :
+                                                result.status === 'market' ? 'Offre CohÃ©rente' :
                                                     'Offre Exceptionnelle'}
                                         </h4>
                                         <p className="text-sm text-slate-300 mt-1">
                                             {result.status === 'underpaid'
-                                                ? `Attention, cette offre est environ ${Math.abs(result.diff)}% en dessous de la moyenne constatée pour ce profil.`
+                                                ? `Attention, cette offre est environ ${Math.abs(result.diff)}% en dessous de la moyenne constatÃ©e pour ce profil.`
                                                 : result.status === 'market'
-                                                    ? `Cette proposition est dans la fourchette standard du marché (Moyenne : ${result.avg.toLocaleString()} €).`
-                                                    : `Bravo ! Cette offre est ${result.diff}% au-dessus de la moyenne du marché.`
+                                                    ? `Cette proposition est dans la fourchette standard du marchÃ© (Moyenne : ${result.avg.toLocaleString()} â‚¬).`
+                                                    : `Bravo ! Cette offre est ${result.diff}% au-dessus de la moyenne du marchÃ©.`
                                             }
                                         </p>
                                     </div>

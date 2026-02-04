@@ -1,17 +1,17 @@
-import { useState, useMemo } from 'react';
+﻿import { useState, useMemo } from 'react';
 import { Quote, RefreshCw, Heart } from 'lucide-react';
 
 const MOTIVATIONS = [
-    { text: "Le succès consiste à aller d'échec en échec sans perdre son enthousiasme.", author: "Winston Churchill" },
-    { text: "La seule façon de faire du bon travail est d'aimer ce que vous faites.", author: "Steve Jobs" },
-    { text: "Croyez en vous-même et en tout ce que vous êtes. Sachez qu'il y a quelque chose à l'intérieur de vous qui est plus grand que n'importe quel obstacle.", author: "Christian D. Larson" },
-    { text: "N'attendez pas que les opportunités frappent à votre porte. Construisez une porte.", author: "Milton Berle" },
-    { text: "Votre travail va occuper une grande partie de votre vie, et la seule façon d'être vraiment satisfait est de faire ce que vous croyez être du bon travail.", author: "Steve Jobs" },
+    { text: "Le succÃ¨s consiste Ã  aller d'Ã©chec en Ã©chec sans perdre son enthousiasme.", author: "Winston Churchill" },
+    { text: "La seule faÃ§on de faire du bon travail est d'aimer ce que vous faites.", author: "Steve Jobs" },
+    { text: "Croyez en vous-mÃªme et en tout ce que vous Ãªtes. Sachez qu'il y a quelque chose Ã  l'intÃ©rieur de vous qui est plus grand que n'importe quel obstacle.", author: "Christian D. Larson" },
+    { text: "N'attendez pas que les opportunitÃ©s frappent Ã  votre porte. Construisez une porte.", author: "Milton Berle" },
+    { text: "Votre travail va occuper une grande partie de votre vie, et la seule faÃ§on d'Ãªtre vraiment satisfait est de faire ce que vous croyez Ãªtre du bon travail.", author: "Steve Jobs" },
     { text: "Chaque refus vous rapproche d'une acceptation.", author: "Inconnu" },
-    { text: "Le meilleur moment pour planter un arbre était il y a 20 ans. Le deuxième meilleur moment est maintenant.", author: "Proverbe chinois" },
-    { text: "Ne jugez pas chaque journée par la récolte que vous faites mais par les graines que vous plantez.", author: "Robert Louis Stevenson" },
-    { text: "La persévérance n'est pas une longue course ; c'est beaucoup de petites courses les unes après les autres.", author: "Walter Elliott" },
-    { text: "Rien n'est impossible, le mot lui-même dit 'I'm possible' !", author: "Audrey Hepburn" },
+    { text: "Le meilleur moment pour planter un arbre Ã©tait il y a 20 ans. Le deuxiÃ¨me meilleur moment est maintenant.", author: "Proverbe chinois" },
+    { text: "Ne jugez pas chaque journÃ©e par la rÃ©colte que vous faites mais par les graines que vous plantez.", author: "Robert Louis Stevenson" },
+    { text: "La persÃ©vÃ©rance n'est pas une longue course ; c'est beaucoup de petites courses les unes aprÃ¨s les autres.", author: "Walter Elliott" },
+    { text: "Rien n'est impossible, le mot lui-mÃªme dit 'I'm possible' !", author: "Audrey Hepburn" },
 ];
 
 export const DailyMotivation = () => {

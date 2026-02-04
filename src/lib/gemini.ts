@@ -1,11 +1,11 @@
-import { GoogleGenerativeAI } from "@google/generative-ai";
+﻿import { GoogleGenerativeAI } from "@google/generative-ai";
 import type { JobApplication } from "../types";
 
 // Note: In a production app, the API key should be in VITE_GEMINI_API_KEY
 const API_KEY = import.meta.env.VITE_GEMINI_API_KEY;
 const genAI = new GoogleGenerativeAI(API_KEY);
 
-const DEFAULT_PROFILE = "Développeur Fullstack avec expérience en React, TypeScript, Node.js et Firebase.";
+const DEFAULT_PROFILE = "DÃ©veloppeur Fullstack avec expÃ©rience en React, TypeScript, Node.js et Firebase.";
 
 export const analyzeJobOpportunity = async (app: JobApplication, userProfile: string = DEFAULT_PROFILE): Promise<{ score: number; strengths: string[]; weaknesses: string[] }> => {
     if (!API_KEY) {
@@ -31,8 +31,8 @@ export const analyzeJobOpportunity = async (app: JobApplication, userProfile: st
       Poste: ${app.position}
       Localisation: ${app.location}
       Description: ${app.jobDescription || "Non fournie"}
-      Salaire: ${app.salary || "Non spécifié"}
-      Remote: ${app.remotePolicy || "Non spécifié"}
+      Salaire: ${app.salary || "Non spÃ©cifiÃ©"}
+      Remote: ${app.remotePolicy || "Non spÃ©cifiÃ©"}
       
       RETOURNE UNIQUEMENT UN OBJET JSON avec ce format exact :
       {
@@ -58,23 +58,23 @@ export const analyzeJobOpportunity = async (app: JobApplication, userProfile: st
 };
 
 export const generateEmail = async (app: JobApplication, type: 'cover' | 'followup', userProfile: string = DEFAULT_PROFILE): Promise<string> => {
-    if (!API_KEY) return "Erreur : Clé API Gemini manquante.";
+    if (!API_KEY) return "Erreur : ClÃ© API Gemini manquante.";
 
     try {
         const model = genAI.getGenerativeModel({ model: "gemini-1.5-pro-latest" });
 
         const prompt = type === 'cover'
-            ? `Rédige une lettre de motivation courte et percutante (format email) pour ce poste, en te basant sur mon profil.
+            ? `RÃ©dige une lettre de motivation courte et percutante (format email) pour ce poste, en te basant sur mon profil.
                
                MON PROFIL : ${userProfile}
                
                L'OFFRE :
                Entreprise: ${app.company}
                Poste: ${app.position}
-               Description: ${app.jobDescription || "Non spécifiée"}
+               Description: ${app.jobDescription || "Non spÃ©cifiÃ©e"}
                
-               Ton: Professionnel, enthousiaste, confiant. Pas de bla-bla générique.`
-            : `Rédige un email de relance professionnel pour cette candidature envoyée il y a quelques jours sans réponse.
+               Ton: Professionnel, enthousiaste, confiant. Pas de bla-bla gÃ©nÃ©rique.`
+            : `RÃ©dige un email de relance professionnel pour cette candidature envoyÃ©e il y a quelques jours sans rÃ©ponse.
                
                Entreprise: ${app.company}
                Poste: ${app.position}
@@ -87,14 +87,14 @@ export const generateEmail = async (app: JobApplication, type: 'cover' | 'follow
         return response.text();
     } catch (error) {
         console.error("Gemini Email Error:", error);
-        return "Erreur lors de la génération de l'email.";
+        return "Erreur lors de la gÃ©nÃ©ration de l'email.";
     }
 };
 
 export const extractJobDetailsFromText = async (text: string): Promise<any> => {
     if (!API_KEY) {
         console.warn("Gemini API Key missing.");
-        throw new Error("Clé API Gemini manquante. Vérifiez votre configuration .env");
+        throw new Error("ClÃ© API Gemini manquante. VÃ©rifiez votre configuration .env");
     }
 
     const modelsToTry = ["gemini-1.5-pro-latest", "gemini-1.5-pro", "gemini-1.5-flash-latest", "gemini-1.5-flash"];
@@ -105,54 +105,54 @@ export const extractJobDetailsFromText = async (text: string): Promise<any> => {
 
     for (const modelName of modelsToTry) {
         try {
-            console.log(`[SDK] Tentative avec le modèle : ${modelName}`);
+            console.log(`[SDK] Tentative avec le modÃ¨le : ${modelName}`);
             const model = genAI.getGenerativeModel({ model: modelName });
 
             const prompt = `
-                Tu es un expert en recrutement et en analyse sémantique d'offres d'emploi.
+                Tu es un expert en recrutement et en analyse sÃ©mantique d'offres d'emploi.
                 
                 TA MISSION :
-                Analyse le texte brut ci-dessous (qui peut être mal formaté coller depuis un site comme France Travail, LinkedIn, Indeed...) et extrais structurément les données pour remplir un formulaire de candidature.
+                Analyse le texte brut ci-dessous (qui peut Ãªtre mal formatÃ© coller depuis un site comme France Travail, LinkedIn, Indeed...) et extrais structurÃ©ment les donnÃ©es pour remplir un formulaire de candidature.
                 
-                TEXTE À ANALYSER :
+                TEXTE Ã€ ANALYSER :
                 "${text.substring(0, 15000)}"
 
                 CONSIGNES D'EXTRACTION :
-                - Sois "smart" : Distingue le LIEU DU POSTE du siège social. Si "78 - Jouy-en-Josas" est écrit, c'est le lieu (pas Paris).
+                - Sois "smart" : Distingue le LIEU DU POSTE du siÃ¨ge social. Si "78 - Jouy-en-Josas" est Ã©crit, c'est le lieu (pas Paris).
                 - Si le salaire est "24k", convertis-le. Si c'est "24 377", nettoie-le.
-                - Détecte l'expérience même mal formatée (ex: "1 An(s)", "Exper. : 2-3 ans", "Junior accepté").
-                - Détecte les avantages même s'ils sont dans une liste à puces.
-                - Pour "Missions", "Mots clés" (tags), "Compétences", fais une synthèse intelligente.
-                - Si tu trouves "Secteur d'activité" ou "Domaine", mets-le dans "industry".
+                - DÃ©tecte l'expÃ©rience mÃªme mal formatÃ©e (ex: "1 An(s)", "Exper. : 2-3 ans", "Junior acceptÃ©").
+                - DÃ©tecte les avantages mÃªme s'ils sont dans une liste Ã  puces.
+                - Pour "Missions", "Mots clÃ©s" (tags), "CompÃ©tences", fais une synthÃ¨se intelligente.
+                - Si tu trouves "Secteur d'activitÃ©" ou "Domaine", mets-le dans "industry".
                 - Si tu trouves "Taille" ou "Effectif", mets-le dans "companySize".
-                - Analyse le lien (si trouvé) ou le texte pour déduire la "source" (ex: linkedin.com -> LinkedIn, francetravail.fr -> France Travail).
+                - Analyse le lien (si trouvÃ©) ou le texte pour dÃ©duire la "source" (ex: linkedin.com -> LinkedIn, francetravail.fr -> France Travail).
 
                 RETOURNE UNIQUEMENT UN OBJET JSON (sans markdown) avec ce format exact :
                 {
                     "company": "Nom de l'entreprise (ou 'Confidentiel')",
-                    "position": "Intitulé du poste (ex: Développeur Fullstack)",
-                    "location": "Lieu (Ville, CP, ou Région)",
-                    "contractType": "Type de contrat (ex: CDI, Freelance, CDD, Intérim...)",
-                    "remotePolicy": "Politique Télétravail (ex: Full Remote, Hybride 3j, Sur site...)",
-                    "salary": "Format brut original (ex: 35-45k€)",
+                    "position": "IntitulÃ© du poste (ex: DÃ©veloppeur Fullstack)",
+                    "location": "Lieu (Ville, CP, ou RÃ©gion)",
+                    "contractType": "Type de contrat (ex: CDI, Freelance, CDD, IntÃ©rim...)",
+                    "remotePolicy": "Politique TÃ©lÃ©travail (ex: Full Remote, Hybride 3j, Sur site...)",
+                    "salary": "Format brut original (ex: 35-45kâ‚¬)",
                     "salaryDetails": {
-                        "brutYear": "Montant annuel estimé (chiffres et texte)",
+                        "brutYear": "Montant annuel estimÃ© (chiffres et texte)",
                         "analysis": "Ton avis d'expert court (ex: 'Bon salaire pour Junior')"
                     },
                     "missions": ["Mission 1", "Mission 2", "Mission 3"],
                     "detectedSkills": ["Skill 1", "Skill 2", "Skill 3", "Skill 4"],
                     "redFlags": ["Warning 1 (ex: stress)", "Warning 2"],
-                    "jobDescription": "Résumé pro (max 600 chars)",
+                    "jobDescription": "RÃ©sumÃ© pro (max 600 chars)",
                     "contactName": "Nom contact",
                     "contactEmail": "Email contact",
-                    "contactPhone": "Téléphone contact",
-                    "link": "URL détectée",
-                    "tags": ["MotClé1", "MotClé2", "MotClé3"],
+                    "contactPhone": "TÃ©lÃ©phone contact",
+                    "link": "URL dÃ©tectÃ©e",
+                    "tags": ["MotClÃ©1", "MotClÃ©2", "MotClÃ©3"],
                     "source": "Plateforme source (ex: LinkedIn, France Travail, Indeed, Site Entreprise...)",
-                    "qualification": "Niveau (ex: Cadre, Employé qualifié)",
+                    "qualification": "Niveau (ex: Cadre, EmployÃ© qualifiÃ©)",
                     "industry": "Secteur (ex: Informatique, BTP)",
-                    "companySize": "Taille (ex: 50-99 salariés)",
-                    "experience": "Expérience requise (ex: '2 ans', 'Débutant accepté', 'Senior', 'Expérience souhaitée')",
+                    "companySize": "Taille (ex: 50-99 salariÃ©s)",
+                    "experience": "ExpÃ©rience requise (ex: '2 ans', 'DÃ©butant acceptÃ©', 'Senior', 'ExpÃ©rience souhaitÃ©e')",
                     "benefits": ["Ticket resto", "Mutuelle"]
                 }
             `;
@@ -164,11 +164,11 @@ export const extractJobDetailsFromText = async (text: string): Promise<any> => {
             // Clean markdown
             const jsonStr = responseText.replace(/```json|```/g, "").trim();
             const parsed = JSON.parse(jsonStr);
-            console.log(`[SDK] Succès avec le modèle : ${modelName}`);
+            console.log(`[SDK] SuccÃ¨s avec le modÃ¨le : ${modelName}`);
             return parsed;
 
         } catch (error: any) {
-            console.warn(`[SDK] Échec avec le modèle ${modelName}:`, error.message);
+            console.warn(`[SDK] Ã‰chec avec le modÃ¨le ${modelName}:`, error.message);
             lastError = error;
         }
     }
@@ -189,7 +189,7 @@ export const extractJobDetailsFromText = async (text: string): Promise<any> => {
                     parts: [{
                         text: `
                             Extrais les infos de ce job en JSON complet : company, position, location, contractType, remotePolicy, salary,
-                            salaryDetails (avec brutYear, brutMonth, netYear, netMonth, et analysis: "Analyse critique vs marché"),
+                            salaryDetails (avec brutYear, brutMonth, netYear, netMonth, et analysis: "Analyse critique vs marchÃ©"),
                             missions (liste), detectedSkills (liste), redFlags (liste de warnings),
                             jobDescription, contactName, contactEmail, contactPhone, link, tags.
                             "${text.substring(0, 5000)}"
@@ -207,7 +207,7 @@ export const extractJobDetailsFromText = async (text: string): Promise<any> => {
         const data = await response.json();
         const rawText = data.candidates?.[0]?.content?.parts?.[0]?.text;
 
-        if (!rawText) throw new Error("Réponse vide de l'API REST");
+        if (!rawText) throw new Error("RÃ©ponse vide de l'API REST");
 
         const jsonStr = rawText.replace(/```json|```/g, "").trim();
         return JSON.parse(jsonStr);
@@ -236,12 +236,12 @@ export const extractJobDetailsFromText = async (text: string): Promise<any> => {
             netMonth: "",
             netDay: "",    // New
             netHour: "",   // New
-            currency: "€",
-            analysis: "En attente d'IA pour analyse marché précise."
+            currency: "â‚¬",
+            analysis: "En attente d'IA pour analyse marchÃ© prÃ©cise."
         };
 
         // Match: "25k", "25.5k", "25000", "25 000", "25000.0"
-        const salaryRegex = /(?:(\d{1,3}(?:[.,]\d+)?)\s?k)|(?:(\d{1,3}(?:[\s,.]\d{3})*|\d{4,8})(?:[.,]\d+)?\s?(?:€|euros?))/i;
+        const salaryRegex = /(?:(\d{1,3}(?:[.,]\d+)?)\s?k)|(?:(\d{1,3}(?:[\s,.]\d{3})*|\d{4,8})(?:[.,]\d+)?\s?(?:â‚¬|euros?))/i;
         const salaryMatch = text.match(salaryRegex);
 
         if (salaryMatch) {
@@ -252,7 +252,7 @@ export const extractJobDetailsFromText = async (text: string): Promise<any> => {
 
             if (salaryMatch[1]) { // Format "35k"
                 rawValue = parseFloat(salaryMatch[1].replace(',', '.')) * 1000;
-            } else if (salaryMatch[0]) { // Format "35000 €"
+            } else if (salaryMatch[0]) { // Format "35000 â‚¬"
                 rawValue = parseFloat(salaryMatch[0].replace(/[^0-9,.]/g, '').replace(',', '.'));
             }
 
@@ -314,7 +314,7 @@ export const extractJobDetailsFromText = async (text: string): Promise<any> => {
             const annualNet = annualBrut * COEFF_NET;
 
             // 4. Generate All Fields with High Precision
-            const fmt = (n: number) => Math.round(n).toLocaleString('fr-FR') + " €";
+            const fmt = (n: number) => Math.round(n).toLocaleString('fr-FR') + " â‚¬";
 
             salaryDetails = {
                 brutYear: fmt(annualBrut),
@@ -327,7 +327,7 @@ export const extractJobDetailsFromText = async (text: string): Promise<any> => {
                 netDay: fmt(annualNet / DAYS_YEAR_FORFAIT),
                 netHour: fmt(annualNet / HOURS_YEAR_LEGAL),
 
-                currency: "€",
+                currency: "â‚¬",
                 analysis: isAnnual ?
                     (annualBrut > 45000 ? `Salaire ${statusLabel} attractif (Top 30%).` : `Salaire standard ${statusLabel}.`)
                     : `Estimation sur base mensuelle (${statusLabel}).`,
@@ -337,9 +337,9 @@ export const extractJobDetailsFromText = async (text: string): Promise<any> => {
         }
 
         // --- Missions Extraction ---
-        // Look for block starts like "Missions", "Responsabilités", "Tasks"
+        // Look for block starts like "Missions", "ResponsabilitÃ©s", "Tasks"
         const missions: string[] = [];
-        const missionBlockRegex = /(?:Missions?|Responsabilit(?:é|e)s?|Tâches?|Rôle)(?:\s*:?)([\s\S]{0,1000}?)(?=\n\n|\n[A-Z]|$)/i;
+        const missionBlockRegex = /(?:Missions?|Responsabilit(?:Ã©|e)s?|TÃ¢ches?|RÃ´le)(?:\s*:?)([\s\S]{0,1000}?)(?=\n\n|\n[A-Z]|$)/i;
         const missionMatch = text.match(missionBlockRegex);
 
         if (missionMatch) {
@@ -348,7 +348,7 @@ export const extractJobDetailsFromText = async (text: string): Promise<any> => {
             const items = missionText.split(/\n/).map(s => s.trim())
                 .filter(s => s.length > 5) // Skip empty/very short
                 .filter(s => !s.endsWith(':')) // Skip headers/intros like "Les missions sont :"
-                .map(s => s.replace(/^[-•*]\s*/, '')); // Remove bullet chars
+                .map(s => s.replace(/^[-â€¢*]\s*/, '')); // Remove bullet chars
 
             // Pick the best lines (likely those that started with bullet points or look like sentences)
             const cleanItems = items.filter(s => s.length > 10 && s.length < 150).slice(0, 6);
@@ -365,7 +365,7 @@ export const extractJobDetailsFromText = async (text: string): Promise<any> => {
             'Sass', 'Figma', 'Adobe', 'Jira', 'Agile', 'Scrum'
         ];
         const softKeywords = [
-            'Autonomie', 'Rigueur', 'Curiosité', 'Communication', 'Force de proposition', 'Esprit d\'équipe',
+            'Autonomie', 'Rigueur', 'CuriositÃ©', 'Communication', 'Force de proposition', 'Esprit d\'Ã©quipe',
             'Team player', 'Leadership', 'Mentoring', 'Anglais'
         ];
 
@@ -381,14 +381,14 @@ export const extractJobDetailsFromText = async (text: string): Promise<any> => {
         // --- Red Flags Detection ---
         const redFlags: string[] = [];
         const toxicPatterns = [
-            { term: /(?:résistan|toléran)(?:ce|t)?\s*(?:au|aux?)\s*stress/i, label: "Environnement Stressant" },
+            { term: /(?:rÃ©sistan|tolÃ©ran)(?:ce|t)?\s*(?:au|aux?)\s*stress/i, label: "Environnement Stressant" },
             { term: /work\s*hard\s*,?\s*play\s*hard/i, label: "Culture 'Burnout'" },
-            { term: /heures?\s*sup/i, label: "Heures Sup fréquentes" },
-            { term: /(?:famille|family)/i, label: "\"On est une famille\" (Frontières floues)" },
-            { term: /rockstar|ninja|super-?h[ée]ros/i, label: "Attentes Irréalistes (Rockstar/Ninja)" },
+            { term: /heures?\s*sup/i, label: "Heures Sup frÃ©quentes" },
+            { term: /(?:famille|family)/i, label: "\"On est une famille\" (FrontiÃ¨res floues)" },
+            { term: /rockstar|ninja|super-?h[Ã©e]ros/i, label: "Attentes IrrÃ©alistes (Rockstar/Ninja)" },
             { term: /salaire\s*selon\s*profil/i, label: "Salaire non transparent" },
-            { term: /urgent/i, label: "Recrutement Urgent (Désorganisation ?)" },
-            { term: /multi-?casquettes?/i, label: "Rôle mal défini / 3 postes en 1" },
+            { term: /urgent/i, label: "Recrutement Urgent (DÃ©sorganisation ?)" },
+            { term: /multi-?casquettes?/i, label: "RÃ´le mal dÃ©fini / 3 postes en 1" },
             { term: /soir[s]?\s*et\s*week-?end[s]?/i, label: "Travail Soir/Week-end" }
         ];
 
@@ -404,12 +404,12 @@ export const extractJobDetailsFromText = async (text: string): Promise<any> => {
         // Extract Experience for Tags & Field
 
 
-        let expMatch = lowerText.match(/(?:expérience|experience)(?:\s*:?)\s*([\d\w\s+]+?)(?=\n|$)/i);
+        let expMatch = lowerText.match(/(?:expÃ©rience|experience)(?:\s*:?)\s*([\d\w\s+]+?)(?=\n|$)/i);
         // Better regex strategies
-        // Strategy 1: "Expérience : 2 ans" or "Expérience\n2 ans"
-        const expRegex1 = /(?:expérience|experience)(?:[\s\S]{0,50}?)\b(\d+(?:\s?-\s?\d+)?)\s*(?:an|ans|année|années|mois)\b/i;
-        // Strategy 2: "2 ans d'expérience"
-        const expRegex2 = /\b(\d+(?:\s?-\s?\d+)?)\s*(?:an|ans|année|années)\s*d['’]?\s*expérience/i; // 2 ans d'expérience
+        // Strategy 1: "ExpÃ©rience : 2 ans" or "ExpÃ©rience\n2 ans"
+        const expRegex1 = /(?:expÃ©rience|experience)(?:[\s\S]{0,50}?)\b(\d+(?:\s?-\s?\d+)?)\s*(?:an|ans|annÃ©e|annÃ©es|mois)\b/i;
+        // Strategy 2: "2 ans d'expÃ©rience"
+        const expRegex2 = /\b(\d+(?:\s?-\s?\d+)?)\s*(?:an|ans|annÃ©e|annÃ©es)\s*d['â€™]?\s*expÃ©rience/i; // 2 ans d'expÃ©rience
         // Strategy 3: "1 An(s)" specific format
         const expRegex3 = /\b(\d+)\s*an\(s\)/i;
 
@@ -433,7 +433,7 @@ export const extractJobDetailsFromText = async (text: string): Promise<any> => {
         for (let i = 0; i < Math.min(lines.length, 5); i++) {
             const line = lines[i];
             const lowerLine = line.toLowerCase();
-            if (lowerLine.startsWith('offre n') || lowerLine.startsWith('publié') || lowerLine.includes('localiser avec')) continue;
+            if (lowerLine.startsWith('offre n') || lowerLine.startsWith('publiÃ©') || lowerLine.includes('localiser avec')) continue;
             if (line.length > 5 && line.length < 80) {
                 position = line;
                 break;
@@ -449,7 +449,7 @@ export const extractJobDetailsFromText = async (text: string): Promise<any> => {
         if (contractMatch) {
             const cVal = contractMatch[1].toLowerCase();
             if (cVal.includes('cdd')) contractType = 'CDD';
-            else if (cVal.includes('freelance') || cVal.includes('indépendant')) contractType = 'Freelance'; // Prestataire removed
+            else if (cVal.includes('freelance') || cVal.includes('indÃ©pendant')) contractType = 'Freelance'; // Prestataire removed
             else if (cVal.includes('stage')) contractType = 'Stage';
             else if (cVal.includes('alternance') || cVal.includes('profess') || cVal.includes('apprentissage')) contractType = 'Alternance';
             else if (cVal.includes('cdi')) contractType = 'CDI';
@@ -460,17 +460,17 @@ export const extractJobDetailsFromText = async (text: string): Promise<any> => {
             else if (lowerText.includes('stage') || lowerText.includes('internship')) contractType = 'Stage';
             else if (lowerText.includes('cdd')) contractType = 'CDD';
             else if (lowerText.includes('cdi')) contractType = 'CDI'; // CDI wins if present
-            else if (lowerText.includes('freelance') || lowerText.includes('indépendant')) contractType = 'Freelance';
+            else if (lowerText.includes('freelance') || lowerText.includes('indÃ©pendant')) contractType = 'Freelance';
         }
 
         // Extract Remote
         let remotePolicy = 'Sur site'; // Default
-        if (lowerText.includes('full remote') || lowerText.includes('100% télétravail') || lowerText.includes('télétravail total')) remotePolicy = 'Full Remote';
-        else if (lowerText.includes('remote') || lowerText.includes('télétravail') || lowerText.includes('hybride') || lowerText.includes('hybrid')) remotePolicy = 'Hybride';
+        if (lowerText.includes('full remote') || lowerText.includes('100% tÃ©lÃ©travail') || lowerText.includes('tÃ©lÃ©travail total')) remotePolicy = 'Full Remote';
+        else if (lowerText.includes('remote') || lowerText.includes('tÃ©lÃ©travail') || lowerText.includes('hybride') || lowerText.includes('hybrid')) remotePolicy = 'Hybride';
 
         // Extract Company
         let company = "";
-        const employerMatch = text.match(/(?:Employeur|Entreprise|Société)\s*[:\n]\s*([^\n\r]+)/i);
+        const employerMatch = text.match(/(?:Employeur|Entreprise|SociÃ©tÃ©)\s*[:\n]\s*([^\n\r]+)/i);
         if (employerMatch) {
             company = employerMatch[1].trim();
         } else {
@@ -481,13 +481,13 @@ export const extractJobDetailsFromText = async (text: string): Promise<any> => {
         // Extract Location
         let location = "";
         // Match "75001 - Paris", "78 - Jouy-en-Josas", "33 - Bordeaux"
-        const locationMatch = text.match(/(:?Lieu|Localisation)?\s*:?\s*(\d{2,5})\s*[-–]\s*([^\n\r,.(]+)/i) ||
-            text.match(/(\d{2,5})\s*[-–]\s*([^\n\r,.(]+)/);
+        const locationMatch = text.match(/(:?Lieu|Localisation)?\s*:?\s*(\d{2,5})\s*[-â€“]\s*([^\n\r,.(]+)/i) ||
+            text.match(/(\d{2,5})\s*[-â€“]\s*([^\n\r,.(]+)/);
 
         if (locationMatch) {
             // Normalize: remove garbage like "- Localiser avec Mappy"
             // The previous code had specific group logic, let's stick to the simple one which was robust enough IF we clean it.
-            const simpleMatch = text.match(/(\d{2,5})\s*[-–]\s*([^\n\r,.(]+)/);
+            const simpleMatch = text.match(/(\d{2,5})\s*[-â€“]\s*([^\n\r,.(]+)/);
             if (simpleMatch) {
                 let city = simpleMatch[2].trim();
                 // CLEANUP: Remove common noise
@@ -511,12 +511,12 @@ export const extractJobDetailsFromText = async (text: string): Promise<any> => {
 
         // Extract Industry
         let industry = "";
-        const industryMatch = text.match(/Secteur\s*d['’]?\s*activité\s*:\s*([^\n]+)/i);
+        const industryMatch = text.match(/Secteur\s*d['â€™]?\s*activitÃ©\s*:\s*([^\n]+)/i);
         if (industryMatch) industry = industryMatch[1].trim();
 
         // Extract Company Size
         let companySize = "";
-        const sizeMatch = text.match(/(\d+\s*(?:à|to|-)\s*\d+\s*salariés?)/i);
+        const sizeMatch = text.match(/(\d+\s*(?:Ã |to|-)\s*\d+\s*salariÃ©s?)/i);
         if (sizeMatch) companySize = sizeMatch[1].trim();
 
         // Extract Source from Text/Link Heuristic
@@ -530,7 +530,7 @@ export const extractJobDetailsFromText = async (text: string): Promise<any> => {
 
         return {
             company: company || "",
-            position: position || "Poste à définir",
+            position: position || "Poste Ã  dÃ©finir",
             location: location || "",
             contractType: contractType,
             remotePolicy: remotePolicy,
@@ -539,7 +539,7 @@ export const extractJobDetailsFromText = async (text: string): Promise<any> => {
             missions: missions,
             detectedSkills: detectedSkills,
             redFlags: redFlags,
-            jobDescription: text.substring(0, 500) + "...\n\n(Texte complet sauvegardé)",
+            jobDescription: text.substring(0, 500) + "...\n\n(Texte complet sauvegardÃ©)",
             contactName: "",
             contactEmail: emailMatch ? emailMatch[0] : "",
             contactPhone: "",
@@ -550,9 +550,9 @@ export const extractJobDetailsFromText = async (text: string): Promise<any> => {
             experience: expMatch ? `${expMatch[1]} ans` : (
                 lowerText.includes('junior') ? 'Junior' :
                     (lowerText.includes('senior') ? 'Senior' :
-                        (lowerText.includes('débutant') || lowerText.includes('debutant') ? 'Débutant accepté' : ''))
+                        (lowerText.includes('dÃ©butant') || lowerText.includes('debutant') ? 'DÃ©butant acceptÃ©' : ''))
             ),
-            benefits: text.match(/(?:Primes?|Tickets? resto|Panier|Participation|Intéressement|Mutuelle|Transport|RTT)/gi) || [],
+            benefits: text.match(/(?:Primes?|Tickets? resto|Panier|Participation|IntÃ©ressement|Mutuelle|Transport|RTT)/gi) || [],
             qualification: qualification,
             industry: industry,
             companySize: companySize
@@ -563,5 +563,5 @@ export const extractJobDetailsFromText = async (text: string): Promise<any> => {
     }
 
     console.error("All extraction methods failed.");
-    throw new Error(`Échec total de l'analyse (IA & Offline). Vérifiez votre clé API ou le texte fourni.`);
+    throw new Error(`Ã‰chec total de l'analyse (IA & Offline). VÃ©rifiez votre clÃ© API ou le texte fourni.`);
 };

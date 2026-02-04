@@ -1,4 +1,4 @@
-import type { JobApplication } from '../types';
+﻿import type { JobApplication } from '../types';
 
 export const toDbFormat = (app: Partial<JobApplication>) => {
     const dbData: any = { ...app };

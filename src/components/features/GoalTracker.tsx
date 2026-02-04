@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+﻿import { useState, useEffect } from 'react';
 import { Target, Plus, Trash2, Trophy, Flame } from 'lucide-react';
 import type { JobApplication } from '../../types';
 import { useGoals, type Goal } from '../../hooks/useGoals';
@@ -86,8 +86,8 @@ export const GoalTracker = ({ applications }: GoalTrackerProps) => {
                 <div className="mb-4 p-3 bg-gradient-to-r from-orange-500 to-red-500 rounded-xl flex items-center gap-3 text-white">
                     <Flame size={24} />
                     <div>
-                        <p className="font-black text-lg">{streak} jour{streak > 1 ? 's' : ''} 🔥</p>
-                        <p className="text-xs text-orange-100">Série de candidatures consécutives</p>
+                        <p className="font-black text-lg">{streak} jour{streak > 1 ? 's' : ''} ðŸ”¥</p>
+                        <p className="text-xs text-orange-100">SÃ©rie de candidatures consÃ©cutives</p>
                     </div>
                 </div>
             )}
@@ -132,7 +132,7 @@ export const GoalTracker = ({ applications }: GoalTrackerProps) => {
                         <div key={goal.id} className="relative">
                             <div className="flex items-center justify-between mb-1">
                                 <span className="text-sm font-medium text-slate-700 dark:text-slate-300">
-                                    {goal.type === 'weekly' ? '📅 Cette semaine' : '📆 Ce mois'}
+                                    {goal.type === 'weekly' ? 'ðŸ“… Cette semaine' : 'ðŸ“† Ce mois'}
                                 </span>
                                 <div className="flex items-center gap-2">
                                     <span className="text-sm font-bold text-slate-900 dark:text-white">

@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react';
+﻿import { useState, useEffect, useMemo } from 'react';
 import type { JobApplication, ApplicationStatus } from '../types';
 
 export interface FilterState {

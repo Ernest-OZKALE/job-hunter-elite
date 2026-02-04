@@ -1,4 +1,4 @@
-export interface Stats {
+﻿export interface Stats {
     total: number;
     sent: number;
     interview: number;

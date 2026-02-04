@@ -1,4 +1,4 @@
-import { X, Layout, Sparkles, Bell, User } from 'lucide-react';
+﻿import { X, Layout, Sparkles, Bell, User } from 'lucide-react';
 import { useNotifications } from '../hooks/useNotifications';
 import { usePreferences } from '../context/PreferencesContext';
 import { THEMES, type ViewMode, type Theme } from '../lib/themes';
@@ -25,8 +25,8 @@ export const PreferencesModal = ({ isOpen, onClose, user }: PreferencesModalProp
                             <Sparkles className="text-white" size={24} />
                         </div>
                         <div>
-                            <h2 className="text-2xl font-black text-slate-900 dark:text-white">Préférences</h2>
-                            <p className="text-sm text-slate-500 dark:text-slate-400">Personnalise ton expérience</p>
+                            <h2 className="text-2xl font-black text-slate-900 dark:text-white">PrÃ©fÃ©rences</h2>
+                            <p className="text-sm text-slate-500 dark:text-slate-400">Personnalise ton expÃ©rience</p>
                         </div>
                     </div>
                     <button
@@ -45,13 +45,13 @@ export const PreferencesModal = ({ isOpen, onClose, user }: PreferencesModalProp
                     </div>
                     <div className="bg-slate-50 dark:bg-slate-800/50 p-4 rounded-xl border border-slate-200 dark:border-slate-700">
                         <p className="text-sm text-slate-500 dark:text-slate-400 mb-3">
-                            Décrivez vos compétences, votre expérience et ce que vous recherchez. L'IA utilisera ces infos pour personnaliser vos lettres de motivation.
+                            DÃ©crivez vos compÃ©tences, votre expÃ©rience et ce que vous recherchez. L'IA utilisera ces infos pour personnaliser vos lettres de motivation.
                         </p>
                         <textarea
                             value={userProfile}
                             onChange={(e) => setUserProfile(e.target.value)}
                             className="w-full h-32 p-3 rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-blue-500 outline-none text-sm text-slate-700 dark:text-slate-200 resize-none"
-                            placeholder="Ex: Développeur Fullstack React/Node.js avec 3 ans d'expérience. Expert en Tailwind..."
+                            placeholder="Ex: DÃ©veloppeur Fullstack React/Node.js avec 3 ans d'expÃ©rience. Expert en Tailwind..."
                         />
                     </div>
                 </div>
@@ -74,7 +74,7 @@ export const PreferencesModal = ({ isOpen, onClose, user }: PreferencesModalProp
                         <button
                             onClick={() => {
                                 navigator.clipboard.writeText(user?.id || '');
-                                alert('ID copié !');
+                                alert('ID copiÃ© !');
                             }}
                             className="p-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors font-bold text-sm"
                         >
@@ -91,9 +91,9 @@ export const PreferencesModal = ({ isOpen, onClose, user }: PreferencesModalProp
                     </div>
                     <div className="grid grid-cols-3 gap-3">
                         {[
-                            { value: 'compact' as ViewMode, label: 'Compact', icon: '📋', desc: 'Vue dense' },
-                            { value: 'comfort' as ViewMode, label: 'Confort', icon: '📱', desc: 'Vue équilibrée' },
-                            { value: 'grid' as ViewMode, label: 'Grille', icon: '🎯', desc: 'Mosaïque' },
+                            { value: 'compact' as ViewMode, label: 'Compact', icon: 'ðŸ“‹', desc: 'Vue dense' },
+                            { value: 'comfort' as ViewMode, label: 'Confort', icon: 'ðŸ“±', desc: 'Vue Ã©quilibrÃ©e' },
+                            { value: 'grid' as ViewMode, label: 'Grille', icon: 'ðŸŽ¯', desc: 'MosaÃ¯que' },
                         ].map((mode) => (
                             <button
                                 key={mode.value}
@@ -115,7 +115,7 @@ export const PreferencesModal = ({ isOpen, onClose, user }: PreferencesModalProp
                 <div className="mb-8">
                     <div className="flex items-center gap-2 mb-4">
                         <Sparkles size={20} className="text-slate-600 dark:text-slate-300" />
-                        <h3 className="text-lg font-bold text-slate-900 dark:text-white">Thèmes de Couleurs</h3>
+                        <h3 className="text-lg font-bold text-slate-900 dark:text-white">ThÃ¨mes de Couleurs</h3>
                     </div>
                     <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-3">
                         {Object.values(THEMES).map((theme) => (
@@ -171,8 +171,8 @@ export const PreferencesModal = ({ isOpen, onClose, user }: PreferencesModalProp
                             </div>
                             <p className="text-sm text-slate-500 dark:text-slate-400">
                                 {permission === 'granted'
-                                    ? '✅ Notifications activées pour les relances'
-                                    : '⚠️ Activez pour ne pas rater de relance'}
+                                    ? 'âœ… Notifications activÃ©es pour les relances'
+                                    : 'âš ï¸ Activez pour ne pas rater de relance'}
                             </p>
                         </div>
                         <button
@@ -183,7 +183,7 @@ export const PreferencesModal = ({ isOpen, onClose, user }: PreferencesModalProp
                                 : 'bg-blue-500 text-white hover:bg-blue-600 shadow-md transform hover:-translate-y-0.5'
                                 }`}
                         >
-                            {permission === 'granted' ? 'Activé' : 'Activer'}
+                            {permission === 'granted' ? 'ActivÃ©' : 'Activer'}
                         </button>
                     </div>
                 </div>
@@ -191,7 +191,7 @@ export const PreferencesModal = ({ isOpen, onClose, user }: PreferencesModalProp
                 {/* Info */}
                 <div className="p-4 rounded-2xl bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 mb-6">
                     <p className="text-sm text-blue-900 dark:text-blue-200 text-center">
-                        🎨 <strong>Personnalisation :</strong> Choisis un thème pour changer les couleurs principales de l'app.
+                        ðŸŽ¨ <strong>Personnalisation :</strong> Choisis un thÃ¨me pour changer les couleurs principales de l'app.
                     </p>
                 </div>
 
