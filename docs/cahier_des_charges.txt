@@ -1,0 +1,412 @@
+📘 CAHIER DES CHARGES TECHNIQUE & FONCTIONNEL
+
+PROJET : JOB HUNTER ELITE
+
+Date de version : 17 Décembre 2025
+Auteur : Ernest Ozkale (avec l'assistance de Job Hunter Elite AI)
+Version : 4.0 (Production)
+
+⚠️ INSTRUCTIONS IMPORTANTES POUR LES IA SUCCESSIVES ⚠️
+
+Ce document est un JOURNAL VIVANT du projet. Chaque IA qui travaille sur ce projet DOIT :
+
+1. ✅ LIRE INTÉGRALEMENT ce document avant toute intervention
+2. ✅ METTRE À JOUR ce document après chaque session de travail
+3. ✅ AJOUTER une nouvelle section datée avec les modifications apportées
+4. ✅ RETIRER les fonctionnalités supprimées du projet (si demandé par l'utilisateur)
+5. ✅ TRANSMETTRE ces instructions à l'IA suivante
+
+Format de mise à jour :
+---
+📅 UPDATE [DATE] - [HEURE]
+IA : [Nom/Version de l'IA]
+Durée session : [Temps]
+
+✅ Ajouts :
+- [Liste des fonctionnalités ajoutées]
+
+🔧 Modifications :
+- [Liste des modifications]
+
+❌ Suppressions :
+- [Liste des fonctionnalités retirées]
+
+🐛 Bugs corrigés :
+- [Liste des bugs résolus]
+
+⚠️ Bugs connus :
+- [Liste des bugs restants]
+---
+
+═══════════════════════════════════════════════════════════════════════════
+
+1. 🎯 PRÉSENTATION DU PROJET
+
+1.1. Objectif
+
+Développer une application web centralisée ("QG de Guerre") pour optimiser, suivre et analyser la recherche d'emploi d'un candidat. L'outil doit permettre de gérer le flux de candidatures, de stocker les documents associés et de fournir des statistiques de performance en temps réel.
+
+1.2. Cible Utilisateur
+
+Primaire : Ernest Ozkale (Administrateur principal).
+
+Secondaire : Collègues de promotion TSSR (Utilisateurs invités).
+
+Besoin clé : Chaque utilisateur doit avoir son propre espace privé et sécurisé.
+
+2. 🛠 ARCHITECTURE TECHNIQUE (STACK)
+
+2.1. Frontend
+
+Framework : React 18 (via Vite).
+
+Langage : TypeScript (Strict Mode).
+
+Styling : Tailwind CSS v4.0 (Design System utilitaire).
+
+Icônes : Lucide React.
+
+2.2. Backend (Serverless)
+
+Plateforme : Google Firebase.
+
+Services utilisés :
+
+Authentication : Gestion des utilisateurs via Google Sign-In.
+
+Firestore (NoSQL) : Base de données temps réel pour les candidatures.
+
+Storage : Stockage des fichiers lourds (CV, LM) dans des "Buckets".
+
+Analytics : Google Analytics 4 (Suivi d'usage).
+
+Hosting : Hébergement statique global (CDN).
+
+2.3. Règles de Sécurité (Security Rules)
+
+Firestore : allow read, write: if request.auth != null && request.auth.uid == userId; (Cloisonnement strict par UID).
+
+Storage : allow read, write: if request.auth != null && request.auth.uid == userId; (Cloisonnement strict par UID).
+
+3. ✨ FONCTIONNALITÉS DÉTAILLÉES (SCOPE)
+
+3.1. Module d'Authentification
+
+Login : Connexion unique via Google Popup (Simple, sécurisé, pas de gestion de mot de passe).
+
+Session : Persistance de la session utilisateur.
+
+Logout : Déconnexion propre avec nettoyage des états locaux.
+
+3.2. Tableau de Bord (Dashboard)
+
+Vue synthétique : 4 cartes de statistiques en haut de page ("Key Performance Indicators").
+
+Volume : Nombre total de candidatures envoyées.
+
+Impact CV : Taux de conversion (Candidatures → Entretiens). Formule : ((Entretiens + Offres) / (Total - "A faire")) * 100.
+
+En cours : Nombre de candidatures avec le statut "Envoyé" (sans réponse).
+
+Offres : Nombre de contrats décrochés.
+
+Design : Cartes avec icônes colorées et barres de progression visuelles.
+
+3.3. Gestion des Candidatures (CRUD)
+
+Ajout : Formulaire complet (Entreprise, Poste, Lieu, Salaire, Lien, Date, Notes).
+
+Modification : Édition de tous les champs d'une candidature existante.
+
+Suppression : Suppression définitive (avec confirmation window.confirm).
+
+Statuts : Système de 21 statuts granulaires organisés par catégories :
+
+📋 PRÉPARATION
+- ⚪ À Postuler
+- 📝 Brouillon
+- 🔍 Recherche
+
+📤 CANDIDATURE
+- 📨 CV Vu
+- 📧 Candidature Envoyée
+- ✅ Offre Acceptée
+
+🎯 ENTRETIENS & TESTS
+- 📞 Entretien RH
+- 💼 Entretien Technique
+- 🧪 Test Technique
+- 👥 Entretien Manager
+- 🏢 Visite Entreprise
+
+💡 DÉCISION
+- ⏳ En Attente Retour
+- 🤝 Négociation
+- 📋 Offre Reçue
+
+🏁 CLÔTURE
+- 🎉 Offre Acceptée
+- ❌ Refus Candidat
+- 🚫 Refus Entreprise
+- 👻 Ghosting
+- 🔄 Relance Envoyée
+- ⏸️ En Pause
+- 🗑️ Annulée
+
+3.4. Module "Smart Relance" (Algorithme J+3)
+
+Logique : Analyse automatique de la date d'envoi vs date du jour.
+
+Règle : Si statut = "Envoyé" ET (Date du jour - Date envoi) ≥ 3 jours.
+
+Feedback Visuel :
+
+Apparition d'une bannière d'alerte dans la carte de candidature.
+
+Orange : "À RELANCER AUJOURD'HUI !" (J+3 pile).
+
+Rouge : "Retard relance (Xj)" (Si > J+3).
+
+Bleu : "Relance dans Xj" (Si < J+3).
+
+3.5. Module de Gestion de Fichiers (Attachments)
+
+Upload Cloud (Firebase Storage) :
+
+Bouton "Uploader un fichier".
+
+Supporte : PDF, DOC, DOCX, JPG, PNG.
+
+Upload asynchrone avec indicateur de chargement (Loader2).
+
+Stockage dans le chemin : users/{userId}/files/{timestamp}_{filename}.
+
+Récupération automatique de l'URL publique (getDownloadURL).
+
+Ajout de Liens Externes :
+
+Champ pour ajouter un lien manuel (Google Drive, Dropbox, Portfolio).
+
+Liste des Pièces Jointes :
+
+Affichage sous forme de liste dans le formulaire.
+
+Affichage sous forme d'icônes cliquables (téléchargement) dans la liste principale.
+
+Suppression possible d'une pièce jointe (met à jour la liste dans Firestore).
+
+3.6. Fonctions Utilitaires
+
+Recherche : Barre de recherche filtrant en temps réel par "Entreprise" ou "Poste".
+
+Export Excel : Génération d'un fichier .csv contenant toutes les données brutes (pour sauvegarde ou analyse externe).
+
+Export PDF : Génération d'un rapport PDF avec statistiques et liste des candidatures.
+
+3.7. Interface & Design
+
+Dark Mode : Toggle fonctionnel dans la sidebar.
+
+Glassmorphism : Effets de verre avec blur et transparence.
+
+Animations : Transitions fluides et micro-interactions.
+
+Responsive : Optimisé pour mobile et desktop.
+
+3.8. Préférences Utilisateur
+
+Mode d'affichage :
+- Compact : Vue dense
+- Confort : Vue normale (par défaut)
+- Grille : Mosaïque de cartes (⚠️ EN COURS DE CORRECTION)
+
+Toggle animations : Activer/désactiver les animations.
+
+4. 🎨 CHARTE GRAPHIQUE & UI (TAILWIND)
+
+4.1. Ambiance
+
+Style : "SaaS Premium", épuré, professionnel ("Clean Corporate").
+
+Fond : bg-slate-50 (Gris très clair) pour éviter la fatigue visuelle.
+
+Composants : Blanc pur bg-white avec ombres portées douces (shadow-sm, shadow-lg).
+
+4.2. Palette de Couleurs (Sémantique)
+
+Primaire (Action) : blue-600 (Boutons, Liens, Accents).
+
+Succès (Offre/Impact) : emerald-600 / green-600.
+
+Attention (Relance/Entretien) : orange-600 / purple-600.
+
+Danger (Refus/Retard/Suppr) : red-600.
+
+Texte : slate-800 (Titres), slate-500 (Metadatas).
+
+4.3. Typographie
+
+Police : Système par défaut (font-sans), optimisée pour la lisibilité (Inter/Roboto selon l'OS).
+
+Hiérarchie : Utilisation intensive de font-bold et uppercase tracking-wider pour les labels.
+
+5. 💾 MODÈLE DE DONNÉES (FIRESTORE)
+
+Collection : users/{userId}/applications
+
+Champ | Type | Description
+------|------|------------
+id | String (Auto) | Identifiant unique du document
+company | String | Nom de l'entreprise
+position | String | Intitulé du poste
+location | String | Lieu (Ville/Télétravail)
+salary | String | Fourchette salariale visée
+link | String | URL de l'offre d'emploi
+status | String | Un des 21 statuts granulaires
+date | String (ISO) | Date d'envoi (YYYY-MM-DD)
+notes | String (Long) | Notes personnelles, journal de bord
+attachments | Array[Obj] | Liste des fichiers joints
+createdAt | Timestamp | Date de création technique
+updatedAt | Timestamp | Date de dernière modif
+
+Structure de l'objet Attachment :
+
+{
+  "name": "CV_2025.pdf",
+  "url": "https://firebasestorage...",
+  "type": "autre",
+  "size": 102456,
+  "storagePath": "users/123/files/..."
+}
+
+
+6. 🚀 PROCÉDURE DE DÉPLOIEMENT
+
+Build : npm run build → Génère le dossier /dist.
+
+Deploy : firebase deploy → Pousse le dossier /dist sur les serveurs Google.
+
+URL : https://job-hunter-elite.web.app (ou similaire).
+
+7. 🔮 ROADMAP COMPLÈTE (33 FONCTIONNALITÉS PLANIFIÉES)
+
+Voir le fichier ROADMAP.md pour la liste exhaustive et l'état d'avancement.
+
+═══════════════════════════════════════════════════════════════════════════
+
+📅 HISTORIQUE DES MISES À JOUR
+
+═══════════════════════════════════════════════════════════════════════════
+
+📅 UPDATE 18/12/2025 - 04:15
+IA : Gemini 2.0 Flash Experimental
+Durée session : ~3h
+
+✅ Ajouts :
+
+SYSTÈME DE 21 STATUTS GRANULAIRES
+- Configuration centralisée dans src/lib/statusConfig.ts
+- 5 catégories : Préparation, Candidature, Entretiens, Décision, Clôture
+- Migration automatique des anciens statuts
+- StatusBadge avec icônes et couleurs par statut
+- StatusSelector avec affichage par catégories
+
+STATUSSELECTOR INTELLIGENT
+- Positionnement automatique (haut/bas selon espace disponible)
+- Utilisation de React Portal pour éviter les problèmes de z-index
+- Compatible tous écrans (1080p, 4K, etc.)
+- Fermeture sur clic extérieur
+- Scroll de la page fonctionnel
+
+SYSTÈME DE PRÉFÉRENCES
+- Context PreferencesContext pour gérer les préférences
+- Modal PreferencesModal pour configuration
+- 3 modes d'affichage : Compact, Confort, Grille
+- Toggle animations
+- Persistance dans localStorage
+
+DESIGN GLASSMORPHISM
+- Effets de verre avec blur et transparence
+- Animations fluides (fade-in, slide-in, float, pulse, shimmer)
+- Ombres douces et dégradés
+- Dark mode amélioré avec transitions
+
+ANALYTICS AMÉLIORÉS
+- Calcul des stats adapté aux 21 statuts
+- Dashboard avec graphiques
+- Export PDF avec statistiques détaillées
+- Taux de conversion par catégorie
+
+COMPOSANTS CRÉÉS
+- src/components/PreferencesModal.tsx
+- src/components/ThemeApplier.tsx
+- src/components/features/DashboardStats.tsx
+- src/lib/themes.ts
+- src/lib/statusConfig.ts
+- src/lib/statusMigration.ts
+- src/context/PreferencesContext.tsx
+- src/types/stats.ts
+
+🔧 Modifications :
+
+- ApplicationList.tsx : Intégration StatusSelector, suppression overflow-hidden
+- DashboardPage.tsx : Ajout usePreferences, wrapper viewMode
+- App.tsx : Ajout PreferencesProvider et ThemeApplier
+- index.css : CSS glassmorphism complet, variables thème, animations
+- useApplications.ts : Calcul stats adapté aux nouveaux statuts
+- exportPdf.ts : Stats PDF adaptées
+- relance.ts : Retour objet { shouldRelance, message, isUrgent }
+- AnalyticsDashboard.tsx : Mise à jour pour nouveaux statuts
+
+❌ Suppressions :
+
+- Ancien système de 5 statuts (remplacé par 21)
+- KanbanBoard retiré de la sidebar (sur demande utilisateur)
+- Thèmes de couleurs temporairement retirés (bugs)
+
+🐛 Bugs corrigés :
+
+- ✅ StatusSelector scroll : positionnement intelligent haut/bas
+- ✅ StatusSelector z-index : utilisation de React Portal
+- ✅ Dark mode : fonctionne correctement
+- ✅ Stats : calcul correct avec nouveaux statuts
+- ✅ Scroll page : fonctionne même avec dropdown ouvert
+
+⚠️ Bugs connus :
+
+- ⚠️ Mode Grille : layout cassé, cartes trop petites (PRIORITÉ #1)
+  Solution à tester : Passer viewMode en prop à ApplicationList
+  
+- ⚠️ Thèmes de couleurs : ne s'appliquent pas visuellement
+  Temporairement retirés du modal de préférences
+  À réimplémenter avec approche différente
+
+📊 État du Projet :
+
+- Fonctionnalités implémentées : 15/33 (45%)
+- Bugs critiques : 1 (mode grille)
+- Performance : Build OK (~6s)
+- Déploiement : ✅ https://job-hunter-elite.web.app
+
+📝 Notes pour la prochaine IA :
+
+1. PRIORITÉ ABSOLUE : Corriger le mode grille
+   - Approche suggérée : Passer viewMode en prop à ApplicationList
+   - Utiliser className conditionnelle au lieu de CSS global
+   
+2. Décider du sort des thèmes de couleurs :
+   - Soit les implémenter correctement (Tailwind classes dynamiques)
+   - Soit les retirer définitivement
+   
+3. Consulter ROADMAP.md pour les 33 fonctionnalités planifiées
+
+4. Fichiers clés à connaître :
+   - src/lib/statusConfig.ts : Configuration des 21 statuts
+   - src/context/PreferencesContext.tsx : Gestion préférences
+   - src/components/ui/StatusSelector.tsx : Sélecteur intelligent
+   - ROADMAP.md : Plan complet du projet
+
+═══════════════════════════════════════════════════════════════════════════
+
+Fin du document.
+Dernière mise à jour : 18/12/2025 - 04:19
