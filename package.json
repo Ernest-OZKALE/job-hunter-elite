@@ -1,0 +1,17 @@
+{
+  "name": "job-hunter-elite-monorepo",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Plateforme d'architecture Élite pour la recherche d'emploi",
+  "workspaces": [
+    "apps/*"
+  ],
+  "scripts": {
+    "client:dev": "npm run dev --workspace=@job-hunter/client",
+    "client:build": "npm run build --workspace=@job-hunter/client",
+    "docs:check": "ls -R docs/",
+    "infra:check": "ls -R infrastructure/"
+  },
+  "author": "Ernest OZKALE",
+  "license": "Closed"
+}
